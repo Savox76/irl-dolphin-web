@@ -8,6 +8,7 @@ const requiredFiles = [
   "website/styles.css",
   "website/app.js",
   "docs/PRE_RELEASE_MASTERPLAN.md",
+  "docs/PRIVACY_AND_DATA_INVENTORY.md",
   "docs/USER_GUIDE_DE.md",
   "docs/USER_GUIDE_EN.md",
 ];
@@ -30,6 +31,7 @@ const html = readFileSync(resolve(root, "website/index.html"), "utf8");
 const script = readFileSync(resolve(root, "website/app.js"), "utf8");
 const css = readFileSync(resolve(root, "website/styles.css"), "utf8");
 const masterplan = readFileSync(resolve(root, "docs/PRE_RELEASE_MASTERPLAN.md"), "utf8");
+const privacyInventory = readFileSync(resolve(root, "docs/PRIVACY_AND_DATA_INVENTORY.md"), "utf8");
 const germanGuide = readFileSync(resolve(root, "docs/USER_GUIDE_DE.md"), "utf8");
 const englishGuide = readFileSync(resolve(root, "docs/USER_GUIDE_EN.md"), "utf8");
 
@@ -43,6 +45,7 @@ const requiredHtmlPatterns = [
   [/id="setup"/, "setup section"],
   [/id="roadmap"/, "roadmap section"],
   [/id="security"/, "security section"],
+  [/id="privacy"/, "privacy and data section"],
 ];
 
 for (const [pattern, name] of requiredHtmlPatterns) {
@@ -73,7 +76,7 @@ for (const [pattern, name] of forbiddenWebsitePatterns) {
 
 for (const token of [
   "v0.1.0-alpha.3",
-  "92%",
+  "93%",
   "37%",
   "Port 4455",
   "Never forward port 4455",
@@ -81,6 +84,7 @@ for (const token of [
   "Kick",
   "StreamElements",
   "Android background session",
+  "Open data inventory",
 ]) {
   if (!`${html}\n${script}`.includes(token)) failures.push(`Bilingual website lacks required content: ${token}`);
 }
@@ -89,9 +93,23 @@ for (const token of ["## Deutsch", "## English", "Gate A", "Gate B", "Gate C", "
   if (!masterplan.includes(token)) failures.push(`Pre-release master plan lacks: ${token}`);
 }
 
+for (const token of [
+  "## English",
+  "## Deutsch",
+  "### Data inventory",
+  "### Dateninventar",
+  "Twitch",
+  "StreamElements",
+  "OBS",
+  "No alpha feature sends data to analytics",
+  "Keine Alpha-Funktion sendet Daten an Analyse",
+]) {
+  if (!privacyInventory.includes(token)) failures.push(`Privacy inventory lacks: ${token}`);
+}
+
 for (const [guide, language, tokens] of [
-  [germanGuide, "German", ["Twitch", "OBS Studio", "StreamElements", "Chat-Sprachausgabe", "Hintergrundsitzung", "Lokale Diagnose"]],
-  [englishGuide, "English", ["Twitch", "OBS Studio", "StreamElements", "text-to-speech", "background session", "Local diagnostics"]],
+  [germanGuide, "German", ["Twitch", "OBS Studio", "StreamElements", "Chat-Sprachausgabe", "Hintergrundsitzung", "Lokale Diagnose", "Datenschutz & Daten"]],
+  [englishGuide, "English", ["Twitch", "OBS Studio", "StreamElements", "text-to-speech", "background session", "Local diagnostics", "Privacy and data"]],
 ]) {
   for (const token of tokens) {
     if (!guide.includes(token)) failures.push(`${language} guide lacks: ${token}`);

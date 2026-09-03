@@ -214,7 +214,23 @@ For a bug report, record model, Android version, exact action, expected and
 actual behavior, reproducibility and the visible safe diagnostic code. Check
 screenshots for chat or account data before sharing.
 
-## 11. YouTube and Kick
+## 11. Privacy and data
+
+Open **Settings → Privacy & data → View**. The overview separates protected
+preferences/credentials, live content held only in memory, network destinations
+and data that is deliberately not collected.
+
+The private alpha has no analytics, advertising, crash upload, cloud sync or
+device identifier. OBS remains on the private LAN. TTS uses the speech service
+selected in Android or iOS, whose own privacy rules may apply.
+
+The complete technical inventory with purpose, storage, retention, recipient
+and deletion control is in
+[PRIVACY_AND_DATA_INVENTORY.md](PRIVACY_AND_DATA_INVENTORY.md). The final public
+privacy policy follows only when real controller/contact, legal-basis, rights
+and store disclosures are available.
+
+## 12. YouTube and Kick
 
 YouTube already has isolated models and chat states, but still needs native
 Google OAuth activation and the official streaming transport.
@@ -226,7 +242,7 @@ client secret must never be embedded in Android or iOS.
 Until then both providers remain visibly limited or demo. Twitch, OBS and
 StreamElements continue independently.
 
-## 12. Quick troubleshooting
+## 13. Quick troubleshooting
 
 | Problem | Check |
 |---|---|
