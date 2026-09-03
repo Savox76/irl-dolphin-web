@@ -76,11 +76,22 @@ for (const [pattern, name] of forbiddenWebsitePatterns) {
   if (pattern.test(`${html}\n${script}`)) failures.push(`Website contains ${name}`);
 }
 
+for (const [pattern, name] of [
+  [/irl[- ]link/i, "a public reference to the former inspiration"],
+  [/(referenzprodukt|former reference product)/i, "a public reference-product attribution"],
+]) {
+  if (pattern.test(`${html}\n${script}\n${masterplan}\n${germanGuide}\n${englishGuide}`)) {
+    failures.push(`Public content contains ${name}`);
+  }
+}
+
 for (const token of [
   "v0.1.0-alpha.3",
   "93%",
   "37%",
   "0%",
+  "Nutzbarer Funktionsumfang",
+  "Usable feature scope",
   "Media transmission / multi-device",
   "Medienübertragung / Mehrgeräte",
   "RTMP / RTMPS",
