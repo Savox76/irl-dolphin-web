@@ -17,7 +17,7 @@
       <div class="shell header-inner">
         <a class="brand" href="#top" aria-label="IRL Dolphin Startseite"><span class="brand-symbol" aria-hidden="true">D</span><span class="brand-name">IRL DOLPHIN</span></a>
         <nav class="desktop-nav" aria-label="Hauptnavigation" data-i18n-aria="mainNav">
-          <a href="#features" data-i18n="navFeatures">Funktionen</a><a href="#setup" data-i18n="navSetup">Anleitung</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a>
+          <a href="#features" data-i18n="navFeatures">Funktionen</a><a href="#setup" data-i18n="navSetup">Anleitung</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a><a href="#privacy" data-i18n="navPrivacy">Datenschutz</a>
         </nav>
         <div class="header-actions">
           <div class="language-switch" role="group" aria-label="Sprache" data-i18n-aria="languageLabel"><button type="button" data-language="de" aria-pressed="true">DE</button><button type="button" data-language="en" aria-pressed="false">EN</button></div>
@@ -54,7 +54,7 @@
       <section class="status-bar" aria-labelledby="status-title">
         <div class="shell status-layout">
           <div class="status-heading"><span class="overline" data-i18n="projectStatus">Projektstatus</span><h2 id="status-title" data-i18n="alphaSnapshot">Alpha-Snapshot</h2></div>
-          <div class="status-metric"><div class="metric-value">92<span>%</span></div><div class="metric-copy"><strong data-i18n="mvpFoundation">MVP / technische Grundlage</strong><progress value="92" max="100">92%</progress></div></div>
+          <div class="status-metric"><div class="metric-value">93<span>%</span></div><div class="metric-copy"><strong data-i18n="mvpFoundation">MVP / technische Grundlage</strong><progress value="93" max="100">93%</progress></div></div>
           <div class="status-metric"><div class="metric-value">37<span>%</span></div><div class="metric-copy"><strong data-i18n="legacyParity">IRL-Link-Funktionsparität</strong><progress class="progress-secondary" value="37" max="100">37%</progress></div></div>
           <p class="status-explanation" data-i18n="metricExplanation">Grundlage misst Architektur und MVP-Bausteine. Funktionsparität misst ausschließlich tatsächlich nutzbare Funktionen des früheren Vorbilds.</p>
         </div>
@@ -91,7 +91,7 @@
         <div class="shell">
           <div class="section-title-row roadmap-intro"><span class="section-number">04</span><div class="section-intro"><span class="overline" data-i18n="roadmapKicker">Masterplan bis zur Vorversion</span><h2 id="roadmap-title" data-i18n="roadmapTitle">Von der privaten Alpha zur öffentlichen Version</h2><p data-i18n="roadmapLead">Versionen folgen nicht dem Kalender, sondern nachweisbaren Qualitäts-Gates. Ein Abschnitt gilt erst als fertig, wenn sein Abnahmekriterium erfüllt ist.</p></div></div>
           <div class="roadmap" id="roadmap-list"></div>
-          <div class="document-band"><div><span class="overline" data-i18n="roadmapSourceTitle">Verbindliche Detailplanung</span><p data-i18n="roadmapSourceText">Der vollständige zweisprachige Vorversions-Masterplan liegt zusätzlich im Repository und enthält Abnahmekriterien, Blocker und Dokumentationsaufgaben.</p></div><div class="doc-links"><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/PRE_RELEASE_MASTERPLAN.md"><span data-i18n="openMasterplan">Masterplan öffnen</span><span aria-hidden="true">↗</span></a><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/USER_GUIDE_DE.md">Anleitung DE <span aria-hidden="true">↗</span></a><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/USER_GUIDE_EN.md">Guide EN <span aria-hidden="true">↗</span></a></div></div>
+          <div class="document-band"><div><span class="overline" data-i18n="roadmapSourceTitle">Verbindliche Detailplanung</span><p data-i18n="roadmapSourceText">Der vollständige zweisprachige Vorversions-Masterplan liegt zusätzlich im Repository und enthält Abnahmekriterien, Blocker und Dokumentationsaufgaben.</p></div><div class="doc-links"><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/PRE_RELEASE_MASTERPLAN.md"><span data-i18n="openMasterplan">Masterplan öffnen</span><span aria-hidden="true">↗</span></a><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/PRIVACY_AND_DATA_INVENTORY.md"><span data-i18n="openDataInventory">Dateninventar öffnen</span><span aria-hidden="true">↗</span></a><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/USER_GUIDE_DE.md">Anleitung DE <span aria-hidden="true">↗</span></a><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/USER_GUIDE_EN.md">Guide EN <span aria-hidden="true">↗</span></a></div></div>
         </div>
       </section>
 
@@ -99,6 +99,19 @@
         <div class="shell security-layout">
           <div class="security-lead"><span class="section-number">05</span><span class="overline" data-i18n="securityKicker">Sicherheit & Datenschutz</span><h2 id="security-title" data-i18n="securityTitle">Für einen Stream gebaut – nicht für Datenhunger</h2><p data-i18n="securityLead">Konten und Verbindungen bleiben voneinander getrennt. Die lokale Diagnose speichert nur feste Fehlercodes im Arbeitsspeicher und lädt nichts hoch.</p></div>
           <div class="security-list"><article><span>01</span><div><h3 data-i18n="obsSafetyTitle">OBS bleibt lokal</h3><p data-i18n="obsSafetyText">Port 4455 niemals im Router freigeben. IRL Dolphin akzeptiert nur private lokale Adressen und eine authentifizierte OBS-Verbindung.</p></div></article><article><span>02</span><div><h3 data-i18n="credentialsTitle">Geschützte Zugangsdaten</h3><p data-i18n="credentialsText">Tokens und Passwörter liegen im Android-Keystore bzw. iOS-Schlüsselbund und erscheinen nie in Diagnosen.</p></div></article><article><span>03</span><div><h3 data-i18n="diagnosticsTitle">Lokale Diagnose</h3><p data-i18n="diagnosticsText">Maximal 200 strukturierte Ereignisse im Arbeitsspeicher, keine Nachrichten, Namen, URLs oder Uploads.</p></div></article><article><span>04</span><div><h3 data-i18n="freeCoreTitle">Freier lokaler Kern</h3><p data-i18n="freeCoreText">Lokale OBS-Steuerung, Sicherheit, Updates und Anbieter-Anmeldung bleiben ohne Paywall.</p></div></article></div>
+        </div>
+      </section>
+
+      <section class="section privacy-section" id="privacy" aria-labelledby="privacy-title">
+        <div class="shell">
+          <div class="section-title-row privacy-heading"><span class="section-number">06</span><div class="section-intro"><span class="overline" data-i18n="privacyKicker">Datenschutz & Daten</span><h2 id="privacy-title" data-i18n="privacyTitle">Klar getrennt: gespeichert, flüchtig, verbunden</h2><p data-i18n="privacyLead">Die technische Alpha-Übersicht zeigt nachvollziehbar, welche Daten auf dem Gerät geschützt bleiben, nur während der Laufzeit existieren oder an einen bewusst verbundenen Dienst gehen.</p></div></div>
+          <div class="privacy-grid">
+            <article><span>01</span><h3 data-i18n="privacyProtectedTitle">Geschützt gespeichert</h3><p data-i18n="privacyProtectedText">Sprache, Darstellung, TTS-Auswahl und ausdrücklich hinterlegte Verbindungsdaten nutzen geschützten Gerätespeicher.</p></article>
+            <article><span>02</span><h3 data-i18n="privacyMemoryTitle">Nur im Arbeitsspeicher</h3><p data-i18n="privacyMemoryText">Chats, Spenden, TTS-Warteschlange, Diagnosen und Live-Zustände werden nicht als Historie gespeichert.</p></article>
+            <article><span>03</span><h3 data-i18n="privacyNetworkTitle">Begrenzte Netzwerkziele</h3><p data-i18n="privacyNetworkText">Twitch und StreamElements nutzen dokumentierte sichere Endpunkte; OBS bleibt ausschließlich im privaten LAN.</p></article>
+            <article><span>04</span><h3 data-i18n="privacyAbsentTitle">Keine versteckte Sammlung</h3><p data-i18n="privacyAbsentText">Keine Analyse, Werbung, Absturzübertragung, Cloud-Synchronisierung, Gerätekennung oder eigener App-Backenddienst.</p></article>
+          </div>
+          <div class="privacy-band"><p data-i18n="privacyTechnicalNote">Das vollständige technische Inventar nennt Zweck, Speicherort, Dauer, Empfänger und Löschmöglichkeit. Die endgültige juristische Datenschutzerklärung folgt vor der öffentlichen Beta mit echten Verantwortlichen- und Kontaktangaben.</p><a class="button button-primary" href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/PRIVACY_AND_DATA_INVENTORY.md"><span data-i18n="openDataInventory">Dateninventar öffnen</span><span aria-hidden="true">↗</span></a></div>
         </div>
       </section>
 
@@ -110,7 +123,7 @@
 
     <footer class="site-footer">
       <div class="shell footer-top"><div><span class="footer-mark">D</span><strong>IRL DOLPHIN</strong></div><p data-i18n="footerText">Unabhängig entwickelt für IRL-Streamer.</p></div>
-      <div class="shell footer-bottom"><span>v0.1.0-alpha.3 · 03.09.2026</span><div><a href="https://github.com/Savox76/irl-dolphin-web" data-i18n="repository">Repository</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a></div></div>
+      <div class="shell footer-bottom"><span>v0.1.0-alpha.3 · 03.09.2026</span><div><a href="https://github.com/Savox76/irl-dolphin-web" data-i18n="repository">Repository</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a><a href="#privacy" data-i18n="navPrivacy">Datenschutz</a></div></div>
     </footer>
     <noscript><div class="noscript">Für die Sprachumschaltung und die interaktiven Anleitungen muss JavaScript aktiviert sein.</div></noscript>
   </body>
