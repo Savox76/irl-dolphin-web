@@ -24,10 +24,11 @@ Anbieter müssen sichtbar gekennzeichnet sein und kein kritischer Fehler oder
 ungeklärter Store-Blocker darf offen bleiben.
 
 Die aktuellen `93%` messen die bisherige MVP-/Technikgrundlage. Die separat
-ausgewiesenen `37%` messen ausschließlich nutzbare Funktionsparität zum früheren
-Referenzprodukt. Der neue Medien- und Mehrgeräte-Kern steht bewusst separat bei
-`0%`: Er ist jetzt verbindlicher Produktumfang, aber noch nicht implementiert.
-Implementierungsfortschritt allein ist kein Release-Gate.
+ausgewiesenen `37%` zeigen den Anteil der geplanten Steuerungs- und
+Interaktionsfunktionen, der heute tatsächlich nutzbar ist. Der neue Medien- und
+Mehrgeräte-Kern steht bewusst separat bei `0%`: Er ist jetzt verbindlicher
+Produktumfang, aber noch nicht implementiert. Implementierungsfortschritt allein
+ist kein Release-Gate.
 
 ### Verbindliches Zielbild
 
@@ -258,10 +259,10 @@ device testing, incomplete providers must be clearly labelled, and no critical
 defect or unresolved store blocker may remain.
 
 The current `93%` measures the existing MVP/technical foundation. The separate
-`37%` measures usable feature parity with the former reference product. The new
-media and multi-device core is deliberately tracked at `0%`: it is now committed
-product scope, but is not implemented yet. Implementation progress alone is not
-a release gate.
+`37%` shows the share of planned control and interaction capabilities that is
+genuinely usable today. The new media and multi-device core is deliberately
+tracked at `0%`: it is now committed product scope, but is not implemented yet.
+Implementation progress alone is not a release gate.
 
 ### Committed target experience
 
