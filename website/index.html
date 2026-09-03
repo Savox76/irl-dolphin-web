@@ -4,11 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#111416" />
-    <meta
-      name="description"
-      content="IRL Dolphin ist die unabhängige mobile Schaltzentrale für IRL-Streams: Chat, OBS, StreamElements, TTS und sichere Diagnose auf Android und iOS."
-    />
+    <meta name="theme-color" content="#0a0c0d" />
+    <meta name="description" content="IRL Dolphin ist die unabhängige mobile Schaltzentrale für IRL-Streams: Chat, OBS, StreamElements, TTS und sichere Diagnose auf Android und iOS." />
     <title>IRL Dolphin — Control your stream on the go</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="app.js" defer></script>
@@ -18,238 +15,103 @@
 
     <header class="site-header">
       <div class="shell header-inner">
-        <a class="brand" href="#top" aria-label="IRL Dolphin Startseite">
-          <span class="brand-mark" aria-hidden="true"><span>ID</span></span>
-          <span class="brand-copy">
-            <strong>IRL Dolphin</strong>
-            <small>Control your stream on the go.</small>
-          </span>
-        </a>
-
+        <a class="brand" href="#top" aria-label="IRL Dolphin Startseite"><span class="brand-symbol" aria-hidden="true">D</span><span class="brand-name">IRL DOLPHIN</span></a>
         <nav class="desktop-nav" aria-label="Hauptnavigation" data-i18n-aria="mainNav">
-          <a href="#features" data-i18n="navFeatures">Funktionen</a>
-          <a href="#setup" data-i18n="navSetup">Anleitung</a>
-          <a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a>
-          <a href="#security" data-i18n="navSecurity">Sicherheit</a>
+          <a href="#features" data-i18n="navFeatures">Funktionen</a><a href="#setup" data-i18n="navSetup">Anleitung</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a>
         </nav>
-
         <div class="header-actions">
-          <div class="language-switch" role="group" aria-label="Sprache" data-i18n-aria="languageLabel">
-            <button type="button" data-language="de" aria-pressed="true">DE</button>
-            <button type="button" data-language="en" aria-pressed="false">EN</button>
-          </div>
-          <button class="icon-button" id="theme-toggle" type="button" aria-label="Darstellung wechseln" data-i18n-aria="themeToggle">
-            <span class="theme-icon" aria-hidden="true">◐</span>
-          </button>
+          <div class="language-switch" role="group" aria-label="Sprache" data-i18n-aria="languageLabel"><button type="button" data-language="de" aria-pressed="true">DE</button><button type="button" data-language="en" aria-pressed="false">EN</button></div>
+          <button class="icon-button" id="theme-toggle" type="button" aria-label="Darstellung wechseln" data-i18n-aria="themeToggle"><span aria-hidden="true">◐</span></button>
         </div>
       </div>
     </header>
 
     <main id="main">
       <section class="hero" id="top">
-        <div class="shell hero-grid">
+        <div class="shell hero-layout">
           <div class="hero-copy">
-            <div class="eyebrow-row">
-              <span class="status-pill status-alpha"><span aria-hidden="true"></span> v0.1.0-alpha.3</span>
-              <span class="status-pill status-private" data-i18n="privateAlpha">Private Android-Alpha</span>
-            </div>
+            <div class="release-line"><span class="live-dot" aria-hidden="true"></span><span>v0.1.0-alpha.3</span><span class="release-separator" aria-hidden="true"></span><span data-i18n="privateAlpha">Private Android-Alpha</span></div>
             <h1 data-i18n-html="heroTitle">Dein IRL-Stream.<br /><span>Eine mobile Schaltzentrale.</span></h1>
-            <p class="hero-lead" data-i18n="heroLead">
-              IRL Dolphin bündelt Live-Chat, OBS-Steuerung, StreamElements-Aktivitäten und Sprachausgabe in einer robusten, zweisprachigen App.
-            </p>
-            <div class="hero-actions">
-              <a class="button button-primary" href="#setup" data-i18n="startSetup">Einrichtung starten</a>
-              <a class="button button-secondary" href="#roadmap" data-i18n="viewRoadmap">Vorversionsplan ansehen</a>
-            </div>
-            <p class="availability-note" data-i18n="availability">
-              Aktuell nur als debug-signierter Testbuild für autorisierte Tester. Noch keine öffentliche Beta oder Store-Version.
-            </p>
+            <p class="hero-lead" data-i18n="heroLead">IRL Dolphin bündelt Live-Chat, OBS-Steuerung, StreamElements-Aktivitäten und Sprachausgabe in einer robusten, zweisprachigen App.</p>
+            <div class="hero-actions"><a class="button button-primary" href="#features" data-i18n="navFeatures">Funktionen</a><a class="button button-quiet" href="#setup"><span data-i18n="startSetup">Einrichtung starten</span><span aria-hidden="true">↗</span></a></div>
+            <p class="availability-note" data-i18n="availability">Aktuell nur als debug-signierter Testbuild für autorisierte Tester. Noch keine öffentliche Beta oder Store-Version.</p>
           </div>
-
-          <aside class="status-panel" aria-labelledby="status-title">
-            <div class="panel-heading">
-              <div>
-                <span class="kicker" data-i18n="projectStatus">Projektstatus</span>
-                <h2 id="status-title" data-i18n="alphaSnapshot">Alpha-Snapshot</h2>
-              </div>
-              <span class="pulse" aria-label="Aktive Entwicklung" data-i18n-aria="activeDevelopment"></span>
+          <div class="product-console" aria-hidden="true">
+            <div class="console-top"><span>LIVE CONTROL</span><span class="console-online"><i></i> SYSTEM READY</span></div>
+            <div class="console-stage">
+              <div class="scene-meta"><span>ACTIVE SCENE</span><strong>IRL / MAIN</strong></div>
+              <div class="signal-visual"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="stream-clock">02:47:19</div>
             </div>
-
-            <div class="metric">
-              <div class="metric-line">
-                <span data-i18n="mvpFoundation">MVP / technische Grundlage</span>
-                <strong>92%</strong>
-              </div>
-              <progress value="92" max="100">92%</progress>
+            <div class="console-grid">
+              <div><span>OBS</span><strong>CONNECTED</strong></div><div><span>CHAT</span><strong>3 CHANNELS</strong></div><div><span>TTS</span><strong>ENABLED</strong></div>
             </div>
-            <div class="metric">
-              <div class="metric-line">
-                <span data-i18n="legacyParity">IRL-Link-Funktionsparität</span>
-                <strong>37%</strong>
-              </div>
-              <progress class="progress-secondary" value="37" max="100">37%</progress>
-            </div>
-
-            <p class="metric-explanation" data-i18n="metricExplanation">
-              Grundlage misst Architektur und MVP-Bausteine. Funktionsparität misst ausschließlich tatsächlich nutzbare Funktionen des früheren Vorbilds.
-            </p>
-            <div class="snapshot-grid">
-              <div><strong>2</strong><span data-i18n="languages">Sprachen</span></div>
-              <div><strong>5</strong><span data-i18n="integrations">Integrationen</span></div>
-              <div><strong>0</strong><span data-i18n="activePaywalls">aktive Paywalls</span></div>
-            </div>
-          </aside>
+            <div class="console-bottom"><span>STREAM HEALTH</span><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><strong>STABLE</strong></div>
+          </div>
         </div>
       </section>
 
-      <section class="section section-compact" aria-labelledby="why-title">
-        <div class="shell principle-strip">
-          <div class="section-intro compact-intro">
-            <span class="kicker" data-i18n="productPrinciple">Produktprinzip</span>
-            <h2 id="why-title" data-i18n="whyTitle">Kontrolle ohne unnötige Abhängigkeiten</h2>
-          </div>
-          <div class="principles">
-            <article>
-              <span class="number">01</span>
-              <div><h3 data-i18n="principleIndependentTitle">Unabhängig</h3><p data-i18n="principleIndependentText">Neu entwickelt, ohne fremden Code oder fremde Assets.</p></div>
-            </article>
-            <article>
-              <span class="number">02</span>
-              <div><h3 data-i18n="principleResilientTitle">Ausfallsicher</h3><p data-i18n="principleResilientText">Ein gestörter Anbieter darf die anderen nicht stoppen.</p></div>
-            </article>
-            <article>
-              <span class="number">03</span>
-              <div><h3 data-i18n="principleConsentTitle">Transparent</h3><p data-i18n="principleConsentText">Verbindungen, Berechtigungen und Updates benötigen deine Zustimmung.</p></div>
-            </article>
+      <section class="status-bar" aria-labelledby="status-title">
+        <div class="shell status-layout">
+          <div class="status-heading"><span class="overline" data-i18n="projectStatus">Projektstatus</span><h2 id="status-title" data-i18n="alphaSnapshot">Alpha-Snapshot</h2></div>
+          <div class="status-metric"><div class="metric-value">92<span>%</span></div><div class="metric-copy"><strong data-i18n="mvpFoundation">MVP / technische Grundlage</strong><progress value="92" max="100">92%</progress></div></div>
+          <div class="status-metric"><div class="metric-value">37<span>%</span></div><div class="metric-copy"><strong data-i18n="legacyParity">IRL-Link-Funktionsparität</strong><progress class="progress-secondary" value="37" max="100">37%</progress></div></div>
+          <p class="status-explanation" data-i18n="metricExplanation">Grundlage misst Architektur und MVP-Bausteine. Funktionsparität misst ausschließlich tatsächlich nutzbare Funktionen des früheren Vorbilds.</p>
+        </div>
+      </section>
+
+      <section class="principle-section" aria-labelledby="why-title">
+        <div class="shell">
+          <div class="section-title-row"><span class="section-number">01</span><div><span class="overline" data-i18n="productPrinciple">Produktprinzip</span><h2 id="why-title" data-i18n="whyTitle">Kontrolle ohne unnötige Abhängigkeiten</h2></div></div>
+          <div class="principle-grid">
+            <article><span>01</span><h3 data-i18n="principleIndependentTitle">Unabhängig</h3><p data-i18n="principleIndependentText">Neu entwickelt, ohne fremden Code oder fremde Assets.</p></article>
+            <article><span>02</span><h3 data-i18n="principleResilientTitle">Ausfallsicher</h3><p data-i18n="principleResilientText">Ein gestörter Anbieter darf die anderen nicht stoppen.</p></article>
+            <article><span>03</span><h3 data-i18n="principleConsentTitle">Transparent</h3><p data-i18n="principleConsentText">Verbindungen, Berechtigungen und Updates benötigen deine Zustimmung.</p></article>
           </div>
         </div>
       </section>
 
       <section class="section" id="features" aria-labelledby="features-title">
         <div class="shell">
-          <div class="section-heading split-heading">
-            <div class="section-intro">
-              <span class="kicker" data-i18n="featureKicker">Funktionsübersicht</span>
-              <h2 id="features-title" data-i18n="featuresTitle">Was die Alpha bereits kann</h2>
-              <p data-i18n="featuresLead">Jeder Baustein ist ehrlich nach seinem aktuellen Reifegrad gekennzeichnet.</p>
-            </div>
-            <div class="filter-bar" role="group" aria-label="Funktionen filtern" data-i18n-aria="filterLabel">
-              <button class="filter active" type="button" data-filter="all" aria-pressed="true" data-i18n="filterAll">Alle</button>
-              <button class="filter" type="button" data-filter="ready" aria-pressed="false" data-i18n="filterReady">Umgesetzt</button>
-              <button class="filter" type="button" data-filter="limited" aria-pressed="false" data-i18n="filterLimited">Eingeschränkt</button>
-              <button class="filter" type="button" data-filter="planned" aria-pressed="false" data-i18n="filterPlanned">Geplant</button>
-            </div>
+          <div class="section-title-row feature-heading"><span class="section-number">02</span><div class="section-intro"><span class="overline" data-i18n="featureKicker">Funktionsübersicht</span><h2 id="features-title" data-i18n="featuresTitle">Was die Alpha bereits kann</h2><p data-i18n="featuresLead">Jeder Baustein ist ehrlich nach seinem aktuellen Reifegrad gekennzeichnet.</p></div>
+            <div class="filter-bar" role="group" aria-label="Funktionen filtern" data-i18n-aria="filterLabel"><button class="filter active" type="button" data-filter="all" aria-pressed="true" data-i18n="filterAll">Alle</button><button class="filter" type="button" data-filter="ready" aria-pressed="false" data-i18n="filterReady">Umgesetzt</button><button class="filter" type="button" data-filter="limited" aria-pressed="false" data-i18n="filterLimited">Eingeschränkt</button><button class="filter" type="button" data-filter="planned" aria-pressed="false" data-i18n="filterPlanned">Geplant</button></div>
           </div>
           <div class="feature-grid" id="feature-grid" aria-live="polite"></div>
         </div>
       </section>
 
-      <section class="section section-alt" id="setup" aria-labelledby="setup-title">
+      <section class="section setup-section" id="setup" aria-labelledby="setup-title">
         <div class="shell guide-layout">
-          <aside class="guide-aside">
-            <span class="kicker" data-i18n="guideKicker">DEU / ENG Anleitung</span>
-            <h2 id="setup-title" data-i18n="setupTitle">Einrichten und sicher loslegen</h2>
-            <p data-i18n="setupLead">Öffne die Schritte in der Reihenfolge, die du tatsächlich brauchst. Nicht verfügbare Anbieter sind deutlich markiert.</p>
-            <div class="warning-card">
-              <strong data-i18n="beforeInstallTitle">Vor der Installation</strong>
-              <p data-i18n="beforeInstallText">Die aktuelle APK ist debug-signiert und ausschließlich für interne Gerätetests gedacht. Installiere sie nur aus dem zugehörigen privaten GitHub-Release.</p>
-            </div>
-          </aside>
+          <aside class="guide-aside"><span class="section-number">03</span><span class="overline" data-i18n="guideKicker">DEU / ENG Anleitung</span><h2 id="setup-title" data-i18n="setupTitle">Einrichten und sicher loslegen</h2><p data-i18n="setupLead">Öffne die Schritte in der Reihenfolge, die du tatsächlich brauchst. Nicht verfügbare Anbieter sind deutlich markiert.</p><div class="warning-card"><strong data-i18n="beforeInstallTitle">Vor der Installation</strong><p data-i18n="beforeInstallText">Die aktuelle APK ist debug-signiert und ausschließlich für interne Gerätetests gedacht. Installiere sie nur aus dem zugehörigen privaten GitHub-Release.</p></div></aside>
           <div class="guide-list" id="guide-list"></div>
         </div>
       </section>
 
       <section class="section" id="roadmap" aria-labelledby="roadmap-title">
         <div class="shell">
-          <div class="section-intro roadmap-intro">
-            <span class="kicker" data-i18n="roadmapKicker">Masterplan bis zur Vorversion</span>
-            <h2 id="roadmap-title" data-i18n="roadmapTitle">Von der privaten Alpha zur öffentlichen Version</h2>
-            <p data-i18n="roadmapLead">Versionen folgen nicht dem Kalender, sondern nachweisbaren Qualitäts-Gates. Ein Abschnitt gilt erst als fertig, wenn sein Abnahmekriterium erfüllt ist.</p>
-          </div>
+          <div class="section-title-row roadmap-intro"><span class="section-number">04</span><div class="section-intro"><span class="overline" data-i18n="roadmapKicker">Masterplan bis zur Vorversion</span><h2 id="roadmap-title" data-i18n="roadmapTitle">Von der privaten Alpha zur öffentlichen Version</h2><p data-i18n="roadmapLead">Versionen folgen nicht dem Kalender, sondern nachweisbaren Qualitäts-Gates. Ein Abschnitt gilt erst als fertig, wenn sein Abnahmekriterium erfüllt ist.</p></div></div>
           <div class="roadmap" id="roadmap-list"></div>
-          <div class="roadmap-note">
-            <strong data-i18n="roadmapSourceTitle">Verbindliche Detailplanung</strong>
-            <p data-i18n="roadmapSourceText">Der vollständige zweisprachige Vorversions-Masterplan liegt zusätzlich im Repository und enthält Abnahmekriterien, Blocker und Dokumentationsaufgaben.</p>
-            <div class="doc-links">
-              <a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/PRE_RELEASE_MASTERPLAN.md" data-i18n="openMasterplan">Masterplan öffnen</a>
-              <a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/USER_GUIDE_DE.md">Anleitung DE</a>
-              <a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/USER_GUIDE_EN.md">Guide EN</a>
-            </div>
-          </div>
+          <div class="document-band"><div><span class="overline" data-i18n="roadmapSourceTitle">Verbindliche Detailplanung</span><p data-i18n="roadmapSourceText">Der vollständige zweisprachige Vorversions-Masterplan liegt zusätzlich im Repository und enthält Abnahmekriterien, Blocker und Dokumentationsaufgaben.</p></div><div class="doc-links"><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/PRE_RELEASE_MASTERPLAN.md"><span data-i18n="openMasterplan">Masterplan öffnen</span><span aria-hidden="true">↗</span></a><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/USER_GUIDE_DE.md">Anleitung DE <span aria-hidden="true">↗</span></a><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/USER_GUIDE_EN.md">Guide EN <span aria-hidden="true">↗</span></a></div></div>
         </div>
       </section>
 
-      <section class="section section-alt" id="security" aria-labelledby="security-title">
+      <section class="section security-section" id="security" aria-labelledby="security-title">
         <div class="shell security-layout">
-          <div class="section-intro">
-            <span class="kicker" data-i18n="securityKicker">Sicherheit & Datenschutz</span>
-            <h2 id="security-title" data-i18n="securityTitle">Für einen Stream gebaut – nicht für Datenhunger</h2>
-            <p data-i18n="securityLead">Konten und Verbindungen bleiben voneinander getrennt. Die lokale Diagnose speichert nur feste Fehlercodes im Arbeitsspeicher und lädt nichts hoch.</p>
-          </div>
-          <div class="security-grid">
-            <article class="security-card danger-card">
-              <span class="security-icon" aria-hidden="true">!</span>
-              <h3 data-i18n="obsSafetyTitle">OBS bleibt lokal</h3>
-              <p data-i18n="obsSafetyText">Port 4455 niemals im Router freigeben. IRL Dolphin akzeptiert nur private lokale Adressen und eine authentifizierte OBS-Verbindung.</p>
-            </article>
-            <article class="security-card">
-              <span class="security-icon" aria-hidden="true">⌁</span>
-              <h3 data-i18n="credentialsTitle">Geschützte Zugangsdaten</h3>
-              <p data-i18n="credentialsText">Tokens und Passwörter liegen im Android-Keystore bzw. iOS-Schlüsselbund und erscheinen nie in Diagnosen.</p>
-            </article>
-            <article class="security-card">
-              <span class="security-icon" aria-hidden="true">◎</span>
-              <h3 data-i18n="diagnosticsTitle">Lokale Diagnose</h3>
-              <p data-i18n="diagnosticsText">Maximal 200 strukturierte Ereignisse im Arbeitsspeicher, keine Nachrichten, Namen, URLs oder Uploads.</p>
-            </article>
-            <article class="security-card">
-              <span class="security-icon" aria-hidden="true">✓</span>
-              <h3 data-i18n="freeCoreTitle">Freier lokaler Kern</h3>
-              <p data-i18n="freeCoreText">Lokale OBS-Steuerung, Sicherheit, Updates und Anbieter-Anmeldung bleiben ohne Paywall.</p>
-            </article>
-          </div>
+          <div class="security-lead"><span class="section-number">05</span><span class="overline" data-i18n="securityKicker">Sicherheit & Datenschutz</span><h2 id="security-title" data-i18n="securityTitle">Für einen Stream gebaut – nicht für Datenhunger</h2><p data-i18n="securityLead">Konten und Verbindungen bleiben voneinander getrennt. Die lokale Diagnose speichert nur feste Fehlercodes im Arbeitsspeicher und lädt nichts hoch.</p></div>
+          <div class="security-list"><article><span>01</span><div><h3 data-i18n="obsSafetyTitle">OBS bleibt lokal</h3><p data-i18n="obsSafetyText">Port 4455 niemals im Router freigeben. IRL Dolphin akzeptiert nur private lokale Adressen und eine authentifizierte OBS-Verbindung.</p></div></article><article><span>02</span><div><h3 data-i18n="credentialsTitle">Geschützte Zugangsdaten</h3><p data-i18n="credentialsText">Tokens und Passwörter liegen im Android-Keystore bzw. iOS-Schlüsselbund und erscheinen nie in Diagnosen.</p></div></article><article><span>03</span><div><h3 data-i18n="diagnosticsTitle">Lokale Diagnose</h3><p data-i18n="diagnosticsText">Maximal 200 strukturierte Ereignisse im Arbeitsspeicher, keine Nachrichten, Namen, URLs oder Uploads.</p></div></article><article><span>04</span><div><h3 data-i18n="freeCoreTitle">Freier lokaler Kern</h3><p data-i18n="freeCoreText">Lokale OBS-Steuerung, Sicherheit, Updates und Anbieter-Anmeldung bleiben ohne Paywall.</p></div></article></div>
         </div>
       </section>
 
-      <section class="section" id="next-docs" aria-labelledby="next-docs-title">
-        <div class="shell next-grid">
-          <div class="section-intro">
-            <span class="kicker" data-i18n="suggestionsKicker">Sinnvolle nächste Ergänzungen</span>
-            <h2 id="next-docs-title" data-i18n="suggestionsTitle">Die Website wächst mit dem Produkt</h2>
-            <p data-i18n="suggestionsLead">Diese Erweiterungen werden erst eingebaut, wenn der jeweilige Inhalt belastbar ist – so bleibt die Seite nützlich statt dekorativ.</p>
-          </div>
-          <ol class="suggestion-list" id="suggestion-list"></ol>
-        </div>
-      </section>
-
-      <section class="section section-alt" id="faq" aria-labelledby="faq-title">
-        <div class="shell faq-layout">
-          <div class="section-intro">
-            <span class="kicker">FAQ</span>
-            <h2 id="faq-title" data-i18n="faqTitle">Kurz beantwortet</h2>
-          </div>
-          <div class="faq-list" id="faq-list"></div>
-        </div>
+      <section class="section final-section" id="next-docs" aria-labelledby="next-docs-title">
+        <div class="shell next-layout"><div class="section-intro"><span class="overline" data-i18n="suggestionsKicker">Sinnvolle nächste Ergänzungen</span><h2 id="next-docs-title" data-i18n="suggestionsTitle">Die Website wächst mit dem Produkt</h2><p data-i18n="suggestionsLead">Diese Erweiterungen werden erst eingebaut, wenn der jeweilige Inhalt belastbar ist – so bleibt die Seite nützlich statt dekorativ.</p></div><ol class="suggestion-list" id="suggestion-list"></ol></div>
+        <div class="shell faq-layout" id="faq" aria-labelledby="faq-title"><div class="faq-heading"><span class="overline">FAQ</span><h2 id="faq-title" data-i18n="faqTitle">Kurz beantwortet</h2></div><div class="faq-list" id="faq-list"></div></div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div class="shell footer-inner">
-        <div class="footer-brand">
-          <strong>IRL Dolphin</strong>
-          <span data-i18n="footerText">Unabhängig entwickelt für IRL-Streamer.</span>
-        </div>
-        <div class="footer-links">
-          <a href="https://github.com/Savox76/irl-dolphin-web" data-i18n="repository">Repository</a>
-          <a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a>
-          <a href="#security" data-i18n="navSecurity">Sicherheit</a>
-        </div>
-        <span class="footer-meta">v0.1.0-alpha.3 · 03.09.2026</span>
-      </div>
+      <div class="shell footer-top"><div><span class="footer-mark">D</span><strong>IRL DOLPHIN</strong></div><p data-i18n="footerText">Unabhängig entwickelt für IRL-Streamer.</p></div>
+      <div class="shell footer-bottom"><span>v0.1.0-alpha.3 · 03.09.2026</span><div><a href="https://github.com/Savox76/irl-dolphin-web" data-i18n="repository">Repository</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a></div></div>
     </footer>
-
-    <noscript>
-      <div class="noscript">Für die Sprachumschaltung und die interaktiven Anleitungen muss JavaScript aktiviert sein.</div>
-    </noscript>
+    <noscript><div class="noscript">Für die Sprachumschaltung und die interaktiven Anleitungen muss JavaScript aktiviert sein.</div></noscript>
   </body>
 </html>
