@@ -9,6 +9,7 @@ Public website and bilingual documentation for **IRL Dolphin**, an Android compa
 ## Documentation
 
 - [Pre-release master plan](docs/PRE_RELEASE_MASTERPLAN.md)
+- [Privacy and data inventory / Datenschutz und Dateninventar](docs/PRIVACY_AND_DATA_INVENTORY.md)
 - [Deutsche Anleitung](docs/USER_GUIDE_DE.md)
 - [English guide](docs/USER_GUIDE_EN.md)
 
