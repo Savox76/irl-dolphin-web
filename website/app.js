@@ -15,6 +15,7 @@ const translations = {
     navSetup: "Anleitung",
     navRoadmap: "Vorversionsplan",
     navSecurity: "Sicherheit",
+    navPrivacy: "Datenschutz",
     privateAlpha: "Private Android-Alpha",
     heroTitle: "Dein IRL-Stream.<br><span>Eine mobile Schaltzentrale.</span>",
     heroLead:
@@ -78,6 +79,25 @@ const translations = {
     freeCoreTitle: "Freier lokaler Kern",
     freeCoreText:
       "Lokale OBS-Steuerung, Sicherheit, Updates und Anbieter-Anmeldung bleiben ohne Paywall.",
+    privacyKicker: "Datenschutz & Daten",
+    privacyTitle: "Klar getrennt: gespeichert, flüchtig, verbunden",
+    privacyLead:
+      "Die technische Alpha-Übersicht zeigt nachvollziehbar, welche Daten auf dem Gerät geschützt bleiben, nur während der Laufzeit existieren oder an einen bewusst verbundenen Dienst gehen.",
+    privacyProtectedTitle: "Geschützt gespeichert",
+    privacyProtectedText:
+      "Sprache, Darstellung, TTS-Auswahl und ausdrücklich hinterlegte Verbindungsdaten nutzen geschützten Gerätespeicher.",
+    privacyMemoryTitle: "Nur im Arbeitsspeicher",
+    privacyMemoryText:
+      "Chats, Spenden, TTS-Warteschlange, Diagnosen und Live-Zustände werden nicht als Historie gespeichert.",
+    privacyNetworkTitle: "Begrenzte Netzwerkziele",
+    privacyNetworkText:
+      "Twitch und StreamElements nutzen dokumentierte sichere Endpunkte; OBS bleibt ausschließlich im privaten LAN.",
+    privacyAbsentTitle: "Keine versteckte Sammlung",
+    privacyAbsentText:
+      "Keine Analyse, Werbung, Absturzübertragung, Cloud-Synchronisierung, Gerätekennung oder eigener App-Backenddienst.",
+    privacyTechnicalNote:
+      "Das vollständige technische Inventar nennt Zweck, Speicherort, Dauer, Empfänger und Löschmöglichkeit. Die endgültige juristische Datenschutzerklärung folgt vor der öffentlichen Beta mit echten Verantwortlichen- und Kontaktangaben.",
+    openDataInventory: "Dateninventar öffnen",
     suggestionsKicker: "Sinnvolle nächste Ergänzungen",
     suggestionsTitle: "Die Website wächst mit dem Produkt",
     suggestionsLead:
@@ -100,6 +120,7 @@ const translations = {
     navSetup: "Guide",
     navRoadmap: "Pre-release plan",
     navSecurity: "Security",
+    navPrivacy: "Privacy",
     privateAlpha: "Private Android alpha",
     heroTitle: "Your IRL stream.<br><span>One mobile control center.</span>",
     heroLead:
@@ -163,6 +184,25 @@ const translations = {
     freeCoreTitle: "Free local core",
     freeCoreText:
       "Local OBS control, security, updates and provider sign-in stay outside any paywall.",
+    privacyKicker: "Privacy & data",
+    privacyTitle: "Clearly separated: stored, volatile, connected",
+    privacyLead:
+      "The technical alpha overview shows which data stays protected on the device, exists only at runtime or reaches a deliberately connected service.",
+    privacyProtectedTitle: "Protected storage",
+    privacyProtectedText:
+      "Language, appearance, TTS choices and explicitly saved connection data use protected device storage.",
+    privacyMemoryTitle: "Memory only",
+    privacyMemoryText:
+      "Chats, donations, the TTS queue, diagnostics and live state are not retained as history.",
+    privacyNetworkTitle: "Bounded destinations",
+    privacyNetworkText:
+      "Twitch and StreamElements use documented secure endpoints; OBS remains strictly on the private LAN.",
+    privacyAbsentTitle: "No hidden collection",
+    privacyAbsentText:
+      "No analytics, advertising, crash upload, cloud sync, device identifier or app-operated backend service.",
+    privacyTechnicalNote:
+      "The complete technical inventory lists purpose, storage, retention, recipient and deletion control. The final legal privacy policy follows before public beta with real controller and contact details.",
+    openDataInventory: "Open data inventory",
     suggestionsKicker: "Useful next additions",
     suggestionsTitle: "The website grows with the product",
     suggestionsLead:
@@ -391,7 +431,7 @@ const content = {
         tasks: [
           "Native Google-OAuth-Aktivierung und offizieller YouTube-Live-Transport",
           "Kick-App und Relay sicher betreiben oder Kick für die Beta eindeutig ausnehmen",
-          "Finales Logo, minimale OS-Versionen und Datenschutzerklärung festlegen",
+          "Finales Logo und minimale OS-Versionen festlegen; juristische Datenschutzerklärung abschließen",
           "iOS auf echten iPhones im Vordergrund qualifizieren",
           "Support-, Fehlerbericht- und Update-Ablauf verbindlich dokumentieren",
         ],
@@ -657,7 +697,7 @@ const content = {
         tasks: [
           "Native Google OAuth activation and official YouTube live transport",
           "Operate a secure Kick app/relay or explicitly exclude Kick from beta",
-          "Finalize the logo, minimum OS versions and privacy policy",
+          "Finalize the logo and minimum OS versions; complete the legal privacy policy",
           "Qualify foreground behavior on physical iPhones",
           "Document support, bug reporting and update flows",
         ],
