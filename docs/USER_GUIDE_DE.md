@@ -228,7 +228,24 @@ erwartetes und tatsächliches Verhalten, Wiederholbarkeit und den sichtbaren
 sicheren Diagnosecode. Prüfe Screenshots vor dem Teilen auf Chat- oder
 Kontodaten.
 
-## 11. YouTube und Kick
+## 11. Datenschutz & Daten
+
+Öffne **Einstellungen → Datenschutz & Daten → Ansehen**. Die Übersicht trennt
+geschützt gespeicherte Einstellungen/Zugangsdaten, nur im Arbeitsspeicher
+gehaltene Live-Inhalte, Netzwerkziele und bewusst nicht erhobene Daten.
+
+IRL Dolphin nutzt in der privaten Alpha keine Analyse, Werbung,
+Absturzübertragung, Cloud-Synchronisierung oder Gerätekennung. OBS bleibt im
+privaten LAN. TTS nutzt den in Android oder iOS gewählten Sprachdienst, für den
+dessen eigene Datenschutzregeln gelten können.
+
+Das vollständige technische Inventar mit Zweck, Speicherort, Dauer, Empfänger
+und Löschmöglichkeit steht in
+[PRIVACY_AND_DATA_INVENTORY.md](PRIVACY_AND_DATA_INVENTORY.md). Die endgültige
+öffentliche Datenschutzerklärung folgt erst mit echten Verantwortlichen-,
+Kontakt-, Rechtsgrundlagen- und Store-Angaben.
+
+## 12. YouTube und Kick
 
 YouTube besitzt bereits isolierte Modelle und Chat-Zustände, benötigt aber noch
 die native Google-OAuth-Aktivierung und den offiziellen Streaming-Transport.
@@ -240,7 +257,7 @@ weil ein Client-Secret niemals in Android/iOS eingebettet werden darf.
 Beide Anbieter bleiben bis dahin sichtbar eingeschränkt oder Demo. Twitch, OBS
 und StreamElements funktionieren unabhängig davon weiter.
 
-## 12. Schnelle Fehlerprüfung
+## 13. Schnelle Fehlerprüfung
 
 | Problem | Prüfung |
 |---|---|
