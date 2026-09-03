@@ -1,0 +1,109 @@
+import { readFileSync, existsSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const requiredFiles = [
+  "website/index.html",
+  "website/styles.css",
+  "website/app.js",
+  "docs/PRE_RELEASE_MASTERPLAN.md",
+  "docs/USER_GUIDE_DE.md",
+  "docs/USER_GUIDE_EN.md",
+];
+
+const forbiddenPublicLinks = [
+  "github.com/Savox76/irl-dolphin/blob/main/docs",
+  "savox76.github.io/irl-dolphin/",
+];
+
+const failures = [];
+
+for (const relativePath of requiredFiles) {
+  const path = resolve(root, relativePath);
+  if (!existsSync(path) || !readFileSync(path, "utf8").trim()) {
+    failures.push(`Missing or empty required file: ${relativePath}`);
+  }
+}
+
+const html = readFileSync(resolve(root, "website/index.html"), "utf8");
+const script = readFileSync(resolve(root, "website/app.js"), "utf8");
+const css = readFileSync(resolve(root, "website/styles.css"), "utf8");
+const masterplan = readFileSync(resolve(root, "docs/PRE_RELEASE_MASTERPLAN.md"), "utf8");
+const germanGuide = readFileSync(resolve(root, "docs/USER_GUIDE_DE.md"), "utf8");
+const englishGuide = readFileSync(resolve(root, "docs/USER_GUIDE_EN.md"), "utf8");
+
+const requiredHtmlPatterns = [
+  [/<html lang="de"/, "default document language"],
+  [/name="viewport"/, "responsive viewport"],
+  [/<main id="main">/, "main landmark"],
+  [/data-language="de"/, "German language control"],
+  [/data-language="en"/, "English language control"],
+  [/id="features"/, "feature section"],
+  [/id="setup"/, "setup section"],
+  [/id="roadmap"/, "roadmap section"],
+  [/id="security"/, "security section"],
+];
+
+for (const [pattern, name] of requiredHtmlPatterns) {
+  if (!pattern.test(html)) failures.push(`index.html lacks ${name}`);
+}
+
+for (const link of forbiddenPublicLinks) {
+  if (html.includes(link)) failures.push(`Website contains obsolete public link: ${link}`);
+}
+
+const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
+if (duplicateIds.length) failures.push(`Duplicate HTML ids: ${[...new Set(duplicateIds)].join(", ")}`);
+
+for (const asset of ["styles.css", "app.js"]) {
+  if (!html.includes(`\"${asset}\"`)) failures.push(`index.html does not reference ${asset}`);
+  if (!existsSync(resolve(root, "website", asset))) failures.push(`Missing local asset: ${asset}`);
+}
+
+const forbiddenWebsitePatterns = [
+  [/http:\/\//i, "insecure HTTP link"],
+  [/(client[_ -]?secret|access[_ -]?token)\s*[:=]\s*[A-Za-z0-9_-]{12,}/i, "possible embedded secret"],
+];
+
+for (const [pattern, name] of forbiddenWebsitePatterns) {
+  if (pattern.test(`${html}\n${script}`)) failures.push(`Website contains ${name}`);
+}
+
+for (const token of [
+  "v0.1.0-alpha.3",
+  "92%",
+  "37%",
+  "Port 4455",
+  "Never forward port 4455",
+  "YouTube",
+  "Kick",
+  "StreamElements",
+  "Android background session",
+]) {
+  if (!`${html}\n${script}`.includes(token)) failures.push(`Bilingual website lacks required content: ${token}`);
+}
+
+for (const token of ["## Deutsch", "## English", "Gate A", "Gate B", "Gate C", "Gate D", "Gate E"]) {
+  if (!masterplan.includes(token)) failures.push(`Pre-release master plan lacks: ${token}`);
+}
+
+for (const [guide, language, tokens] of [
+  [germanGuide, "German", ["Twitch", "OBS Studio", "StreamElements", "Chat-Sprachausgabe", "Hintergrundsitzung", "Lokale Diagnose"]],
+  [englishGuide, "English", ["Twitch", "OBS Studio", "StreamElements", "text-to-speech", "background session", "Local diagnostics"]],
+]) {
+  for (const token of tokens) {
+    if (!guide.includes(token)) failures.push(`${language} guide lacks: ${token}`);
+  }
+}
+
+if (!css.includes("@media (max-width: 660px)")) failures.push("Website lacks a mobile breakpoint");
+if (!css.includes("prefers-reduced-motion")) failures.push("Website lacks reduced-motion handling");
+
+if (failures.length) {
+  console.error(failures.map((failure) => `- ${failure}`).join("\n"));
+  process.exit(1);
+}
+
+console.log("IRL Dolphin website validation passed.");
