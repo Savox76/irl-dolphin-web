@@ -1,0 +1,126 @@
+# Privacy and data inventory / Datenschutz und Dateninventar
+
+Document version 1.0 — 2026-09-03
+
+Scope: IRL Dolphin private Android alpha `v0.1.0-alpha.3` plus current
+unreleased changes.
+
+This is the complete technical inventory for the features currently present in
+IRL Dolphin. It is not yet the final public-store privacy policy: controller
+identity, public contact, legal bases, regional rights text and store-specific
+disclosures must be supplied and reviewed before public beta.
+
+## English
+
+### Current product boundary
+
+IRL Dolphin has no enabled analytics, advertising, crash upload, cloud sync,
+device identifier or IRL Dolphin-operated backend. Provider connections are
+started by the user. OBS is restricted to the private local network. The local
+diagnostic buffer has no export or upload path.
+
+### Data inventory
+
+| Data | Purpose | Location and retention | Recipient | User control |
+|---|---|---|---|---|
+| Language and appearance | Restore explicit UI choices | Protected app storage until changed, app data is cleared or the app is removed | None | Change in Settings; clear app data or uninstall |
+| TTS enablement, username choice and provider filters | Restore explicit speech consent | Protected app storage; queued/current speech is never stored | None for the preference | Change in Settings |
+| OAuth access/refresh tokens and one pending authorization session per provider | Authorize and restore a provider account; complete one bounded callback | Android encrypted storage or iOS Keychain until revoke, disconnect, expiry cleanup or app removal | Selected provider when authenticating or calling its API | Disconnect/revoke the provider; clear app data or uninstall |
+| Twitch activation code and countdown | Complete Device Code authorization | Volatile memory for the active attempt only | Twitch | Cancel or let the code expire |
+| OBS host, port and password | Reconnect to a user-selected OBS computer | Protected app storage; restored disconnected | Only the selected OBS instance on the private LAN | Forget OBS; clear app data or uninstall |
+| OBS favorite and hidden-scene choices | Build local quick controls | Protected app storage, scoped to the saved OBS profile | None | Change favorites/visibility or forget OBS |
+| StreamElements token type, token, optional room and topics | Open the selected Astro live subscriptions | Protected app storage only after confirmed subscriptions; restored disconnected | StreamElements Astro | Disconnect or Forget StreamElements |
+| Twitch/YouTube/Kick live chat, badges, emotes, reply and moderation context | Display the bounded unified live chat, send selected actions and feed opt-in TTS | Bounded volatile memory; removed by process termination | Provider only for explicit send/moderation actions | Disconnect; stop TTS; terminate the app process |
+| StreamElements activity/tip content, display name, message, amount, currency and duplicate ID | Display a bounded newest-first live activity feed | Bounded volatile memory; cleared on disconnect or process termination | None after receipt | Disconnect StreamElements or terminate the app process |
+| Current TTS text and queue | Speak only new live messages | Bounded volatile memory; never restored or transferred | Android/iOS speech service selected in device settings; processing may follow that service's own policy | Disable TTS, stop/clear speech, change device speech service |
+| Fixed diagnostic code, category, severity, UTC time and approved numeric/boolean fields | Local troubleshooting without raw provider data | Maximum 200 events in volatile memory; process termination clears it | None | Settings → Local diagnostics → Clear |
+| Live connection state, retry counters, deduplication IDs, OBS health/performance snapshots and background-session activation | Operate resilient live sessions | Volatile memory only | Selected provider/OBS only as required for the live connection | Disconnect/stop; process termination clears it |
+| Portable settings document | User-directed transfer of language, appearance and TTS choices | Generated on demand; IRL Dolphin does not upload it | Only the destination chosen by the user outside the app | Close without copying; delete external copies |
+
+### Network destinations
+
+- Twitch: documented HTTPS API, EventSub WebSocket and approved artwork CDN.
+- StreamElements: fixed documented Astro secure WebSocket endpoint.
+- OBS: the user-selected private-LAN WebSocket endpoint; public Internet
+  addresses are rejected.
+- YouTube: production connection remains disabled until owner-controlled Google
+  OAuth registration and the official live transport are activated.
+- Kick: production connection remains disabled until a registered app and
+  signature-verifying HTTPS/WSS relay exist.
+- Device TTS: the speech service selected by Android or iOS. IRL Dolphin does
+  not operate that service and does not add an upload path.
+
+### Deliberately absent
+
+No alpha feature sends data to analytics, advertising, crash-reporting or cloud-
+sync services. No chat history, donation history, diagnostic history, TTS
+backlog or foreground-session restart marker is persisted. Portable settings
+exclude accounts, tokens, passwords, connection profiles, scene preferences,
+diagnostics, messages and donation data.
+
+### Before public beta
+
+The public privacy policy still requires the controller's legal identity and
+contact, applicable legal bases and user-rights wording, processor/provider
+links, store data-safety/privacy labels, support/deletion contact and a final
+review against the shipping build. No checklist should claim that legal work is
+complete before those facts exist.
+
+## Deutsch
+
+### Aktuelle Produktgrenze
+
+IRL Dolphin nutzt derzeit keine Analyse, Werbung, Absturzübertragung,
+Cloud-Synchronisierung, Gerätekennung und kein von IRL Dolphin betriebenes
+Backend. Anbieter-Verbindungen startet der Nutzer. OBS ist auf das private
+lokale Netzwerk begrenzt. Die lokale Diagnose besitzt weder Export- noch
+Uploadweg.
+
+### Dateninventar
+
+| Daten | Zweck | Speicherort und Dauer | Empfänger | Kontrolle |
+|---|---|---|---|---|
+| Sprache und Darstellung | Ausdrückliche UI-Auswahl wiederherstellen | Geschützter App-Speicher bis zur Änderung, zum Löschen der App-Daten oder zur Deinstallation | Niemand | In Einstellungen ändern; App-Daten löschen oder deinstallieren |
+| TTS-Aktivierung, Nutzername und Anbieterfilter | Ausdrückliche Sprach-Auswahl wiederherstellen | Geschützter App-Speicher; laufende und wartende Sprachausgabe wird nie gespeichert | Niemand für die Einstellung | In Einstellungen ändern |
+| OAuth-Zugriffs-/Erneuerungstokens und je Anbieter eine wartende Autorisierung | Anbieterkonto autorisieren/wiederherstellen und einen begrenzten Callback abschließen | Android-verschlüsselter Speicher oder iOS-Schlüsselbund bis Widerruf, Trennung, Ablaufbereinigung oder Deinstallation | Gewählter Anbieter bei Anmeldung/API-Aufruf | Anbieter trennen/widerrufen; App-Daten löschen oder deinstallieren |
+| Twitch-Aktivierungscode und Countdown | Device-Code-Anmeldung abschließen | Nur im flüchtigen Speicher des laufenden Versuchs | Twitch | Abbrechen oder ablaufen lassen |
+| OBS-Rechner, Port und Passwort | Gewählten OBS-Rechner erneut verbinden | Geschützter App-Speicher; wird getrennt wiederhergestellt | Nur die gewählte OBS-Instanz im privaten LAN | OBS vergessen; App-Daten löschen oder deinstallieren |
+| OBS-Favoriten und ausgeblendete Szenen | Lokale Schnellbedienung aufbauen | Geschützter App-Speicher, dem gespeicherten OBS-Profil zugeordnet | Niemand | Favoriten/Sichtbarkeit ändern oder OBS vergessen |
+| StreamElements-Token-Typ, Token, optionaler Raum und Themen | Gewählte Astro-Live-Abonnements öffnen | Geschützter App-Speicher erst nach bestätigten Abonnements; wird getrennt wiederhergestellt | StreamElements Astro | Trennen oder StreamElements vergessen |
+| Twitch-/YouTube-/Kick-Live-Chat, Badges, Emotes, Antworten und Moderationskontext | Begrenzten Live-Chat anzeigen, gewählte Aktionen senden und Opt-in-TTS versorgen | Begrenzter flüchtiger Speicher; endet mit dem App-Prozess | Anbieter nur bei ausdrücklichem Versand/Moderation | Trennen; TTS beenden; App-Prozess beenden |
+| StreamElements-Aktivität/Spende, Anzeigename, Nachricht, Betrag, Währung und Duplikat-ID | Begrenzten Live-Feed nach Aktualität anzeigen | Begrenzter flüchtiger Speicher; beim Trennen oder Prozessende gelöscht | Nach Empfang niemand | StreamElements trennen oder App-Prozess beenden |
+| Aktueller TTS-Text und Warteschlange | Nur neue Live-Nachrichten sprechen | Begrenzter flüchtiger Speicher; nie wiederhergestellt oder übertragen | In Android/iOS gewählter Sprachdienst; dessen eigene Regeln können gelten | TTS ausschalten, Sprache stoppen/leeren oder Gerätedienst ändern |
+| Fester Diagnosecode, Kategorie, Schweregrad, UTC-Zeit und freigegebene Zahlen-/Wahrheitswerte | Lokale Fehlersuche ohne rohe Anbieterdaten | Maximal 200 Ereignisse im flüchtigen Speicher; Prozessende löscht sie | Niemand | Einstellungen → Lokale Diagnose → Leeren |
+| Live-Verbindungszustand, Wiederholungszähler, Duplikat-IDs, OBS-Status-/Leistungswerte und Aktivierung der Hintergrundsitzung | Robuste Live-Sitzungen betreiben | Nur flüchtiger Speicher | Gewählter Anbieter/OBS nur soweit für die Verbindung nötig | Trennen/beenden; Prozessende löscht die Daten |
+| Übertragbares Einstellungsdokument | Vom Nutzer gestartete Übertragung von Sprache, Darstellung und TTS-Auswahl | Wird auf Anforderung erzeugt; IRL Dolphin lädt es nicht hoch | Nur das vom Nutzer außerhalb der App gewählte Ziel | Ohne Kopieren schließen; externe Kopien löschen |
+
+### Netzwerkziele
+
+- Twitch: dokumentierte HTTPS-API, EventSub-WebSocket und freigegebenes
+  Artwork-CDN.
+- StreamElements: fester dokumentierter, sicherer Astro-WebSocket.
+- OBS: der gewählte private LAN-WebSocket; öffentliche Internetadressen werden
+  abgelehnt.
+- YouTube: Produktionsverbindung bleibt aus, bis eigentümergeführte
+  Google-OAuth-Registrierung und offizieller Live-Transport aktiviert sind.
+- Kick: Produktionsverbindung bleibt aus, bis registrierte App und
+  signaturprüfendes HTTPS/WSS-Relay existieren.
+- Geräte-TTS: der in Android oder iOS gewählte Sprachdienst. IRL Dolphin
+  betreibt ihn nicht und fügt keinen Uploadweg hinzu.
+
+### Bewusst nicht vorhanden
+
+Keine Alpha-Funktion sendet Daten an Analyse-, Werbe-, Absturzbericht- oder
+Cloud-Sync-Dienste. Chat-/Spenden-/Diagnosehistorie, TTS-Warteschlange und
+Neustartmarker der Hintergrundsitzung werden nicht gespeichert. Übertragbare
+Einstellungen schließen Konten, Tokens, Passwörter, Verbindungsprofile,
+Szenenpräferenzen, Diagnosen, Nachrichten und Spendendaten aus.
+
+### Vor der öffentlichen Beta
+
+Für die öffentliche Datenschutzerklärung fehlen noch die rechtliche Identität
+und Kontaktmöglichkeit des Verantwortlichen, Rechtsgrundlagen und Betroffenen-
+rechte, Links zu Auftragsverarbeitern/Anbietern, Store-Datenschutzangaben,
+Support-/Löschkontakt und die abschließende Prüfung gegen den auszuliefernden
+Build. Vor diesen Fakten darf kein Häkchen die juristische Arbeit als
+abgeschlossen darstellen.
