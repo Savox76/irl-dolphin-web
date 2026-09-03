@@ -1,6 +1,6 @@
 # IRL Dolphin Nutzerhandbuch (Deutsch)
 
-Version 1.0 — passend zu `v0.1.0-alpha.3`
+Version 1.1 — passend zu `v0.1.0-alpha.3` und dem geplanten Produktausbau
 
 Stand: 3. September 2026
 
@@ -257,7 +257,34 @@ weil ein Client-Secret niemals in Android/iOS eingebettet werden darf.
 Beide Anbieter bleiben bis dahin sichtbar eingeschränkt oder Demo. Twitch, OBS
 und StreamElements funktionieren unabhängig davon weiter.
 
-## 13. Schnelle Fehlerprüfung
+## 13. Geplanter Kamera-, Host- und Mehrgerätebetrieb
+
+Dieser Abschnitt beschreibt das verbindliche Zielbild, **nicht** eine Funktion
+des aktuellen Alpha-Builds. In `v0.1.0-alpha.3` kann IRL Dolphin noch keine
+Kamera aufnehmen und keinen Medienstream per RTMP/RTMPS, SRT, SRTLA oder RIST
+senden. Trage deshalb aktuell keine Stream-Keys für diese Aufgabe in der App ein.
+
+Die geplante Live-Oberfläche bleibt Chat-first: Chat, TTS, Alerts, Geräte- und
+Verbindungszustände bleiben sichtbar. Ein Kontrollbild oder die vollständige
+eigene Vorschau wird nur bei Bedarf geöffnet; die Übertragung hängt nicht von
+der geöffneten Vorschau ab.
+
+| Betriebsart | Geplante Verwendung |
+|---|---|
+| **Solo** | Ein Telefon nimmt Bild/Ton auf, überträgt und zeigt Chat sowie Streamzustand. |
+| **Zentrale** | Ein Dolphin-Gerät steuert mehrere verbundene Kameras und erzeugt einen Programmstream. |
+| **Verteilt** | Mehrere Kamera-/Encoder-Geräte senden direkt zu OBS oder einem IRL-Host; Dolphin koordiniert sie. |
+
+Die Implementierung beginnt mit Kamera/Mikrofon eines Telefons sowie RTMPS und
+SRT. USB/UVC-, IP- und herstellerspezifische Kameras sowie RTMP, SRTLA und RIST
+folgen einzeln nach echten Kompatibilitäts- und Belastungstests. Nicht jedes
+Gerät oder jeder IRL-Host unterstützt automatisch jedes Protokoll.
+
+Ein Medienziel ist keine OBS-Fernsteuerung: Auch später bleibt OBS WebSocket auf
+Port `4455` im privaten LAN. Nur der ausdrücklich konfigurierte Medienpfad darf
+zu einem externen IRL-Host führen.
+
+## 14. Schnelle Fehlerprüfung
 
 | Problem | Prüfung |
 |---|---|

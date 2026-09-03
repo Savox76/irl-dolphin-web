@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <meta name="theme-color" content="#0a0c0d" />
-    <meta name="description" content="IRL Dolphin ist die unabhängige mobile Schaltzentrale für IRL-Streams: Chat, OBS, StreamElements, TTS und sichere Diagnose auf Android und iOS." />
+    <meta name="description" content="IRL Dolphin wird zur mobilen Produktions-, Übertragungs- und Interaktionszentrale für IRL-Streams – von einer Kamera bis zum verteilten Mehrgeräte-Setup." />
     <title>IRL Dolphin — Control your stream on the go</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="app.js" defer></script>
@@ -17,7 +17,7 @@
       <div class="shell header-inner">
         <a class="brand" href="#top" aria-label="IRL Dolphin Startseite"><span class="brand-symbol" aria-hidden="true">D</span><span class="brand-name">IRL DOLPHIN</span></a>
         <nav class="desktop-nav" aria-label="Hauptnavigation" data-i18n-aria="mainNav">
-          <a href="#features" data-i18n="navFeatures">Funktionen</a><a href="#setup" data-i18n="navSetup">Anleitung</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a><a href="#privacy" data-i18n="navPrivacy">Datenschutz</a>
+          <a href="#vision" data-i18n="navVision">Zielbild</a><a href="#features" data-i18n="navFeatures">Funktionen</a><a href="#setup" data-i18n="navSetup">Anleitung</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a><a href="#privacy" data-i18n="navPrivacy">Datenschutz</a>
         </nav>
         <div class="header-actions">
           <div class="language-switch" role="group" aria-label="Sprache" data-i18n-aria="languageLabel"><button type="button" data-language="de" aria-pressed="true">DE</button><button type="button" data-language="en" aria-pressed="false">EN</button></div>
@@ -31,8 +31,8 @@
         <div class="shell hero-layout">
           <div class="hero-copy">
             <div class="release-line"><span class="live-dot" aria-hidden="true"></span><span>v0.1.0-alpha.3</span><span class="release-separator" aria-hidden="true"></span><span data-i18n="privateAlpha">Private Android-Alpha</span></div>
-            <h1 data-i18n-html="heroTitle">Dein IRL-Stream.<br /><span>Eine mobile Schaltzentrale.</span></h1>
-            <p class="hero-lead" data-i18n="heroLead">IRL Dolphin bündelt Live-Chat, OBS-Steuerung, StreamElements-Aktivitäten und Sprachausgabe in einer robusten, zweisprachigen App.</p>
+            <h1 data-i18n-html="heroTitle">Dein IRL-Stream.<br /><span>Eine Zentrale für jedes Setup.</span></h1>
+            <p class="hero-lead" data-i18n="heroLead">IRL Dolphin wächst zur mobilen Produktions-, Übertragungs- und Interaktionszentrale: Kameras und Geräte steuern, lokal oder zu einem IRL-Host senden und dabei den Chat im Mittelpunkt behalten.</p>
             <div class="hero-actions"><a class="button button-primary" href="#features" data-i18n="navFeatures">Funktionen</a><a class="button button-quiet" href="#setup"><span data-i18n="startSetup">Einrichtung starten</span><span aria-hidden="true">↗</span></a></div>
             <p class="availability-note" data-i18n="availability">Aktuell nur als debug-signierter Testbuild für autorisierte Tester. Noch keine öffentliche Beta oder Store-Version.</p>
           </div>
@@ -44,7 +44,7 @@
               <div class="stream-clock">02:47:19</div>
             </div>
             <div class="console-grid">
-              <div><span>OBS</span><strong>CONNECTED</strong></div><div><span>CHAT</span><strong>3 CHANNELS</strong></div><div><span>TTS</span><strong>ENABLED</strong></div>
+              <div><span>OBS</span><strong>CONNECTED</strong></div><div><span>CHAT</span><strong>UNIFIED</strong></div><div><span>TTS</span><strong>ENABLED</strong></div>
             </div>
             <div class="console-bottom"><span>STREAM HEALTH</span><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><strong>STABLE</strong></div>
           </div>
@@ -56,7 +56,8 @@
           <div class="status-heading"><span class="overline" data-i18n="projectStatus">Projektstatus</span><h2 id="status-title" data-i18n="alphaSnapshot">Alpha-Snapshot</h2></div>
           <div class="status-metric"><div class="metric-value">93<span>%</span></div><div class="metric-copy"><strong data-i18n="mvpFoundation">MVP / technische Grundlage</strong><progress value="93" max="100">93%</progress></div></div>
           <div class="status-metric"><div class="metric-value">37<span>%</span></div><div class="metric-copy"><strong data-i18n="legacyParity">IRL-Link-Funktionsparität</strong><progress class="progress-secondary" value="37" max="100">37%</progress></div></div>
-          <p class="status-explanation" data-i18n="metricExplanation">Grundlage misst Architektur und MVP-Bausteine. Funktionsparität misst ausschließlich tatsächlich nutzbare Funktionen des früheren Vorbilds.</p>
+          <div class="status-metric"><div class="metric-value">0<span>%</span></div><div class="metric-copy"><strong data-i18n="mediaProgress">Medienübertragung / Mehrgeräte</strong><progress class="progress-planned" value="0" max="100">0%</progress></div></div>
+          <p class="status-explanation" data-i18n="metricExplanation">93 % messen die bisherige Alpha-Grundlage. Der neue Medien- und Mehrgeräte-Kern ist verbindlich geplant, aber noch nicht implementiert und wird deshalb getrennt mit 0 % ausgewiesen.</p>
         </div>
       </section>
 
@@ -71,9 +72,37 @@
         </div>
       </section>
 
+      <section class="section vision-section" id="vision" aria-labelledby="vision-title">
+        <div class="shell">
+          <div class="section-title-row vision-heading"><span class="section-number">02</span><div class="section-intro"><span class="overline" data-i18n="visionKicker">Produktvision · geplant</span><h2 id="vision-title" data-i18n="visionTitle">Eine App vom Kamerasignal bis zum Chat</h2><p data-i18n="visionLead">Die aktuelle Alpha legt die sichere Steuerungs- und Interaktionsbasis. Darauf entsteht eine erweiterbare Medienplattform für einzelne oder mehrere Geräte – ohne den Streamer auf mehrere Apps zu verteilen.</p></div></div>
+          <div class="vision-layout">
+            <figure class="vision-media">
+              <img src="assets/irl-dolphin-field-vision.webp" width="1400" height="788" loading="lazy" alt="" />
+              <figcaption><span data-i18n="visionCaptionLabel">Zielbild</span><strong data-i18n="visionCaption">Chat-first im Live-Betrieb. Die eigene Vorschau bleibt optional.</strong></figcaption>
+            </figure>
+            <div class="vision-modes">
+              <article><span>01</span><h3 data-i18n="visionSoloTitle">Solo</h3><p data-i18n="visionSoloText">Ein Smartphone nimmt auf, überträgt und zeigt Chat sowie Streamzustand in einer Oberfläche.</p></article>
+              <article><span>02</span><h3 data-i18n="visionHubTitle">Zentrale</h3><p data-i18n="visionHubText">Ein Dolphin-Gerät steuert mehrere verbundene Kameras und erzeugt einen gemeinsamen Programmstream.</p></article>
+              <article><span>03</span><h3 data-i18n="visionDistributedTitle">Verteilt</h3><p data-i18n="visionDistributedText">Mehrere Telefone, Kameras oder Encoder senden parallel zum OBS- oder IRL-Host; Dolphin koordiniert sie.</p></article>
+              <div class="chat-first-note"><span class="live-dot" aria-hidden="true"></span><div><strong data-i18n="visionChatTitle">Live-Ansicht: Interaktion zuerst</strong><p data-i18n="visionChatText">Chat, TTS, Alerts, Geräte- und Verbindungswerte bleiben sichtbar. Ein Kontrollbild oder die Live-Vorschau wird nur bei Bedarf geöffnet.</p></div></div>
+            </div>
+          </div>
+          <div class="route-board" aria-label="Geplanter Übertragungsweg" data-i18n-aria="routeBoardLabel">
+            <div class="route-node"><span data-i18n="routeSourcesLabel">Quellen</span><strong data-i18n="routeSources">Telefon · USB · IP · Encoder</strong></div>
+            <i aria-hidden="true"></i>
+            <div class="route-node route-core"><span data-i18n="routeCoreLabel">Produktion</span><strong>IRL Dolphin</strong></div>
+            <i aria-hidden="true"></i>
+            <div class="route-node"><span data-i18n="routeTargetLabel">Ziel</span><strong data-i18n="routeTarget">Lokales OBS · IRL-Host</strong></div>
+            <i aria-hidden="true"></i>
+            <div class="route-node"><span data-i18n="routeOutputLabel">Ausgabe</span><strong data-i18n="routeOutput">Streamingdienste</strong></div>
+          </div>
+          <div class="protocol-line"><span data-i18n="protocolLineLabel">Geplante Transporte</span><strong>RTMP / RTMPS</strong><strong>SRT</strong><strong>SRTLA</strong><strong>RIST</strong></div>
+        </div>
+      </section>
+
       <section class="section" id="features" aria-labelledby="features-title">
         <div class="shell">
-          <div class="section-title-row feature-heading"><span class="section-number">02</span><div class="section-intro"><span class="overline" data-i18n="featureKicker">Funktionsübersicht</span><h2 id="features-title" data-i18n="featuresTitle">Was die Alpha bereits kann</h2><p data-i18n="featuresLead">Jeder Baustein ist ehrlich nach seinem aktuellen Reifegrad gekennzeichnet.</p></div>
+          <div class="section-title-row feature-heading"><span class="section-number">03</span><div class="section-intro"><span class="overline" data-i18n="featureKicker">Funktionsübersicht</span><h2 id="features-title" data-i18n="featuresTitle">Heute nutzbar. Morgen geplant.</h2><p data-i18n="featuresLead">Aktuelle Alpha-Funktionen und die neue Medienplattform sind klar nach ihrem tatsächlichen Reifegrad getrennt.</p></div>
             <div class="filter-bar" role="group" aria-label="Funktionen filtern" data-i18n-aria="filterLabel"><button class="filter active" type="button" data-filter="all" aria-pressed="true" data-i18n="filterAll">Alle</button><button class="filter" type="button" data-filter="ready" aria-pressed="false" data-i18n="filterReady">Umgesetzt</button><button class="filter" type="button" data-filter="limited" aria-pressed="false" data-i18n="filterLimited">Eingeschränkt</button><button class="filter" type="button" data-filter="planned" aria-pressed="false" data-i18n="filterPlanned">Geplant</button></div>
           </div>
           <div class="feature-grid" id="feature-grid" aria-live="polite"></div>
@@ -82,14 +111,14 @@
 
       <section class="section setup-section" id="setup" aria-labelledby="setup-title">
         <div class="shell guide-layout">
-          <aside class="guide-aside"><span class="section-number">03</span><span class="overline" data-i18n="guideKicker">DEU / ENG Anleitung</span><h2 id="setup-title" data-i18n="setupTitle">Einrichten und sicher loslegen</h2><p data-i18n="setupLead">Öffne die Schritte in der Reihenfolge, die du tatsächlich brauchst. Nicht verfügbare Anbieter sind deutlich markiert.</p><div class="warning-card"><strong data-i18n="beforeInstallTitle">Vor der Installation</strong><p data-i18n="beforeInstallText">Die aktuelle APK ist debug-signiert und ausschließlich für interne Gerätetests gedacht. Installiere sie nur aus dem zugehörigen privaten GitHub-Release.</p></div></aside>
+          <aside class="guide-aside"><span class="section-number">04</span><span class="overline" data-i18n="guideKicker">DEU / ENG Anleitung</span><h2 id="setup-title" data-i18n="setupTitle">Einrichten und sicher loslegen</h2><p data-i18n="setupLead">Öffne die Schritte in der Reihenfolge, die du tatsächlich brauchst. Nicht verfügbare Anbieter und Medienfunktionen sind deutlich markiert.</p><div class="warning-card"><strong data-i18n="beforeInstallTitle">Vor der Installation</strong><p data-i18n="beforeInstallText">Die aktuelle APK ist debug-signiert und ausschließlich für interne Gerätetests gedacht. Installiere sie nur aus dem zugehörigen privaten GitHub-Release.</p></div></aside>
           <div class="guide-list" id="guide-list"></div>
         </div>
       </section>
 
       <section class="section" id="roadmap" aria-labelledby="roadmap-title">
         <div class="shell">
-          <div class="section-title-row roadmap-intro"><span class="section-number">04</span><div class="section-intro"><span class="overline" data-i18n="roadmapKicker">Masterplan bis zur Vorversion</span><h2 id="roadmap-title" data-i18n="roadmapTitle">Von der privaten Alpha zur öffentlichen Version</h2><p data-i18n="roadmapLead">Versionen folgen nicht dem Kalender, sondern nachweisbaren Qualitäts-Gates. Ein Abschnitt gilt erst als fertig, wenn sein Abnahmekriterium erfüllt ist.</p></div></div>
+          <div class="section-title-row roadmap-intro"><span class="section-number">05</span><div class="section-intro"><span class="overline" data-i18n="roadmapKicker">Masterplan bis zur Vorversion</span><h2 id="roadmap-title" data-i18n="roadmapTitle">Von der Steuerungs-Alpha zur mobilen IRL-Plattform</h2><p data-i18n="roadmapLead">Der neue Medien- und Mehrgeräte-Kern wird vor der öffentlichen Version über eigene Qualitäts-Gates aufgebaut. Ein Abschnitt gilt erst als fertig, wenn sein Abnahmekriterium erfüllt ist.</p></div></div>
           <div class="roadmap" id="roadmap-list"></div>
           <div class="document-band"><div><span class="overline" data-i18n="roadmapSourceTitle">Verbindliche Detailplanung</span><p data-i18n="roadmapSourceText">Der vollständige zweisprachige Vorversions-Masterplan liegt zusätzlich im Repository und enthält Abnahmekriterien, Blocker und Dokumentationsaufgaben.</p></div><div class="doc-links"><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/PRE_RELEASE_MASTERPLAN.md"><span data-i18n="openMasterplan">Masterplan öffnen</span><span aria-hidden="true">↗</span></a><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/PRIVACY_AND_DATA_INVENTORY.md"><span data-i18n="openDataInventory">Dateninventar öffnen</span><span aria-hidden="true">↗</span></a><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/USER_GUIDE_DE.md">Anleitung DE <span aria-hidden="true">↗</span></a><a href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/USER_GUIDE_EN.md">Guide EN <span aria-hidden="true">↗</span></a></div></div>
         </div>
@@ -97,18 +126,18 @@
 
       <section class="section security-section" id="security" aria-labelledby="security-title">
         <div class="shell security-layout">
-          <div class="security-lead"><span class="section-number">05</span><span class="overline" data-i18n="securityKicker">Sicherheit & Datenschutz</span><h2 id="security-title" data-i18n="securityTitle">Für einen Stream gebaut – nicht für Datenhunger</h2><p data-i18n="securityLead">Konten und Verbindungen bleiben voneinander getrennt. Die lokale Diagnose speichert nur feste Fehlercodes im Arbeitsspeicher und lädt nichts hoch.</p></div>
-          <div class="security-list"><article><span>01</span><div><h3 data-i18n="obsSafetyTitle">OBS bleibt lokal</h3><p data-i18n="obsSafetyText">Port 4455 niemals im Router freigeben. IRL Dolphin akzeptiert nur private lokale Adressen und eine authentifizierte OBS-Verbindung.</p></div></article><article><span>02</span><div><h3 data-i18n="credentialsTitle">Geschützte Zugangsdaten</h3><p data-i18n="credentialsText">Tokens und Passwörter liegen im Android-Keystore bzw. iOS-Schlüsselbund und erscheinen nie in Diagnosen.</p></div></article><article><span>03</span><div><h3 data-i18n="diagnosticsTitle">Lokale Diagnose</h3><p data-i18n="diagnosticsText">Maximal 200 strukturierte Ereignisse im Arbeitsspeicher, keine Nachrichten, Namen, URLs oder Uploads.</p></div></article><article><span>04</span><div><h3 data-i18n="freeCoreTitle">Freier lokaler Kern</h3><p data-i18n="freeCoreText">Lokale OBS-Steuerung, Sicherheit, Updates und Anbieter-Anmeldung bleiben ohne Paywall.</p></div></article></div>
+          <div class="security-lead"><span class="section-number">06</span><span class="overline" data-i18n="securityKicker">Sicherheit & Datenschutz</span><h2 id="security-title" data-i18n="securityTitle">Für einen Stream gebaut – nicht für Datenhunger</h2><p data-i18n="securityLead">Konten, Gerätesteuerung und Medienwege bleiben voneinander getrennt. Die lokale Diagnose speichert nur feste Fehlercodes im Arbeitsspeicher und lädt nichts hoch.</p></div>
+          <div class="security-list"><article><span>01</span><div><h3 data-i18n="obsSafetyTitle">OBS-Steuerung bleibt geschützt</h3><p data-i18n="obsSafetyText">Port 4455 niemals im Router freigeben. Geplante Medienstreams zu einem bewusst konfigurierten OBS- oder IRL-Host bleiben technisch von der OBS-Fernsteuerung getrennt.</p></div></article><article><span>02</span><div><h3 data-i18n="credentialsTitle">Geschützte Zugangsdaten</h3><p data-i18n="credentialsText">Tokens und Passwörter liegen im Android-Keystore bzw. iOS-Schlüsselbund und erscheinen nie in Diagnosen.</p></div></article><article><span>03</span><div><h3 data-i18n="diagnosticsTitle">Lokale Diagnose</h3><p data-i18n="diagnosticsText">Maximal 200 strukturierte Ereignisse im Arbeitsspeicher, keine Nachrichten, Namen, URLs oder Uploads.</p></div></article><article><span>04</span><div><h3 data-i18n="freeCoreTitle">Freier lokaler Kern</h3><p data-i18n="freeCoreText">Lokale OBS-Steuerung, Sicherheit, Updates und Anbieter-Anmeldung bleiben ohne Paywall.</p></div></article></div>
         </div>
       </section>
 
       <section class="section privacy-section" id="privacy" aria-labelledby="privacy-title">
         <div class="shell">
-          <div class="section-title-row privacy-heading"><span class="section-number">06</span><div class="section-intro"><span class="overline" data-i18n="privacyKicker">Datenschutz & Daten</span><h2 id="privacy-title" data-i18n="privacyTitle">Klar getrennt: gespeichert, flüchtig, verbunden</h2><p data-i18n="privacyLead">Die technische Alpha-Übersicht zeigt nachvollziehbar, welche Daten auf dem Gerät geschützt bleiben, nur während der Laufzeit existieren oder an einen bewusst verbundenen Dienst gehen.</p></div></div>
+          <div class="section-title-row privacy-heading"><span class="section-number">07</span><div class="section-intro"><span class="overline" data-i18n="privacyKicker">Datenschutz & Daten</span><h2 id="privacy-title" data-i18n="privacyTitle">Klar getrennt: gespeichert, flüchtig, verbunden</h2><p data-i18n="privacyLead">Die technische Alpha-Übersicht zeigt nachvollziehbar, welche Daten auf dem Gerät geschützt bleiben, nur während der Laufzeit existieren oder an einen bewusst verbundenen Dienst gehen.</p></div></div>
           <div class="privacy-grid">
             <article><span>01</span><h3 data-i18n="privacyProtectedTitle">Geschützt gespeichert</h3><p data-i18n="privacyProtectedText">Sprache, Darstellung, TTS-Auswahl und ausdrücklich hinterlegte Verbindungsdaten nutzen geschützten Gerätespeicher.</p></article>
             <article><span>02</span><h3 data-i18n="privacyMemoryTitle">Nur im Arbeitsspeicher</h3><p data-i18n="privacyMemoryText">Chats, Spenden, TTS-Warteschlange, Diagnosen und Live-Zustände werden nicht als Historie gespeichert.</p></article>
-            <article><span>03</span><h3 data-i18n="privacyNetworkTitle">Begrenzte Netzwerkziele</h3><p data-i18n="privacyNetworkText">Twitch und StreamElements nutzen dokumentierte sichere Endpunkte; OBS bleibt ausschließlich im privaten LAN.</p></article>
+            <article><span>03</span><h3 data-i18n="privacyNetworkTitle">Begrenzte Netzwerkziele</h3><p data-i18n="privacyNetworkText">Heute nutzen Twitch und StreamElements dokumentierte sichere Endpunkte; spätere Medienziele werden ausschließlich bewusst als lokales OBS oder externer IRL-Host eingerichtet.</p></article>
             <article><span>04</span><h3 data-i18n="privacyAbsentTitle">Keine versteckte Sammlung</h3><p data-i18n="privacyAbsentText">Keine Analyse, Werbung, Absturzübertragung, Cloud-Synchronisierung, Gerätekennung oder eigener App-Backenddienst.</p></article>
           </div>
           <div class="privacy-band"><p data-i18n="privacyTechnicalNote">Das vollständige technische Inventar nennt Zweck, Speicherort, Dauer, Empfänger und Löschmöglichkeit. Die endgültige juristische Datenschutzerklärung folgt vor der öffentlichen Beta mit echten Verantwortlichen- und Kontaktangaben.</p><a class="button button-primary" href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/PRIVACY_AND_DATA_INVENTORY.md"><span data-i18n="openDataInventory">Dateninventar öffnen</span><span aria-hidden="true">↗</span></a></div>

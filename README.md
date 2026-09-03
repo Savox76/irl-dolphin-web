@@ -1,6 +1,10 @@
 # IRL Dolphin Website
 
-Public website and bilingual documentation for **IRL Dolphin**, an Android companion app for IRL livestreaming.
+Public website and bilingual documentation for **IRL Dolphin**, a planned mobile
+production, control, transmission and interaction platform for IRL livestreaming.
+The current private Android alpha provides the control and interaction
+foundation; camera transmission and multi-device operation are committed to the
+roadmap but not implemented yet.
 
 ## Live website
 

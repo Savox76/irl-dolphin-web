@@ -7,6 +7,7 @@ const requiredFiles = [
   "website/index.html",
   "website/styles.css",
   "website/app.js",
+  "website/assets/irl-dolphin-field-vision.webp",
   "docs/PRE_RELEASE_MASTERPLAN.md",
   "docs/PRIVACY_AND_DATA_INVENTORY.md",
   "docs/USER_GUIDE_DE.md",
@@ -41,6 +42,7 @@ const requiredHtmlPatterns = [
   [/<main id="main">/, "main landmark"],
   [/data-language="de"/, "German language control"],
   [/data-language="en"/, "English language control"],
+  [/id="vision"/, "product vision section"],
   [/id="features"/, "feature section"],
   [/id="setup"/, "setup section"],
   [/id="roadmap"/, "roadmap section"],
@@ -60,7 +62,7 @@ const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
 const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
 if (duplicateIds.length) failures.push(`Duplicate HTML ids: ${[...new Set(duplicateIds)].join(", ")}`);
 
-for (const asset of ["styles.css", "app.js"]) {
+for (const asset of ["styles.css", "app.js", "assets/irl-dolphin-field-vision.webp"]) {
   if (!html.includes(`\"${asset}\"`)) failures.push(`index.html does not reference ${asset}`);
   if (!existsSync(resolve(root, "website", asset))) failures.push(`Missing local asset: ${asset}`);
 }
@@ -78,6 +80,12 @@ for (const token of [
   "v0.1.0-alpha.3",
   "93%",
   "37%",
+  "0%",
+  "Media transmission / multi-device",
+  "Medienübertragung / Mehrgeräte",
+  "RTMP / RTMPS",
+  "SRTLA",
+  "RIST",
   "Port 4455",
   "Never forward port 4455",
   "YouTube",
@@ -89,7 +97,7 @@ for (const token of [
   if (!`${html}\n${script}`.includes(token)) failures.push(`Bilingual website lacks required content: ${token}`);
 }
 
-for (const token of ["## Deutsch", "## English", "Gate A", "Gate B", "Gate C", "Gate D", "Gate E"]) {
+for (const token of ["## Deutsch", "## English", "Gate A", "Gate B", "Gate C", "Gate D", "Gate E", "Gate F"]) {
   if (!masterplan.includes(token)) failures.push(`Pre-release master plan lacks: ${token}`);
 }
 
@@ -108,8 +116,8 @@ for (const token of [
 }
 
 for (const [guide, language, tokens] of [
-  [germanGuide, "German", ["Twitch", "OBS Studio", "StreamElements", "Chat-Sprachausgabe", "Hintergrundsitzung", "Lokale Diagnose", "Datenschutz & Daten"]],
-  [englishGuide, "English", ["Twitch", "OBS Studio", "StreamElements", "text-to-speech", "background session", "Local diagnostics", "Privacy and data"]],
+  [germanGuide, "German", ["Twitch", "OBS Studio", "StreamElements", "Chat-Sprachausgabe", "Hintergrundsitzung", "Lokale Diagnose", "Datenschutz & Daten", "Mehrgerätebetrieb", "SRTLA", "RIST"]],
+  [englishGuide, "English", ["Twitch", "OBS Studio", "StreamElements", "text-to-speech", "background session", "Local diagnostics", "Privacy and data", "multi-device operation", "SRTLA", "RIST"]],
 ]) {
   for (const token of tokens) {
     if (!guide.includes(token)) failures.push(`${language} guide lacks: ${token}`);
