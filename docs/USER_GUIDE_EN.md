@@ -1,6 +1,6 @@
 # IRL Dolphin user guide (English)
 
-Version 1.0 — for `v0.1.0-alpha.3`
+Version 1.1 — for `v0.1.0-alpha.3` and the planned product expansion
 
 Updated: September 3, 2026
 
@@ -242,7 +242,33 @@ client secret must never be embedded in Android or iOS.
 Until then both providers remain visibly limited or demo. Twitch, OBS and
 StreamElements continue independently.
 
-## 13. Quick troubleshooting
+## 13. Planned camera, host and multi-device operation
+
+This section describes the committed target experience, **not** a capability of
+the current alpha build. `v0.1.0-alpha.3` cannot capture a camera or transmit a
+media stream through RTMP/RTMPS, SRT, SRTLA or RIST yet. Do not enter stream keys
+for this purpose in the current app.
+
+The planned live surface remains chat-first: chat, TTS, alerts, device and
+connection health stay visible. A confidence frame or full self-preview opens
+only when needed; transmission does not depend on preview being open.
+
+| Operating mode | Planned use |
+|---|---|
+| **Solo** | One phone captures audio/video, transmits and shows chat plus stream health. |
+| **Hub** | One Dolphin device controls multiple attached cameras and produces a program stream. |
+| **Distributed** | Multiple camera/encoder devices transmit directly to OBS or an IRL host while Dolphin coordinates them. |
+
+Implementation starts with one phone camera/microphone plus RTMPS and SRT.
+USB/UVC, IP and vendor-specific cameras, along with RTMP, SRTLA and RIST, follow
+individually after real compatibility and endurance testing. Not every device or
+IRL host automatically supports every protocol.
+
+A media target is not OBS remote control: OBS WebSocket on port `4455` remains
+inside the private LAN. Only the explicitly configured media path may lead to
+an external IRL host.
+
+## 14. Quick troubleshooting
 
 | Problem | Check |
 |---|---|
