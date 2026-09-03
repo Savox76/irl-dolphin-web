@@ -20,7 +20,7 @@ geprüft wurde, unvollständige Anbieter sichtbar gekennzeichnet sind, alle
 Anleitungen in Deutsch und Englisch existieren und kein kritischer Fehler oder
 ungeklärter Store-Blocker offen ist.
 
-Die aktuellen `92%` messen MVP-/Technikgrundlagen. Die separat ausgewiesenen
+Die aktuellen `93%` messen MVP-/Technikgrundlagen. Die separat ausgewiesenen
 `37%` messen ausschließlich nutzbare Funktionsparität zum früheren
 Referenzprodukt. Implementierungsfortschritt allein ist kein Release-Gate.
 
@@ -99,7 +99,10 @@ möglich – einen Regressionstest.
   beworbenen Beta-Umfang herausnehmen
 - [ ] Offizielle YouTube-/Kick-Artworks erst nach stabiler Provider-Grundlage
 - [ ] Endgültiges Logo und minimale Android-/iOS-Versionen festlegen
-- [ ] Datenschutzinformation und vollständiges Dateninventar veröffentlichen
+- [x] Technische Datenschutzinformation und vollständiges Dateninventar für
+  den aktuellen Alpha-Stand veröffentlichen
+- [ ] Verantwortlichen-/Kontaktangaben, Rechtsgrundlagen, Betroffenenrechte und
+  Store-Angaben vor der öffentlichen Beta ergänzen
 - [ ] Vordergrundfunktionen auf repräsentativen iPhones testen
 - [ ] Supportweg, Sicherheitsmeldungen und Update-Ablauf dokumentieren
 - [ ] Kostenobergrenze für Kick-/Bridge-Infrastruktur festlegen
@@ -154,6 +157,7 @@ dauerhaft tragfähig.
 - [x] Konfigurationsanleitungen für alle aktuellen Alpha-Bausteine
 - [x] Sichtbare YouTube-/Kick-, iOS- und OBS-Sicherheitsgrenzen
 - [x] Vorversions-Masterplan und Nutzerhandbücher DE/EN
+- [x] Öffentliche technische Datenschutz-/Datenübersicht
 - [ ] Echte App-Screenshots nach Stabilisierung der Beta-Oberfläche
 - [ ] Geräte-/Kompatibilitätsmatrix nach physischen Tests
 - [ ] Release-Notes-Ansicht nur aus freigegebenen Releases
@@ -173,7 +177,7 @@ exist, every advertised capability has passed physical-device testing,
 incomplete providers are clearly labelled, all instructions exist in English
 and German, and no critical defect or unresolved store blocker remains.
 
-The current `92%` measures MVP/technical foundations. The separate `37%`
+The current `93%` measures MVP/technical foundations. The separate `37%`
 measures usable feature parity with the former reference product.
 Implementation progress alone is not a release gate.
 
@@ -247,7 +251,10 @@ issue, safe diagnostic code and, where possible, regression test.
   Kick from the advertised beta scope
 - [ ] Official YouTube/Kick artwork only after provider stability
 - [ ] Final logo and minimum Android/iOS versions
-- [ ] Privacy information and complete data inventory
+- [x] Publish technical privacy information and the complete current-alpha
+  data inventory
+- [ ] Add controller/contact, legal bases, data-subject rights and store
+  disclosures before public beta
 - [ ] Foreground testing on representative physical iPhones
 - [ ] Support, security-report and update flows
 - [ ] Operating-cost ceiling for Kick/Bridge infrastructure
@@ -301,6 +308,7 @@ are sustainable.
 - [x] Configuration guides for all current alpha capabilities
 - [x] Visible YouTube/Kick, iOS and OBS safety boundaries
 - [x] Pre-release master plan and EN/DE user guides
+- [x] Public technical privacy/data overview
 - [ ] Real screenshots after the beta UI stabilizes
 - [ ] Device/compatibility matrix after physical tests
 - [ ] Release-note view from approved releases only
