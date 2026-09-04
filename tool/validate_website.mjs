@@ -7,11 +7,17 @@ const requiredFiles = [
   "website/index.html",
   "website/styles.css",
   "website/app.js",
+  "website/verified-devices.json",
   "website/assets/irl-dolphin-field-vision.webp",
   "docs/PRE_RELEASE_MASTERPLAN.md",
   "docs/PRIVACY_AND_DATA_INVENTORY.md",
+  "docs/DEVICE_QUALIFICATION_PIPELINE.md",
   "docs/USER_GUIDE_DE.md",
   "docs/USER_GUIDE_EN.md",
+  "tool/device_report.mjs",
+  "tool/build_verified_devices.mjs",
+  "tool/test_device_reports.mjs",
+  ".github/workflows/device-reports.yml",
 ];
 
 const forbiddenPublicLinks = [
@@ -33,8 +39,16 @@ const script = readFileSync(resolve(root, "website/app.js"), "utf8");
 const css = readFileSync(resolve(root, "website/styles.css"), "utf8");
 const masterplan = readFileSync(resolve(root, "docs/PRE_RELEASE_MASTERPLAN.md"), "utf8");
 const privacyInventory = readFileSync(resolve(root, "docs/PRIVACY_AND_DATA_INVENTORY.md"), "utf8");
+const devicePipeline = readFileSync(
+  resolve(root, "docs/DEVICE_QUALIFICATION_PIPELINE.md"),
+  "utf8",
+);
 const germanGuide = readFileSync(resolve(root, "docs/USER_GUIDE_DE.md"), "utf8");
 const englishGuide = readFileSync(resolve(root, "docs/USER_GUIDE_EN.md"), "utf8");
+const deviceWorkflow = readFileSync(resolve(root, ".github/workflows/device-reports.yml"), "utf8");
+const verifiedDevices = JSON.parse(
+  readFileSync(resolve(root, "website/verified-devices.json"), "utf8"),
+);
 
 const requiredHtmlPatterns = [
   [/<html lang="de"/, "default document language"],
@@ -48,6 +62,7 @@ const requiredHtmlPatterns = [
   [/id="roadmap"/, "roadmap section"],
   [/id="security"/, "security section"],
   [/id="privacy"/, "privacy and data section"],
+  [/id="devices"/, "verified devices section"],
 ];
 
 for (const [pattern, name] of requiredHtmlPatterns) {
@@ -104,8 +119,55 @@ for (const token of [
   "StreamElements",
   "Android background session",
   "Open data inventory",
+  "Geprüfte Geräte",
+  "Verified devices",
 ]) {
   if (!`${html}\n${script}`.includes(token)) failures.push(`Bilingual website lacks required content: ${token}`);
+}
+
+for (const token of [
+  "## Deutsch",
+  "## English",
+  "device-report-valid",
+  "device-verified",
+  "media.hardwareH264",
+  "app.shell",
+  "never submits in the background",
+]) {
+  if (!devicePipeline.includes(token)) {
+    failures.push(`Device qualification pipeline lacks: ${token}`);
+  }
+}
+
+if (
+  verifiedDevices.schemaVersion !== 1 ||
+  !Array.isArray(verifiedDevices.devices)
+) {
+  failures.push("verified-devices.json has an invalid top-level schema");
+}
+
+for (const token of [
+  "issues: write",
+  "device-report-valid",
+  "device-report-invalid",
+  "awaiting-device-verification",
+  "device-verified",
+  'context.payload.action === "edited"',
+  "IRL_DOLPHIN_VERIFIED_REPORT_V1",
+]) {
+  if (!deviceWorkflow.includes(token)) {
+    failures.push(`Device-report workflow lacks required safeguard: ${token}`);
+  }
+}
+
+for (const token of [
+  "model.textContent = device.deviceModel",
+  "description.textContent = value",
+  "verified-devices.json",
+]) {
+  if (!script.includes(token)) {
+    failures.push(`Verified-device rendering lacks safe data handling: ${token}`);
+  }
 }
 
 for (const token of ["## Deutsch", "## English", "Gate A", "Gate B", "Gate C", "Gate D", "Gate E", "Gate F"]) {

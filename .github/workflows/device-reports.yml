@@ -1,0 +1,221 @@
+name: Device qualification intake
+
+on:
+  issues:
+    types: [opened, edited, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  issues: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "irl-dolphin-web-pages"
+  cancel-in-progress: false
+
+jobs:
+  process-and-publish:
+    if: >-
+      startsWith(github.event.issue.title, '[Device report]') ||
+      contains(github.event.issue.body, 'IRL_DOLPHIN_QUALIFICATION_REPORT_V1')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out trusted default branch
+        uses: actions/checkout@v7
+
+      - name: Validate report and synchronize review state
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { pathToFileURL } = require("node:url");
+            const moduleUrl = pathToFileURL(
+              `${process.env.GITHUB_WORKSPACE}/tool/device_report.mjs`,
+            ).href;
+            const {
+              parseDeviceReportIssue,
+              verificationMarkerFor,
+            } = await import(moduleUrl);
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const issue = context.payload.issue;
+            const result = parseDeviceReportIssue(issue.body ?? "");
+            const definitions = [
+              ["device-report", "1d76db", "Machine-readable IRL Dolphin device report"],
+              ["device-report-valid", "0e8a16", "Report passed automated schema validation"],
+              ["device-report-invalid", "d1242f", "Report failed automated schema validation"],
+              ["awaiting-device-verification", "bf8700", "Valid report awaiting maintainer review"],
+              ["device-verified", "8250df", "Report provenance and result reviewed by a maintainer"],
+            ];
+            for (const [name, color, description] of definitions) {
+              try {
+                await github.rest.issues.getLabel({ owner, repo, name });
+              } catch (error) {
+                if (error.status !== 404) throw error;
+                await github.rest.issues.createLabel({
+                  owner,
+                  repo,
+                  name,
+                  color,
+                  description,
+                });
+              }
+            }
+
+            const labels = new Set(
+              issue.labels.map((label) =>
+                typeof label === "string" ? label : label.name,
+              ),
+            );
+            labels.add("device-report");
+            labels.delete("device-report-valid");
+            labels.delete("device-report-invalid");
+            labels.delete("awaiting-device-verification");
+            if (context.payload.action === "edited") {
+              labels.delete("device-verified");
+            }
+
+            if (result.ok) {
+              labels.add("device-report-valid");
+              if (labels.has("device-verified")) {
+                const verificationMarker = verificationMarkerFor(
+                  result.reportSha256,
+                );
+                const comments = await github.paginate(
+                  github.rest.issues.listComments,
+                  { owner, repo, issue_number, per_page: 100 },
+                );
+                const previous = comments.find(
+                  (comment) =>
+                    comment.user?.login === "github-actions[bot]" &&
+                    comment.body?.includes(
+                      "<!-- IRL_DOLPHIN_VERIFIED_REPORT_V1",
+                    ),
+                );
+                const verificationBody = [
+                  verificationMarker,
+                  "",
+                  "✅ **Maintainer verification recorded.**",
+                  "",
+                  "The approval is bound to this exact report checksum. Editing the report removes publication until it is reviewed again.",
+                ].join("\n");
+                if (previous) {
+                  await github.rest.issues.updateComment({
+                    owner,
+                    repo,
+                    comment_id: previous.id,
+                    body: verificationBody,
+                  });
+                } else {
+                  await github.rest.issues.createComment({
+                    owner,
+                    repo,
+                    issue_number,
+                    body: verificationBody,
+                  });
+                }
+              } else {
+                labels.add("awaiting-device-verification");
+              }
+            } else {
+              labels.add("device-report-invalid");
+              labels.delete("device-verified");
+            }
+
+            await github.rest.issues.setLabels({
+              owner,
+              repo,
+              issue_number,
+              labels: [...labels],
+            });
+
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              { owner, repo, issue_number, per_page: 100 },
+            );
+            const validationMarker =
+              "<!-- IRL_DOLPHIN_DEVICE_REPORT_VALIDATION -->";
+            const safeText = (value) =>
+              String(value ?? "not available")
+                .replace(/[^\p{L}\p{N} ._()/+-]/gu, "?")
+                .slice(0, 128);
+            const profile = result.summary?.highestProfile;
+            const previousValidation = comments.find(
+              (comment) =>
+                comment.user?.login === "github-actions[bot]" &&
+                comment.body?.includes(validationMarker),
+            );
+            const validationBody = result.ok
+              ? [
+                  validationMarker,
+                  "",
+                  "✅ **Automatische Formatprüfung / Automated schema check: valid**",
+                  "",
+                  `- Report SHA-256: \`${result.reportSha256}\``,
+                  `- Device: ${safeText(result.summary.deviceModel)}`,
+                  `- OS / app: ${safeText(result.summary.osVersion)} / ${safeText(result.summary.appVersion)}`,
+                  `- Test runs: ${result.summary.runCount}`,
+                  `- Completed / stopped / failed: ${result.summary.completedRunCount} / ${result.summary.stoppedRunCount} / ${result.summary.failedRunCount}`,
+                  profile
+                    ? `- Highest completed local run: ${profile.width}×${profile.height} · ${profile.framesPerSecond} FPS · ${profile.requestedBitrateKbps} Kbit/s requested · ${profile.effectiveFramesPerSecond} FPS / ${profile.effectiveBitrateKbps} Kbit/s measured`
+                    : "- Highest completed local run: not available",
+                  `- Build: \`${result.summary.build.commit}\` / quality run \`${result.summary.build.qualityRun}\``,
+                  "",
+                  "This confirms schema, bounds, checksum and data minimization only. It is not device verification. A maintainer must review the private build provenance and measurements before applying `device-verified`.",
+                ].join("\n")
+              : [
+                  validationMarker,
+                  "",
+                  "❌ **Automatische Formatprüfung / Automated schema check: invalid**",
+                  "",
+                  ...result.errors.slice(0, 8).map((error) => `- ${error}`),
+                  "",
+                  "No data from this issue can enter the verified-device list.",
+                ].join("\n");
+            if (previousValidation) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: previousValidation.id,
+                body: validationBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body: validationBody,
+              });
+            }
+
+      - name: Test device-report parser
+        run: node tool/test_device_reports.mjs
+
+      - name: Build verified-device data
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tool/build_verified_devices.mjs
+
+      - name: Validate public website
+        run: |
+          node tool/validate_website.mjs
+          node --check website/app.js
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: website
+
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4

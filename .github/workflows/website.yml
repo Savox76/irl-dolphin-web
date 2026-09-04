@@ -9,8 +9,14 @@ on:
       - "docs/USER_GUIDE_DE.md"
       - "docs/USER_GUIDE_EN.md"
       - "docs/PRIVACY_AND_DATA_INVENTORY.md"
+      - "docs/DEVICE_QUALIFICATION_PIPELINE.md"
       - "tool/validate_website.mjs"
+      - "tool/device_report.mjs"
+      - "tool/build_verified_devices.mjs"
+      - "tool/test_device_reports.mjs"
       - ".github/workflows/website.yml"
+      - ".github/workflows/device-reports.yml"
+      - ".github/ISSUE_TEMPLATE/device-report.md"
   pull_request:
     paths:
       - "website/**"
@@ -18,12 +24,19 @@ on:
       - "docs/USER_GUIDE_DE.md"
       - "docs/USER_GUIDE_EN.md"
       - "docs/PRIVACY_AND_DATA_INVENTORY.md"
+      - "docs/DEVICE_QUALIFICATION_PIPELINE.md"
       - "tool/validate_website.mjs"
+      - "tool/device_report.mjs"
+      - "tool/build_verified_devices.mjs"
+      - "tool/test_device_reports.mjs"
       - ".github/workflows/website.yml"
+      - ".github/workflows/device-reports.yml"
+      - ".github/ISSUE_TEMPLATE/device-report.md"
   workflow_dispatch:
 
 permissions:
   contents: read
+  issues: read
   pages: write
   id-token: write
 
@@ -45,6 +58,9 @@ jobs:
       - name: Parse website JavaScript
         run: node --check website/app.js
 
+      - name: Test device-report pipeline
+        run: node tool/test_device_reports.mjs
+
   deploy:
     if: github.event_name != 'pull_request'
     needs: validate
@@ -61,6 +77,11 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+
+      - name: Build verified-device data
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tool/build_verified_devices.mjs
 
       - name: Upload website
         uses: actions/upload-pages-artifact@v4
