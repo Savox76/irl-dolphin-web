@@ -8,6 +8,7 @@ on:
       - "docs/PRE_RELEASE_MASTERPLAN.md"
       - "docs/USER_GUIDE_DE.md"
       - "docs/USER_GUIDE_EN.md"
+      - "docs/PRIVACY_AND_DATA_INVENTORY.md"
       - "tool/validate_website.mjs"
       - ".github/workflows/website.yml"
   pull_request:
@@ -16,6 +17,7 @@ on:
       - "docs/PRE_RELEASE_MASTERPLAN.md"
       - "docs/USER_GUIDE_DE.md"
       - "docs/USER_GUIDE_EN.md"
+      - "docs/PRIVACY_AND_DATA_INVENTORY.md"
       - "tool/validate_website.mjs"
       - ".github/workflows/website.yml"
   workflow_dispatch:
