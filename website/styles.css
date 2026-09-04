@@ -378,6 +378,33 @@ progress { width: 100%; height: 2px; border: 0; background: var(--line); accent-
 .privacy-band p { max-width: 48rem; margin: 0; color: var(--muted); }
 .privacy-band .button { flex: 0 0 auto; }
 
+.devices-section { background: var(--surface); }
+.devices-heading { max-width: 72rem; }
+.devices-explainer { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 3rem; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.devices-explainer article { min-height: 12rem; padding: 1.7rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.devices-explainer article > span { display: block; margin-bottom: 2.6rem; color: var(--faint); font: 700 .67rem/1 ui-monospace, monospace; letter-spacing: .12em; }
+.devices-explainer strong { font-size: 1rem; }
+.devices-explainer p { margin: .65rem 0 0; color: var(--muted); font-size: .86rem; }
+.verified-device-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.device-list-state { grid-column: 1 / -1; margin: 0; padding: 3rem 2rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--muted); text-align: center; }
+.verified-device-card { display: grid; gap: 1.5rem; min-width: 0; padding: 2rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.verified-device-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.verified-device-header h3 { margin: 0; font-size: 1.3rem; }
+.verified-device-header p { margin: .4rem 0 0; color: var(--muted); font-size: .82rem; }
+.verified-badge { flex: 0 0 auto; padding: .45rem .65rem; border: 1px solid color-mix(in srgb, var(--success) 45%, var(--line)); color: var(--success); font: 750 .64rem/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+.verified-profile { display: grid; gap: .45rem; padding: 1.3rem; background: var(--bg-elevated); }
+.verified-profile > span { color: var(--faint); font: 700 .65rem/1.2 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+.verified-profile strong { font-size: 1.18rem; }
+.verified-profile p { margin: 0; color: var(--muted); font-size: .78rem; }
+.verified-device-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 0; }
+.verified-device-details div { min-width: 0; }
+.verified-device-details dt { color: var(--faint); font: 700 .62rem/1.2 ui-monospace, monospace; letter-spacing: .07em; text-transform: uppercase; }
+.verified-device-details dd { overflow-wrap: anywhere; margin: .3rem 0 0; font-size: .82rem; }
+.device-evidence-link { justify-self: start; border-bottom: 1px solid var(--text); font-size: .78rem; font-weight: 750; }
+.devices-band { display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: 2rem; padding: 2rem; background: var(--text); color: var(--bg); }
+.devices-band p { max-width: 50rem; margin: 0; color: color-mix(in srgb, var(--bg) 65%, transparent); }
+.devices-band .button { flex: 0 0 auto; border-color: color-mix(in srgb, var(--bg) 30%, transparent); color: var(--bg); }
+
 .final-section { border-bottom: 0; }.next-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(4rem, 10vw, 9rem); }.suggestion-list { margin: 0; padding: 0; border-top: 1px solid var(--line); list-style: none; counter-reset: ideas; }.suggestion-list li { counter-increment: ideas; padding: 1.5rem 0; border-bottom: 1px solid var(--line); }.suggestion-list li::before { display: inline-block; width: 3rem; color: var(--faint); font: 700 .66rem/1 ui-monospace, monospace; content: counter(ideas, decimal-leading-zero); }.suggestion-list div { display: inline-grid; width: calc(100% - 3.4rem); gap: .35rem; vertical-align: top; }.suggestion-list strong { font-size: .92rem; }.suggestion-list span { color: var(--faint); font-size: .8rem; }
 .faq-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(4rem, 10vw, 9rem); margin-top: 8rem; padding-top: 7rem; border-top: 1px solid var(--line); }.faq-list { border-top: 1px solid var(--line); }.faq-item { border-bottom: 1px solid var(--line); }.faq-item summary { min-height: 5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; list-style: none; cursor: pointer; }.faq-item summary::-webkit-details-marker { display: none; }.faq-item summary strong { font-size: .9rem; }.faq-content { padding: 0 3rem 1.8rem 0; color: var(--muted); font-size: .88rem; }.faq-content p { margin: 0; }
 
@@ -397,6 +424,8 @@ progress { width: 100%; height: 2px; border: 0; background: var(--line); accent-
   .feature-heading { grid-template-columns: 4rem 1fr; }.filter-bar { grid-column: 2; justify-content: flex-start; }
   .guide-layout,.security-layout,.next-layout,.faq-layout { grid-template-columns: 1fr; }.guide-aside { position: static; }.guide-aside .section-number,.security-lead .section-number { margin-bottom: 2rem; }
   .privacy-band { align-items: flex-start; flex-direction: column; }
+  .verified-device-list { grid-template-columns: 1fr; }
+  .devices-band { align-items: flex-start; flex-direction: column; }
 }
 
 @media (max-width: 660px) {
@@ -412,6 +441,7 @@ progress { width: 100%; height: 2px; border: 0; background: var(--line); accent-
   .feature-grid { grid-template-columns: 1fr; }.feature-card,.feature-card:nth-child(3n) { min-height: auto; padding: 1.6rem 0; border-right: 0; }.feature-card h3 { margin-top: 3rem; }
   .guide-layout,.security-layout,.next-layout,.faq-layout { gap: 3.5rem; }.guide-item summary { grid-template-columns: 2rem 1fr auto; }.guide-content { padding-left: 3.2rem; }
   .privacy-grid { grid-template-columns: 1fr; }.privacy-grid article { min-height: auto; padding: 1.6rem; }.privacy-grid h3 { margin-top: 2rem; }.privacy-band { padding: 1.5rem; }
+  .devices-explainer { grid-template-columns: 1fr; }.devices-explainer article { min-height: auto; padding: 1.6rem; }.devices-explainer article > span { margin-bottom: 1.7rem; }.verified-device-card { padding: 1.5rem; }.verified-device-details { grid-template-columns: 1fr; }.devices-band { padding: 1.5rem; }
   .roadmap-phase { grid-template-columns: 1fr; gap: 1rem; }.document-band { grid-template-columns: 1fr; gap: 2.5rem; padding: 1.5rem; }
   .faq-layout { margin-top: 5rem; padding-top: 5rem; }.footer-top { min-height: 11rem; align-items: flex-start; justify-content: center; flex-direction: column; }.footer-bottom { padding-block: 1.5rem; align-items: flex-start; flex-direction: column; }
 }

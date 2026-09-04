@@ -124,6 +124,14 @@ Abnahme: Der interne Testbuild wird ausschließlich aus einem vollständig grün
 - [ ] Bereits aktive Chats/TTS im Hintergrund ohne Wiederholung
 - [ ] Verhalten am Android-15+-Zeitlimit dokumentieren
 
+#### Qualifikations-Nachweise
+
+- [x] Versioniertes JSON mit eindeutigen Lauf- und Testfall-IDs
+- [x] Ausdrücklich bestätigte, vorausgefüllte öffentliche Issue-Übergabe ohne
+  App-Token oder eigenen Backenddienst
+- [x] Strikte Schema-/Prüfsummenprüfung und getrennte Maintainer-Freigabe
+- [ ] Ersten Bericht auf dem Huawei T15 Pro durchführen und freigeben
+
 Abnahme: Kein kritischer oder hoher Fehler bleibt offen. Jeder reproduzierbare
 Fehler besitzt ein Issue, einen sicheren Diagnosecode und – wenn technisch
 möglich – einen Regressionstest.
@@ -354,6 +362,14 @@ contains no secret values.
 - [ ] No automatic provider connection or restart after reboot
 - [ ] Already-active chat/TTS continues without replay
 - [ ] Document behavior at the Android 15+ time limit
+
+#### Qualification evidence
+
+- [x] Versioned JSON with deterministic run and test-case IDs
+- [x] Explicitly confirmed prefilled public issue hand-off without an app token
+  or custom backend
+- [x] Strict schema/checksum validation and separate maintainer approval
+- [ ] Run and approve the first report on the Huawei T15 Pro
 
 Acceptance: no critical or high defect remains. Every reproducible defect has an
 issue, safe diagnostic code and, where possible, regression test.

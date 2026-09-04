@@ -1,6 +1,6 @@
 # Privacy and data inventory / Datenschutz und Dateninventar
 
-Document version 1.0 — 2026-09-03
+Document version 1.2 — 2026-09-04
 
 Scope: IRL Dolphin private Android alpha `v0.1.0-alpha.3` plus current
 unreleased changes.
@@ -37,6 +37,7 @@ diagnostic buffer has no export or upload path.
 | Fixed diagnostic code, category, severity, UTC time and approved numeric/boolean fields | Local troubleshooting without raw provider data | Maximum 200 events in volatile memory; process termination clears it | None | Settings → Local diagnostics → Clear |
 | Live connection state, retry counters, deduplication IDs, OBS health/performance snapshots and background-session activation | Operate resilient live sessions | Volatile memory only | Selected provider/OBS only as required for the live connection | Disconnect/stop; process termination clears it |
 | Portable settings document | User-directed transfer of language, appearance and TTS choices | Generated on demand; IRL Dolphin does not upload it | Only the destination chosen by the user outside the app | Close without copying; delete external copies |
+| Explicit camera/encoder measurement frames and device qualification report: device model, OS/app version, hardware encoder, UTC test times, requested resolution/FPS/bitrate, measurements, fixed failure codes and build provenance | Measure the local camera-to-hardware-H.264 path and build a reviewed physical-device compatibility list | Frames go directly to the encoder and are discarded immediately. At most 24 runs remain in volatile memory until cleared or process termination. Only after a separate confirmation, the app opens a prefilled public GitHub issue; the issue then follows GitHub/repository retention | Nobody by default; after the user submits, the public `Savox76/irl-dolphin-web` issue repository and its readers | Stop or clear; inspect with **Copy report**; cancel before GitHub; do not submit; edit/delete the issue where permitted; revoke camera permission; delete external copies |
 
 ### Network destinations
 
@@ -50,11 +51,16 @@ diagnostic buffer has no export or upload path.
   signature-verifying HTTPS/WSS relay exist.
 - Device TTS: the speech service selected by Android or iOS. IRL Dolphin does
   not operate that service and does not add an upload path.
+- Device qualification: only after explicit confirmation, the system browser
+  opens a prefilled HTTPS issue at `github.com/Savox76/irl-dolphin-web`.
+  Nothing is submitted in the background; the tester performs GitHub's final
+  public submission.
 
 ### Deliberately absent
 
 No alpha feature sends data to analytics, advertising, crash-reporting or cloud-
-sync services. No chat history, donation history, diagnostic history, TTS
+sync services, and no qualification report is sent without an explicit public
+submission action. No chat history, donation history, diagnostic history, TTS
 backlog or foreground-session restart marker is persisted. Portable settings
 exclude accounts, tokens, passwords, connection profiles, scene preferences,
 diagnostics, messages and donation data.
@@ -95,6 +101,7 @@ Uploadweg.
 | Fester Diagnosecode, Kategorie, Schweregrad, UTC-Zeit und freigegebene Zahlen-/Wahrheitswerte | Lokale Fehlersuche ohne rohe Anbieterdaten | Maximal 200 Ereignisse im flüchtigen Speicher; Prozessende löscht sie | Niemand | Einstellungen → Lokale Diagnose → Leeren |
 | Live-Verbindungszustand, Wiederholungszähler, Duplikat-IDs, OBS-Status-/Leistungswerte und Aktivierung der Hintergrundsitzung | Robuste Live-Sitzungen betreiben | Nur flüchtiger Speicher | Gewählter Anbieter/OBS nur soweit für die Verbindung nötig | Trennen/beenden; Prozessende löscht die Daten |
 | Übertragbares Einstellungsdokument | Vom Nutzer gestartete Übertragung von Sprache, Darstellung und TTS-Auswahl | Wird auf Anforderung erzeugt; IRL Dolphin lädt es nicht hoch | Nur das vom Nutzer außerhalb der App gewählte Ziel | Ohne Kopieren schließen; externe Kopien löschen |
+| Bilder der ausdrücklich gestarteten Kamera-/Encoder-Messung und Gerätequalifikationsbericht: Gerätemodell, Betriebssystem-/App-Version, Hardware-Encoder, UTC-Testzeiten, angeforderte Auflösung/FPS/Bitrate, Messwerte, feste Fehlercodes und Build-Herkunft | Lokalen Kamera-zu-Hardware-H.264-Pfad messen und eine geprüfte physische Geräte-Kompatibilitätsliste aufbauen | Bilder gehen direkt zum Encoder und werden sofort verworfen. Höchstens 24 Läufe bleiben bis zum Leeren oder Prozessende im flüchtigen Speicher. Erst nach separater Bestätigung öffnet die App ein vorausgefülltes öffentliches GitHub-Issue; danach gilt die GitHub-/Repository-Aufbewahrung | Standardmäßig niemand; nach dem Absenden das öffentliche Issue-Repository `Savox76/irl-dolphin-web` und dessen Leser | Stoppen oder leeren; mit **Bericht kopieren** prüfen; vor GitHub abbrechen; nicht absenden; Issue soweit erlaubt bearbeiten/löschen; Kameraberechtigung entziehen; externe Kopien löschen |
 
 ### Netzwerkziele
 
@@ -109,11 +116,17 @@ Uploadweg.
   signaturprüfendes HTTPS/WSS-Relay existieren.
 - Geräte-TTS: der in Android oder iOS gewählte Sprachdienst. IRL Dolphin
   betreibt ihn nicht und fügt keinen Uploadweg hinzu.
+- Gerätequalifikation: Erst nach ausdrücklicher Bestätigung öffnet der
+  Systembrowser ein vorausgefülltes HTTPS-Issue unter
+  `github.com/Savox76/irl-dolphin-web`. Im Hintergrund wird nichts
+  eingereicht; der Tester führt den abschließenden öffentlichen GitHub-Schritt
+  selbst aus.
 
 ### Bewusst nicht vorhanden
 
 Keine Alpha-Funktion sendet Daten an Analyse-, Werbe-, Absturzbericht- oder
-Cloud-Sync-Dienste. Chat-/Spenden-/Diagnosehistorie, TTS-Warteschlange und
+Cloud-Sync-Dienste, und kein Qualifikationsbericht wird ohne ausdrückliche
+öffentliche Absendeaktion übertragen. Chat-/Spenden-/Diagnosehistorie, TTS-Warteschlange und
 Neustartmarker der Hintergrundsitzung werden nicht gespeichert. Übertragbare
 Einstellungen schließen Konten, Tokens, Passwörter, Verbindungsprofile,
 Szenenpräferenzen, Diagnosen, Nachrichten und Spendendaten aus.

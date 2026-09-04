@@ -230,7 +230,34 @@ and deletion control is in
 privacy policy follows only when real controller/contact, legal-basis, rights
 and store disclosures are available.
 
-## 12. YouTube and Kick
+## 12. Device qualification and public evidence
+
+Under **Settings → Camera and encoder measurement**, test the local
+camera-to-hardware-H.264 path. This test does not transmit a stream and does not
+check networking, OBS, an IRL host or a streaming service.
+
+1. Select a device-reported combination of **720p/1080p**, **30/60 FPS** and an
+   offered **bitrate**.
+2. Run the five-second test. Repeat relevant profiles and, when useful, the same
+   case for stability evidence; the report retains at most 24 runs in memory.
+3. Use **Copy report** to inspect the complete redacted JSON. Every measurement
+   has a stable test-case ID derived from resolution, FPS, bitrate and duration.
+4. Use **Submit public report** only when the fields listed in the dialog may be
+   public. The app opens a prefilled issue in the public website repository;
+   only your final GitHub submission transfers the report.
+5. Automated validation confirms only schema, bounds and checksum. A profile
+   becomes a **verified device** only after a maintainer separately reviews
+   build provenance and measurements.
+
+Local results remain until **Clear report** or app-process termination. A
+submitted issue remains public. Editing it revokes device approval until the
+new checksum is reviewed. Untested devices do not appear in the list and
+receive no implicit compatibility claim.
+
+The complete evidence lifecycle is documented in
+[DEVICE_QUALIFICATION_PIPELINE.md](DEVICE_QUALIFICATION_PIPELINE.md).
+
+## 13. YouTube and Kick
 
 YouTube already has isolated models and chat states, but still needs native
 Google OAuth activation and the official streaming transport.
@@ -242,12 +269,13 @@ client secret must never be embedded in Android or iOS.
 Until then both providers remain visibly limited or demo. Twitch, OBS and
 StreamElements continue independently.
 
-## 13. Planned camera, host and multi-device operation
+## 14. Planned camera, host and multi-device operation
 
 This section describes the committed target experience, **not** a capability of
-the current alpha build. `v0.1.0-alpha.3` cannot capture a camera or transmit a
-media stream through RTMP/RTMPS, SRT, SRTLA or RIST yet. Do not enter stream keys
-for this purpose in the current app.
+the current alpha build. The local qualification test handles camera frames
+only long enough to measure hardware encoding. `v0.1.0-alpha.3` cannot yet use
+a camera for preview, recording or transmission, or send a media stream through
+RTMP/RTMPS, SRT, SRTLA or RIST. Do not enter stream keys for this purpose.
 
 The planned live surface remains chat-first: chat, TTS, alerts, device and
 connection health stay visible. A confidence frame or full self-preview opens
@@ -268,7 +296,7 @@ A media target is not OBS remote control: OBS WebSocket on port `4455` remains
 inside the private LAN. Only the explicitly configured media path may lead to
 an external IRL host.
 
-## 14. Quick troubleshooting
+## 15. Quick troubleshooting
 
 | Problem | Check |
 |---|---|

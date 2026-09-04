@@ -245,7 +245,38 @@ und Löschmöglichkeit steht in
 öffentliche Datenschutzerklärung folgt erst mit echten Verantwortlichen-,
 Kontakt-, Rechtsgrundlagen- und Store-Angaben.
 
-## 12. YouTube und Kick
+## 12. Gerätequalifikation und öffentlicher Nachweis
+
+Unter **Einstellungen → Kamera- und Encoder-Messung** prüfst du den lokalen
+Kamera-zu-Hardware-H.264-Pfad. Dieser Test sendet noch keinen Stream und prüft
+weder Netzwerk noch OBS, IRL-Host oder Streamingdienst.
+
+1. Wähle eine vom Gerät gemeldete Kombination aus **720p/1080p**,
+   **30/60 FPS** und der angebotenen **Bitrate**.
+2. Starte den fünfsekündigen Test. Wiederhole relevante Profile und bei Bedarf
+   denselben Test zur Stabilitätsbeurteilung; der Bericht hält höchstens 24
+   Läufe im Arbeitsspeicher.
+3. Nutze **Bericht kopieren**, um das vollständige bereinigte JSON zu prüfen.
+   Jede Messung besitzt eine feste Testfall-ID aus Auflösung, FPS, Bitrate und
+   Dauer.
+4. Nutze **Öffentlich einreichen** nur, wenn die im Dialog genannten Felder
+   veröffentlicht werden dürfen. Die App öffnet ein vorausgefülltes Issue im
+   öffentlichen Webseiten-Repository; erst dein abschließendes Absenden auf
+   GitHub überträgt den Bericht.
+5. Die automatische Prüfung bestätigt nur Schema, Grenzen und Prüfsumme.
+   **Geprüftes Gerät** wird das Profil erst nach separater Kontrolle der
+   Build-Herkunft und Messwerte durch einen Maintainer.
+
+Nach dem Test bleiben die lokalen Ergebnisse bis **Bericht leeren** oder bis zum
+Ende des App-Prozesses erhalten. Ein abgesendetes Issue bleibt öffentlich. Eine
+nachträgliche Änderung entzieht die Gerätefreigabe, bis die neue Prüfsumme
+erneut kontrolliert wurde. Ungetestete Geräte erscheinen nicht in der Liste und
+erhalten keine stillschweigende Kompatibilitätszusage.
+
+Die vollständige Nachweiskette steht in
+[DEVICE_QUALIFICATION_PIPELINE.md](DEVICE_QUALIFICATION_PIPELINE.md).
+
+## 13. YouTube und Kick
 
 YouTube besitzt bereits isolierte Modelle und Chat-Zustände, benötigt aber noch
 die native Google-OAuth-Aktivierung und den offiziellen Streaming-Transport.
@@ -257,12 +288,14 @@ weil ein Client-Secret niemals in Android/iOS eingebettet werden darf.
 Beide Anbieter bleiben bis dahin sichtbar eingeschränkt oder Demo. Twitch, OBS
 und StreamElements funktionieren unabhängig davon weiter.
 
-## 13. Geplanter Kamera-, Host- und Mehrgerätebetrieb
+## 14. Geplanter Kamera-, Host- und Mehrgerätebetrieb
 
 Dieser Abschnitt beschreibt das verbindliche Zielbild, **nicht** eine Funktion
-des aktuellen Alpha-Builds. In `v0.1.0-alpha.3` kann IRL Dolphin noch keine
-Kamera aufnehmen und keinen Medienstream per RTMP/RTMPS, SRT, SRTLA oder RIST
-senden. Trage deshalb aktuell keine Stream-Keys für diese Aufgabe in der App ein.
+des aktuellen Alpha-Builds. Der lokale Qualifikationstest verarbeitet
+Kamerabilder nur unmittelbar für die Hardware-Encoder-Messung. In
+`v0.1.0-alpha.3` kann IRL Dolphin noch keine Kamera für Vorschau, Aufzeichnung
+oder Übertragung nutzen und keinen Medienstream per RTMP/RTMPS, SRT, SRTLA oder
+RIST senden. Trage deshalb aktuell keine Stream-Keys für diese Aufgabe ein.
 
 Die geplante Live-Oberfläche bleibt Chat-first: Chat, TTS, Alerts, Geräte- und
 Verbindungszustände bleiben sichtbar. Ein Kontrollbild oder die vollständige
@@ -284,7 +317,7 @@ Ein Medienziel ist keine OBS-Fernsteuerung: Auch später bleibt OBS WebSocket au
 Port `4455` im privaten LAN. Nur der ausdrücklich konfigurierte Medienpfad darf
 zu einem externen IRL-Host führen.
 
-## 14. Schnelle Fehlerprüfung
+## 15. Schnelle Fehlerprüfung
 
 | Problem | Prüfung |
 |---|---|

@@ -17,6 +17,7 @@ const translations = {
     navRoadmap: "Vorversionsplan",
     navSecurity: "Sicherheit",
     navPrivacy: "Datenschutz",
+    navDevices: "Geräte",
     privateAlpha: "Private Android-Alpha",
     heroTitle: "Dein IRL-Stream.<br><span>Eine Zentrale für jedes Setup.</span>",
     heroLead:
@@ -114,16 +115,46 @@ const translations = {
       "Sprache, Darstellung, TTS-Auswahl und ausdrücklich hinterlegte Verbindungsdaten nutzen geschützten Gerätespeicher.",
     privacyMemoryTitle: "Nur im Arbeitsspeicher",
     privacyMemoryText:
-      "Chats, Spenden, TTS-Warteschlange, Diagnosen und Live-Zustände werden nicht als Historie gespeichert.",
+      "Chats, Spenden, TTS-Warteschlange, Diagnosen, Live-Zustände und lokale Geräte-Testläufe werden nicht als Historie gespeichert.",
     privacyNetworkTitle: "Begrenzte Netzwerkziele",
     privacyNetworkText:
-      "Heute nutzen Twitch und StreamElements dokumentierte sichere Endpunkte; spätere Medienziele werden ausschließlich bewusst als lokales OBS oder externer IRL-Host eingerichtet.",
+      "Twitch und StreamElements nutzen dokumentierte sichere Endpunkte. Ein Gerätebericht erreicht GitHub nur nach öffentlicher Bestätigung und abschließendem Absenden durch den Tester.",
     privacyAbsentTitle: "Keine versteckte Sammlung",
     privacyAbsentText:
       "Keine Analyse, Werbung, Absturzübertragung, Cloud-Synchronisierung, Gerätekennung oder eigener App-Backenddienst.",
     privacyTechnicalNote:
       "Das vollständige technische Inventar nennt Zweck, Speicherort, Dauer, Empfänger und Löschmöglichkeit. Die endgültige juristische Datenschutzerklärung folgt vor der öffentlichen Beta mit echten Verantwortlichen- und Kontaktangaben.",
     openDataInventory: "Dateninventar öffnen",
+    devicesKicker: "Physische Qualifizierung",
+    devicesTitle: "Geprüfte Geräte – mit öffentlichem Nachweis",
+    devicesLead:
+      "Die Liste entsteht ausschließlich aus versionierten App-Berichten. Ein Eintrag erscheint erst nach automatischer Datenprüfung und einer separaten Maintainer-Freigabe.",
+    devicesStepCapture: "Lokal messen",
+    devicesStepCaptureText:
+      "Auflösung, FPS, Bitrate, Encoder- und Laufzeitwerte werden ohne Medieninhalt erfasst.",
+    devicesStepValidate: "Öffentlich validieren",
+    devicesStepValidateText:
+      "GitHub prüft Schema, Prüfsumme, Größenlimits und unbekannte Zusatzfelder.",
+    devicesStepVerify: "Getrennt freigeben",
+    devicesStepVerifyText:
+      "Erst die Prüfung von Build-Herkunft und Messwerten erzeugt einen veröffentlichten Eintrag.",
+    devicesBoundary:
+      "Die aktuelle Qualifizierung betrifft nur den lokalen Kamera-zu-Hardware-H.264-Pfad. Netzwerk, OBS, IRL-Hosts und Streamingdienste sind damit ausdrücklich noch nicht bestätigt.",
+    openDeviceReports: "Öffentliche Geräteberichte",
+    devicesLoading: "Geprüfte Gerätedaten werden geladen…",
+    devicesEmpty:
+      "Noch kein Gerät wurde über diesen neuen Nachweisweg vollständig freigegeben.",
+    devicesLoadFailed:
+      "Die geprüften Gerätedaten konnten gerade nicht geladen werden.",
+    deviceVerified: "Geprüft",
+    deviceAppVersion: "App-Version",
+    deviceEncoder: "Hardware-Encoder",
+    deviceHighestProfile: "Höchstes bestätigtes lokales Profil",
+    deviceRequestedBitrate: "Angefordert",
+    deviceMeasuredProfile: "Gemessen",
+    deviceRuns: "Erfolgreiche Läufe",
+    deviceVerifiedOn: "Freigegeben",
+    deviceEvidence: "Nachweis öffnen",
     suggestionsKicker: "Sinnvolle nächste Ergänzungen",
     suggestionsTitle: "Die Website wächst mit dem Produkt",
     suggestionsLead:
@@ -148,6 +179,7 @@ const translations = {
     navRoadmap: "Pre-release plan",
     navSecurity: "Security",
     navPrivacy: "Privacy",
+    navDevices: "Devices",
     privateAlpha: "Private Android alpha",
     heroTitle: "Your IRL stream.<br><span>One center for every setup.</span>",
     heroLead:
@@ -245,16 +277,45 @@ const translations = {
       "Language, appearance, TTS choices and explicitly saved connection data use protected device storage.",
     privacyMemoryTitle: "Memory only",
     privacyMemoryText:
-      "Chats, donations, the TTS queue, diagnostics and live state are not retained as history.",
+      "Chats, donations, the TTS queue, diagnostics, live state and local device-test runs are not retained as history.",
     privacyNetworkTitle: "Bounded destinations",
     privacyNetworkText:
-      "Today Twitch and StreamElements use documented secure endpoints; future media targets are configured explicitly as local OBS or an external IRL host.",
+      "Twitch and StreamElements use documented secure endpoints. A device report reaches GitHub only after public confirmation and final submission by the tester.",
     privacyAbsentTitle: "No hidden collection",
     privacyAbsentText:
       "No analytics, advertising, crash upload, cloud sync, device identifier or app-operated backend service.",
     privacyTechnicalNote:
       "The complete technical inventory lists purpose, storage, retention, recipient and deletion control. The final legal privacy policy follows before public beta with real controller and contact details.",
     openDataInventory: "Open data inventory",
+    devicesKicker: "Physical qualification",
+    devicesTitle: "Verified devices, backed by public evidence",
+    devicesLead:
+      "This list is built only from versioned app reports. An entry appears after automated data validation and a separate maintainer approval.",
+    devicesStepCapture: "Measure locally",
+    devicesStepCaptureText:
+      "Resolution, FPS, bitrate, encoder and runtime metrics are captured without media content.",
+    devicesStepValidate: "Validate publicly",
+    devicesStepValidateText:
+      "GitHub checks the schema, checksum, size limits and unknown extra fields.",
+    devicesStepVerify: "Approve separately",
+    devicesStepVerifyText:
+      "Only a review of build provenance and measurements creates a published entry.",
+    devicesBoundary:
+      "Current qualification covers only the local camera-to-hardware-H.264 path. It explicitly does not confirm networking, OBS, IRL hosts or streaming services yet.",
+    openDeviceReports: "Public device reports",
+    devicesLoading: "Loading verified device data…",
+    devicesEmpty:
+      "No device has completed this new evidence and approval path yet.",
+    devicesLoadFailed: "Verified device data could not be loaded right now.",
+    deviceVerified: "Verified",
+    deviceAppVersion: "App version",
+    deviceEncoder: "Hardware encoder",
+    deviceHighestProfile: "Highest confirmed local profile",
+    deviceRequestedBitrate: "Requested",
+    deviceMeasuredProfile: "Measured",
+    deviceRuns: "Successful runs",
+    deviceVerifiedOn: "Approved",
+    deviceEvidence: "Open evidence",
     suggestionsKicker: "Useful next additions",
     suggestionsTitle: "The website grows with the product",
     suggestionsLead:
@@ -942,6 +1003,8 @@ const content = {
 
 let currentLanguage = "de";
 let currentFilter = "all";
+let verifiedDeviceState = "loading";
+let verifiedDevices = [];
 
 const setStoredValue = (key, value) => {
   try {
@@ -1072,12 +1135,143 @@ function renderFaq() {
     .join("");
 }
 
+function renderVerifiedDevices() {
+  const list = document.querySelector("#verified-device-list");
+  if (!list) return;
+  list.replaceChildren();
+  const dictionary = translations[currentLanguage];
+
+  if (verifiedDeviceState !== "ready" || verifiedDevices.length === 0) {
+    const state = document.createElement("p");
+    state.className = "device-list-state";
+    state.textContent =
+      verifiedDeviceState === "loading"
+        ? dictionary.devicesLoading
+        : verifiedDeviceState === "failed"
+          ? dictionary.devicesLoadFailed
+          : dictionary.devicesEmpty;
+    list.append(state);
+    return;
+  }
+
+  const numberFormat = new Intl.NumberFormat(currentLanguage);
+  const dateFormat = new Intl.DateTimeFormat(currentLanguage, {
+    dateStyle: "medium",
+  });
+  for (const device of verifiedDevices) {
+    const profile = device.localMediaMeasurement?.highestConfirmedProfile;
+    if (!profile) continue;
+    const card = document.createElement("article");
+    card.className = "verified-device-card";
+
+    const header = document.createElement("div");
+    header.className = "verified-device-header";
+    const title = document.createElement("div");
+    const model = document.createElement("h3");
+    model.textContent = device.deviceModel;
+    const system = document.createElement("p");
+    system.textContent = `${platformName(device.platform)} · ${device.osVersion}`;
+    title.append(model, system);
+    const badge = document.createElement("span");
+    badge.className = "verified-badge";
+    badge.textContent = dictionary.deviceVerified;
+    header.append(title, badge);
+
+    const profileBlock = document.createElement("div");
+    profileBlock.className = "verified-profile";
+    const profileLabel = document.createElement("span");
+    profileLabel.textContent = dictionary.deviceHighestProfile;
+    const profileValue = document.createElement("strong");
+    profileValue.textContent =
+      `${profile.width}×${profile.height} · ${profile.framesPerSecond} FPS`;
+    const profileMetrics = document.createElement("p");
+    profileMetrics.textContent =
+      `${dictionary.deviceRequestedBitrate}: ${numberFormat.format(profile.requestedBitrateKbps)} Kbit/s · ` +
+      `${dictionary.deviceMeasuredProfile}: ${numberFormat.format(profile.effectiveFramesPerSecond)} FPS / ` +
+      `${numberFormat.format(profile.effectiveBitrateKbps)} Kbit/s`;
+    profileBlock.append(profileLabel, profileValue, profileMetrics);
+
+    const details = document.createElement("dl");
+    details.className = "verified-device-details";
+    appendDetail(details, dictionary.deviceAppVersion, device.appVersion);
+    appendDetail(
+      details,
+      dictionary.deviceEncoder,
+      device.localMediaMeasurement.encoders.join(", "),
+    );
+    appendDetail(
+      details,
+      dictionary.deviceRuns,
+      numberFormat.format(device.localMediaMeasurement.successfulRuns),
+    );
+    appendDetail(
+      details,
+      dictionary.deviceVerifiedOn,
+      dateFormat.format(new Date(device.verifiedAtUtc)),
+    );
+
+    const evidence = document.createElement("a");
+    evidence.className = "device-evidence-link";
+    evidence.textContent = dictionary.deviceEvidence;
+    if (
+      /^https:\/\/github\.com\/Savox76\/irl-dolphin-web\/issues\/[1-9][0-9]*$/u.test(
+        device.sourceIssue?.url ?? "",
+      )
+    ) {
+      evidence.href = device.sourceIssue.url;
+    } else {
+      evidence.hidden = true;
+    }
+
+    card.append(header, profileBlock, details, evidence);
+    list.append(card);
+  }
+}
+
+function appendDetail(list, label, value) {
+  const group = document.createElement("div");
+  const term = document.createElement("dt");
+  term.textContent = label;
+  const description = document.createElement("dd");
+  description.textContent = value;
+  group.append(term, description);
+  list.append(group);
+}
+
+function platformName(platform) {
+  if (platform === "android") return "Android";
+  if (platform === "ios") return "iOS";
+  return platform;
+}
+
+async function loadVerifiedDevices() {
+  try {
+    const response = await fetch("verified-devices.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("Device data request failed.");
+    const data = await response.json();
+    if (
+      data?.schemaVersion !== 1 ||
+      !Array.isArray(data.devices) ||
+      data.devices.length > 1000
+    ) {
+      throw new Error("Device data schema is invalid.");
+    }
+    verifiedDevices = data.devices;
+    verifiedDeviceState = "ready";
+  } catch (_) {
+    verifiedDevices = [];
+    verifiedDeviceState = "failed";
+  }
+  renderVerifiedDevices();
+}
+
 function renderDynamicContent() {
   renderFeatures();
   renderGuides();
   renderRoadmap();
   renderSuggestions();
   renderFaq();
+  renderVerifiedDevices();
 }
 
 function setLanguage(language) {
@@ -1121,6 +1315,8 @@ function initialize() {
       renderFeatures();
     });
   });
+
+  void loadVerifiedDevices();
 }
 
 initialize();

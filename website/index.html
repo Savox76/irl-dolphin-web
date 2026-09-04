@@ -17,7 +17,7 @@
       <div class="shell header-inner">
         <a class="brand" href="#top" aria-label="IRL Dolphin Startseite"><span class="brand-symbol" aria-hidden="true">D</span><span class="brand-name">IRL DOLPHIN</span></a>
         <nav class="desktop-nav" aria-label="Hauptnavigation" data-i18n-aria="mainNav">
-          <a href="#vision" data-i18n="navVision">Zielbild</a><a href="#features" data-i18n="navFeatures">Funktionen</a><a href="#setup" data-i18n="navSetup">Anleitung</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a><a href="#privacy" data-i18n="navPrivacy">Datenschutz</a>
+          <a href="#vision" data-i18n="navVision">Zielbild</a><a href="#features" data-i18n="navFeatures">Funktionen</a><a href="#setup" data-i18n="navSetup">Anleitung</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a><a href="#privacy" data-i18n="navPrivacy">Datenschutz</a><a href="#devices" data-i18n="navDevices">Geräte</a>
         </nav>
         <div class="header-actions">
           <div class="language-switch" role="group" aria-label="Sprache" data-i18n-aria="languageLabel"><button type="button" data-language="de" aria-pressed="true">DE</button><button type="button" data-language="en" aria-pressed="false">EN</button></div>
@@ -136,11 +136,29 @@
           <div class="section-title-row privacy-heading"><span class="section-number">07</span><div class="section-intro"><span class="overline" data-i18n="privacyKicker">Datenschutz & Daten</span><h2 id="privacy-title" data-i18n="privacyTitle">Klar getrennt: gespeichert, flüchtig, verbunden</h2><p data-i18n="privacyLead">Die technische Alpha-Übersicht zeigt nachvollziehbar, welche Daten auf dem Gerät geschützt bleiben, nur während der Laufzeit existieren oder an einen bewusst verbundenen Dienst gehen.</p></div></div>
           <div class="privacy-grid">
             <article><span>01</span><h3 data-i18n="privacyProtectedTitle">Geschützt gespeichert</h3><p data-i18n="privacyProtectedText">Sprache, Darstellung, TTS-Auswahl und ausdrücklich hinterlegte Verbindungsdaten nutzen geschützten Gerätespeicher.</p></article>
-            <article><span>02</span><h3 data-i18n="privacyMemoryTitle">Nur im Arbeitsspeicher</h3><p data-i18n="privacyMemoryText">Chats, Spenden, TTS-Warteschlange, Diagnosen und Live-Zustände werden nicht als Historie gespeichert.</p></article>
-            <article><span>03</span><h3 data-i18n="privacyNetworkTitle">Begrenzte Netzwerkziele</h3><p data-i18n="privacyNetworkText">Heute nutzen Twitch und StreamElements dokumentierte sichere Endpunkte; spätere Medienziele werden ausschließlich bewusst als lokales OBS oder externer IRL-Host eingerichtet.</p></article>
+            <article><span>02</span><h3 data-i18n="privacyMemoryTitle">Nur im Arbeitsspeicher</h3><p data-i18n="privacyMemoryText">Chats, Spenden, TTS-Warteschlange, Diagnosen, Live-Zustände und lokale Geräte-Testläufe werden nicht als Historie gespeichert.</p></article>
+            <article><span>03</span><h3 data-i18n="privacyNetworkTitle">Begrenzte Netzwerkziele</h3><p data-i18n="privacyNetworkText">Twitch und StreamElements nutzen dokumentierte sichere Endpunkte. Ein Gerätebericht erreicht GitHub nur nach öffentlicher Bestätigung und abschließendem Absenden durch den Tester.</p></article>
             <article><span>04</span><h3 data-i18n="privacyAbsentTitle">Keine versteckte Sammlung</h3><p data-i18n="privacyAbsentText">Keine Analyse, Werbung, Absturzübertragung, Cloud-Synchronisierung, Gerätekennung oder eigener App-Backenddienst.</p></article>
           </div>
           <div class="privacy-band"><p data-i18n="privacyTechnicalNote">Das vollständige technische Inventar nennt Zweck, Speicherort, Dauer, Empfänger und Löschmöglichkeit. Die endgültige juristische Datenschutzerklärung folgt vor der öffentlichen Beta mit echten Verantwortlichen- und Kontaktangaben.</p><a class="button button-primary" href="https://github.com/Savox76/irl-dolphin-web/blob/main/docs/PRIVACY_AND_DATA_INVENTORY.md"><span data-i18n="openDataInventory">Dateninventar öffnen</span><span aria-hidden="true">↗</span></a></div>
+        </div>
+      </section>
+
+      <section class="section devices-section" id="devices" aria-labelledby="devices-title">
+        <div class="shell">
+          <div class="section-title-row devices-heading"><span class="section-number">08</span><div class="section-intro"><span class="overline" data-i18n="devicesKicker">Physische Qualifizierung</span><h2 id="devices-title" data-i18n="devicesTitle">Geprüfte Geräte – mit öffentlichem Nachweis</h2><p data-i18n="devicesLead">Die Liste entsteht ausschließlich aus versionierten App-Berichten. Ein Eintrag erscheint erst nach automatischer Datenprüfung und einer separaten Maintainer-Freigabe.</p></div></div>
+          <div class="devices-explainer">
+            <article><span>01</span><strong data-i18n="devicesStepCapture">Lokal messen</strong><p data-i18n="devicesStepCaptureText">Auflösung, FPS, Bitrate, Encoder- und Laufzeitwerte werden ohne Medieninhalt erfasst.</p></article>
+            <article><span>02</span><strong data-i18n="devicesStepValidate">Öffentlich validieren</strong><p data-i18n="devicesStepValidateText">GitHub prüft Schema, Prüfsumme, Größenlimits und unbekannte Zusatzfelder.</p></article>
+            <article><span>03</span><strong data-i18n="devicesStepVerify">Getrennt freigeben</strong><p data-i18n="devicesStepVerifyText">Erst die Prüfung von Build-Herkunft und Messwerten erzeugt einen veröffentlichten Eintrag.</p></article>
+          </div>
+          <div id="verified-device-list" class="verified-device-list" aria-live="polite">
+            <p class="device-list-state" data-i18n="devicesLoading">Geprüfte Gerätedaten werden geladen…</p>
+          </div>
+          <div class="devices-band">
+            <p data-i18n="devicesBoundary">Die aktuelle Qualifizierung betrifft nur den lokalen Kamera-zu-Hardware-H.264-Pfad. Netzwerk, OBS, IRL-Hosts und Streamingdienste sind damit ausdrücklich noch nicht bestätigt.</p>
+            <a class="button button-quiet" href="https://github.com/Savox76/irl-dolphin-web/issues?q=is%3Aissue%20label%3Adevice-report"><span data-i18n="openDeviceReports">Öffentliche Geräteberichte</span><span aria-hidden="true">↗</span></a>
+          </div>
         </div>
       </section>
 
@@ -152,7 +170,7 @@
 
     <footer class="site-footer">
       <div class="shell footer-top"><div><span class="footer-mark">D</span><strong>IRL DOLPHIN</strong></div><p data-i18n="footerText">Unabhängig entwickelt für IRL-Streamer.</p></div>
-      <div class="shell footer-bottom"><span>v0.1.0-alpha.3 · 03.09.2026</span><div><a href="https://github.com/Savox76/irl-dolphin-web" data-i18n="repository">Repository</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a><a href="#privacy" data-i18n="navPrivacy">Datenschutz</a></div></div>
+      <div class="shell footer-bottom"><span>v0.1.0-alpha.3 · 03.09.2026</span><div><a href="https://github.com/Savox76/irl-dolphin-web" data-i18n="repository">Repository</a><a href="#roadmap" data-i18n="navRoadmap">Vorversionsplan</a><a href="#security" data-i18n="navSecurity">Sicherheit</a><a href="#privacy" data-i18n="navPrivacy">Datenschutz</a><a href="#devices" data-i18n="navDevices">Geräte</a></div></div>
     </footer>
     <noscript><div class="noscript">Für die Sprachumschaltung und die interaktiven Anleitungen muss JavaScript aktiviert sein.</div></noscript>
   </body>
