@@ -140,6 +140,11 @@ jobs:
             );
             const validationMarker =
               "<!-- IRL_DOLPHIN_DEVICE_REPORT_VALIDATION -->";
+            const safeText = (value) =>
+              String(value ?? "not available")
+                .replace(/[^\p{L}\p{N} ._()/+-]/gu, "?")
+                .slice(0, 128);
+            const profile = result.summary?.highestProfile;
             const previousValidation = comments.find(
               (comment) =>
                 comment.user?.login === "github-actions[bot]" &&
@@ -152,7 +157,13 @@ jobs:
                   "✅ **Automatische Formatprüfung / Automated schema check: valid**",
                   "",
                   `- Report SHA-256: \`${result.reportSha256}\``,
+                  `- Device: ${safeText(result.summary.deviceModel)}`,
+                  `- OS / app: ${safeText(result.summary.osVersion)} / ${safeText(result.summary.appVersion)}`,
                   `- Test runs: ${result.summary.runCount}`,
+                  `- Completed / stopped / failed: ${result.summary.completedRunCount} / ${result.summary.stoppedRunCount} / ${result.summary.failedRunCount}`,
+                  profile
+                    ? `- Highest completed local run: ${profile.width}×${profile.height} · ${profile.framesPerSecond} FPS · ${profile.requestedBitrateKbps} Kbit/s requested · ${profile.effectiveFramesPerSecond} FPS / ${profile.effectiveBitrateKbps} Kbit/s measured`
+                    : "- Highest completed local run: not available",
                   `- Build: \`${result.summary.build.commit}\` / quality run \`${result.summary.build.qualityRun}\``,
                   "",
                   "This confirms schema, bounds, checksum and data minimization only. It is not device verification. A maintainer must review the private build provenance and measurements before applying `device-verified`.",
