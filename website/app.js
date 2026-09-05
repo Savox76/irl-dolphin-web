@@ -18,14 +18,14 @@ const translations = {
     navSecurity: "Sicherheit",
     navPrivacy: "Datenschutz",
     navDevices: "Geräte",
-    privateAlpha: "Private Android-Alpha",
+    privateAlpha: "Android-Gerätetest-Alpha",
     heroTitle: "Dein IRL-Stream.<br><span>Eine Zentrale für jedes Setup.</span>",
     heroLead:
       "IRL Dolphin wächst zur mobilen Produktions-, Übertragungs- und Interaktionszentrale: Kameras und Geräte steuern, lokal oder zu einem IRL-Host senden und dabei den Chat im Mittelpunkt behalten.",
     startSetup: "Einrichtung starten",
     viewRoadmap: "Vorversionsplan ansehen",
     availability:
-      "Aktuell nur als debug-signierter Testbuild für autorisierte Tester. Noch keine öffentliche Beta oder Store-Version.",
+      "Als öffentlich nachvollziehbarer, debug-signierter Geräte-Testbuild verfügbar. Noch keine öffentliche Beta oder Store-Version.",
     projectStatus: "Projektstatus",
     alphaSnapshot: "Alpha-Snapshot",
     mvpFoundation: "MVP / technische Grundlage",
@@ -81,7 +81,8 @@ const translations = {
       "Öffne die Schritte in der Reihenfolge, die du tatsächlich brauchst. Nicht verfügbare Anbieter und Medienfunktionen sind deutlich markiert.",
     beforeInstallTitle: "Vor der Installation",
     beforeInstallText:
-      "Die aktuelle APK ist debug-signiert und ausschließlich für interne Gerätetests gedacht. Installiere sie nur aus dem zugehörigen privaten GitHub-Release.",
+      "Die öffentliche Test-APK ist debug-signiert und ausschließlich für Gerätetests gedacht. Prüfe Dateiname und SHA-256-Wert des zugehörigen Vorab-Releases.",
+    openTestBuilds: "Geräte-Testbuilds öffnen",
     roadmapKicker: "Masterplan bis zur Vorversion",
     roadmapTitle: "Von der Steuerungs-Alpha zur mobilen IRL-Plattform",
     roadmapLead:
@@ -181,14 +182,14 @@ const translations = {
     navSecurity: "Security",
     navPrivacy: "Privacy",
     navDevices: "Devices",
-    privateAlpha: "Private Android alpha",
+    privateAlpha: "Android device-test alpha",
     heroTitle: "Your IRL stream.<br><span>One center for every setup.</span>",
     heroLead:
       "IRL Dolphin is growing into a mobile production, transmission and interaction center: control cameras and devices, send locally or to an IRL host, and keep chat at the center.",
     startSetup: "Start setup",
     viewRoadmap: "View pre-release plan",
     availability:
-      "Currently available only as a debug-signed test build for authorized testers. It is not a public beta or store release.",
+      "Available as a publicly traceable, debug-signed device-test build. It is not a public beta or store release.",
     projectStatus: "Project status",
     alphaSnapshot: "Alpha snapshot",
     mvpFoundation: "MVP / technical foundation",
@@ -244,7 +245,8 @@ const translations = {
       "Open the steps in the order you actually need. Providers and media capabilities that are not available yet are clearly identified.",
     beforeInstallTitle: "Before installation",
     beforeInstallText:
-      "The current APK is debug-signed and intended only for internal device testing. Install it only from its private GitHub release.",
+      "The public test APK is debug-signed and intended only for device testing. Verify the filename and SHA-256 value from its pre-release.",
+    openTestBuilds: "Open device-test builds",
     roadmapKicker: "Pre-release master plan",
     roadmapTitle: "From control alpha to mobile IRL platform",
     roadmapLead:
