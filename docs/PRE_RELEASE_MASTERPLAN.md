@@ -130,6 +130,8 @@ Abnahme: Der interne Testbuild wird ausschließlich aus einem vollständig grün
 - [x] Ausdrücklich bestätigte, vorausgefüllte öffentliche Issue-Übergabe ohne
   App-Token oder eigenen Backenddienst
 - [x] Strikte Schema-/Prüfsummenprüfung und getrennte Maintainer-Freigabe
+- [x] Fähigkeitsgefilterter geführter Medien-Testplan mit Mindest-, Standard-
+  und Höchstbitrate sowie automatischer Vollständigkeits-Sperre
 - [ ] Ersten Bericht auf dem Huawei T15 Pro durchführen und freigeben
 
 Abnahme: Kein kritischer oder hoher Fehler bleibt offen. Jeder reproduzierbare
@@ -369,6 +371,8 @@ contains no secret values.
 - [x] Explicitly confirmed prefilled public issue hand-off without an app token
   or custom backend
 - [x] Strict schema/checksum validation and separate maintainer approval
+- [x] Capability-filtered guided media plan covering minimum, default and
+  maximum bitrates with an automatic completeness publication gate
 - [ ] Run and approve the first report on the Huawei T15 Pro
 
 Acceptance: no critical or high defect remains. Every reproducible defect has an

@@ -150,6 +150,8 @@ for (const token of [
   "issues: write",
   "device-report-valid",
   "device-report-invalid",
+  "device-report-complete",
+  "device-report-partial",
   "awaiting-device-verification",
   "device-verified",
   'context.payload.action === "edited"',
@@ -164,6 +166,7 @@ for (const token of [
   "model.textContent = device.deviceModel",
   "description.textContent = value",
   "verified-devices.json",
+  "devicePlanCoverage",
 ]) {
   if (!script.includes(token)) {
     failures.push(`Verified-device rendering lacks safe data handling: ${token}`);

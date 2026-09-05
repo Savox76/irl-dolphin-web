@@ -1,8 +1,8 @@
 # IRL Dolphin Nutzerhandbuch (Deutsch)
 
-Version 1.1 — passend zu `v0.1.0-alpha.3` und dem geplanten Produktausbau
+Version 1.2 — passend zu `v0.1.0-alpha.3` und aktuellen Änderungen
 
-Stand: 3. September 2026
+Stand: 5. September 2026
 
 > IRL Dolphin befindet sich in einer privaten Android-Alpha. Der aktuelle Build
 > ist debug-signiert, nicht öffentlich verteilt und noch nicht für den
@@ -251,11 +251,13 @@ Unter **Einstellungen → Kamera- und Encoder-Messung** prüfst du den lokalen
 Kamera-zu-Hardware-H.264-Pfad. Dieser Test sendet noch keinen Stream und prüft
 weder Netzwerk noch OBS, IRL-Host oder Streamingdienst.
 
-1. Wähle eine vom Gerät gemeldete Kombination aus **720p/1080p**,
-   **30/60 FPS** und der angebotenen **Bitrate**.
-2. Starte den fünfsekündigen Test. Wiederhole relevante Profile und bei Bedarf
-   denselben Test zur Stabilitätsbeurteilung; der Bericht hält höchstens 24
-   Läufe im Arbeitsspeicher.
+1. Starte den **Geführten Testplan**. Er erzeugt anhand der Gerätefähigkeiten
+   automatisch Testfälle für **720p/1080p**, **30/60 FPS** sowie die minimale,
+   Standard- und maximale angebotene Bitrate. Jeder Lauf dauert fünf Sekunden.
+2. Verfolge Fortschritt und verbleibende Testfälle. Nach einem Stopp oder Fehler
+   kannst du den Plan in derselben App-Sitzung fortsetzen; abgeschlossene Fälle
+   werden nicht wiederholt. Manuelle Einzeltests dienen nur zur Fehlersuche und
+   ersetzen keine fehlenden geführten Testfälle.
 3. Nutze **Bericht kopieren**, um das vollständige bereinigte JSON zu prüfen.
    Jede Messung besitzt eine feste Testfall-ID aus Auflösung, FPS, Bitrate und
    Dauer.
@@ -263,7 +265,9 @@ weder Netzwerk noch OBS, IRL-Host oder Streamingdienst.
    veröffentlicht werden dürfen. Die App öffnet ein vorausgefülltes Issue im
    öffentlichen Webseiten-Repository; erst dein abschließendes Absenden auf
    GitHub überträgt den Bericht.
-5. Die automatische Prüfung bestätigt nur Schema, Grenzen und Prüfsumme.
+5. Die automatische Prüfung bestätigt Schema, Grenzen, Prüfsumme und die
+   vollständige Abdeckung des geräteabhängigen Testplans. Ein älterer oder
+   abgebrochener Bericht wird als teilweise markiert und nicht veröffentlicht.
    **Geprüftes Gerät** wird das Profil erst nach separater Kontrolle der
    Build-Herkunft und Messwerte durch einen Maintainer.
 

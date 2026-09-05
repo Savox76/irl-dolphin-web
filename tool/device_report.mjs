@@ -8,12 +8,18 @@ const maximumIssueBodyLength = 30_000;
 const maximumCompressedBytes = 12_000;
 const maximumReportBytes = 64_000;
 const maximumRuns = 24;
+const guidedPlanId = "media.hardware-h264.guided";
+const guidedPlanVersion = 1;
 
 const bitrateOptions = new Map([
   ["1280x720@30", [1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000]],
   ["1280x720@60", [2000, 2500, 3000, 4000, 5000, 6000]],
   ["1920x1080@30", [2500, 3000, 3500, 4500, 6000, 8000]],
   ["1920x1080@60", [4500, 6000, 8000, 9000, 10000, 12000]],
+]);
+const defaultBitrates = new Map([
+  ["1280x720", 2000],
+  ["1920x1080", 4500],
 ]);
 
 const failureKinds = [
@@ -110,6 +116,15 @@ export function hasMatchingVerification(comments, reportSha256) {
 }
 
 function validateReport(report, errors) {
+  if (!isRecord(report)) {
+    add(errors, "report must be an object.");
+    return;
+  }
+  const schemaVersion = report.schemaVersion;
+  if (![1, 2].includes(schemaVersion)) {
+    add(errors, "report.schemaVersion must equal 1 or 2.");
+    return;
+  }
   if (
     !exactKeys(
       report,
@@ -120,6 +135,7 @@ function validateReport(report, errors) {
         "build",
         "scope",
         "supportedCaptureProfiles",
+        ...(schemaVersion === 2 ? ["testPlan"] : []),
         "runs",
       ],
       "report",
@@ -130,7 +146,6 @@ function validateReport(report, errors) {
   }
 
   equal(report.reportType, "irl-dolphin-device-qualification", "report.reportType", errors);
-  equal(report.schemaVersion, 1, "report.schemaVersion", errors);
   isoDate(report.generatedAtUtc, "report.generatedAtUtc", errors);
 
   if (exactKeys(report.build, ["commit", "qualityRun"], "report.build", errors)) {
@@ -166,7 +181,10 @@ function validateReport(report, errors) {
   }
 
   validateProfiles(report.supportedCaptureProfiles, errors);
-  validateRuns(report.runs, errors);
+  validateRuns(report.runs, schemaVersion, errors);
+  if (schemaVersion === 2) {
+    validateTestPlan(report.testPlan, report.supportedCaptureProfiles, report.runs, errors);
+  }
 }
 
 function validateProfiles(profiles, errors) {
@@ -204,7 +222,7 @@ function validateProfiles(profiles, errors) {
   });
 }
 
-function validateRuns(runs, errors) {
+function validateRuns(runs, schemaVersion, errors) {
   if (!Array.isArray(runs) || runs.length < 1 || runs.length > maximumRuns) {
     add(errors, `report.runs must contain one to ${maximumRuns} runs.`);
     return;
@@ -236,7 +254,12 @@ function validateRuns(runs, errors) {
 
     equal(run.runId, `run-${String(index + 1).padStart(3, "0")}`, `${path}.runId`, errors);
     equal(run.testModule, "media.hardwareH264", `${path}.testModule`, errors);
-    equal(run.testScenario, "manualProfile", `${path}.testScenario`, errors);
+    oneOf(
+      run.testScenario,
+      schemaVersion === 1 ? ["manualProfile"] : ["manualProfile", "guidedPlan"],
+      `${path}.testScenario`,
+      errors,
+    );
     isoDate(run.recordedAtUtc, `${path}.recordedAtUtc`, errors);
     validateRequest(run.request, `${path}.request`, errors);
     if (isRecord(run.request)) {
@@ -248,6 +271,74 @@ function validateRuns(runs, errors) {
       oneOf(run.failure, failureKinds, `${path}.failure`, errors);
     }
   });
+}
+
+function validateTestPlan(plan, profiles, runs, errors) {
+  if (
+    !exactKeys(
+      plan,
+      ["id", "version", "requiredTestCaseIds", "completedTestCaseIds", "status"],
+      "report.testPlan",
+      errors,
+    )
+  ) {
+    return;
+  }
+  equal(plan.id, guidedPlanId, "report.testPlan.id", errors);
+  equal(plan.version, guidedPlanVersion, "report.testPlan.version", errors);
+
+  const expectedRequired = requiredGuidedTestCaseIds(profiles);
+  stringArray(plan.requiredTestCaseIds, 1, 12, "report.testPlan.requiredTestCaseIds", errors);
+  if (!sameArray(plan.requiredTestCaseIds, expectedRequired)) {
+    add(errors, "report.testPlan.requiredTestCaseIds does not match the supported profiles.");
+  }
+
+  const requiredSet = new Set(expectedRequired);
+  const actualCompletedSet = new Set(
+    Array.isArray(runs)
+      ? runs
+          .filter(
+            (run) =>
+              isRecord(run) &&
+              run.testScenario === "guidedPlan" &&
+              isRecord(run.result) &&
+              run.result.outcome === "completed" &&
+              requiredSet.has(run.testCaseId),
+          )
+          .map((run) => run.testCaseId)
+      : [],
+  );
+  const expectedCompleted = expectedRequired.filter((testCaseId) =>
+    actualCompletedSet.has(testCaseId),
+  );
+  stringArray(
+    plan.completedTestCaseIds,
+    0,
+    expectedRequired.length,
+    "report.testPlan.completedTestCaseIds",
+    errors,
+  );
+  if (!sameArray(plan.completedTestCaseIds, expectedCompleted)) {
+    add(errors, "report.testPlan.completedTestCaseIds does not match completed guided runs.");
+  }
+  const expectedStatus =
+    expectedCompleted.length === expectedRequired.length ? "complete" : "partial";
+  equal(plan.status, expectedStatus, "report.testPlan.status", errors);
+
+  if (Array.isArray(runs)) {
+    runs.forEach((run, index) => {
+      if (
+        isRecord(run) &&
+        run.testScenario === "guidedPlan" &&
+        !requiredSet.has(run.testCaseId)
+      ) {
+        add(
+          errors,
+          `report.runs[${index}].testCaseId is not part of the guided plan.`,
+        );
+      }
+    });
+  }
 }
 
 function validateRequest(request, path, errors) {
@@ -345,7 +436,10 @@ function summarizeReport(report) {
     return rightScore - leftScore;
   })[0];
   const environment = resultRuns.at(-1)?.result.environment ?? null;
+  const requiredTestCaseIds = report.testPlan?.requiredTestCaseIds ?? [];
+  const completedTestCaseIds = report.testPlan?.completedTestCaseIds ?? [];
   return {
+    schemaVersion: report.schemaVersion,
     generatedAtUtc: report.generatedAtUtc,
     build: report.build,
     deviceModel: environment?.deviceModel ?? null,
@@ -357,6 +451,26 @@ function summarizeReport(report) {
     completedRunCount: completedRuns.length,
     stoppedRunCount: resultRuns.length - completedRuns.length,
     failedRunCount: report.runs.length - resultRuns.length,
+    qualificationPlan:
+      report.schemaVersion === 2
+        ? {
+            id: report.testPlan.id,
+            version: report.testPlan.version,
+            status: report.testPlan.status,
+            requiredTestCaseCount: requiredTestCaseIds.length,
+            completedTestCaseCount: completedTestCaseIds.length,
+            missingTestCaseIds: requiredTestCaseIds.filter(
+              (testCaseId) => !completedTestCaseIds.includes(testCaseId),
+            ),
+          }
+        : {
+            id: null,
+            version: null,
+            status: "legacy",
+            requiredTestCaseCount: 0,
+            completedTestCaseCount: 0,
+            missingTestCaseIds: [],
+          },
     highestProfile: highest
       ? {
           width: highest.request.width,
@@ -368,6 +482,21 @@ function summarizeReport(report) {
         }
       : null,
   };
+}
+
+function requiredGuidedTestCaseIds(profiles) {
+  if (!Array.isArray(profiles)) return [];
+  return profiles.flatMap((profile) => {
+    const options = bitrateOptions.get(profileKey(profile));
+    if (!options) return [];
+    const defaultBitrate = defaultBitrates.get(`${profile.width}x${profile.height}`);
+    const selected = [...new Set([options[0], defaultBitrate, options.at(-1)])].filter(
+      (value) => options.includes(value),
+    );
+    return selected.map((bitrateKbps) =>
+      testCaseId({ ...profile, durationMs: 5000, bitrateKbps }),
+    );
+  });
 }
 
 function testCaseId(request) {
@@ -448,6 +577,33 @@ function finite(value, minimum, maximum, path, errors) {
 
 function oneOf(value, values, path, errors) {
   if (!values.includes(value)) add(errors, `${path} contains an unsupported value.`);
+}
+
+function stringArray(value, minimumLength, maximumLength, path, errors) {
+  if (
+    !Array.isArray(value) ||
+    value.length < minimumLength ||
+    value.length > maximumLength ||
+    value.some(
+      (entry) =>
+        typeof entry !== "string" ||
+        !entry.length ||
+        entry.length > 160 ||
+        /[^A-Za-z0-9.-]/u.test(entry),
+    ) ||
+    new Set(value).size !== value.length
+  ) {
+    add(errors, `${path} is not a valid unique bounded string array.`);
+  }
+}
+
+function sameArray(left, right) {
+  return (
+    Array.isArray(left) &&
+    Array.isArray(right) &&
+    left.length === right.length &&
+    left.every((value, index) => value === right[index])
+  );
 }
 
 function add(errors, message) {

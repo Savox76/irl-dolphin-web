@@ -1,7 +1,7 @@
 # Device qualification evidence pipeline / Gerätequalifikations-Nachweiskette
 
-Status: pipeline foundation implemented; no device is considered verified merely
-because it submitted a report.
+Status: guided media-plan intake implemented; no device is considered verified
+merely because it submitted a report.
 
 ## Deutsch
 
@@ -9,9 +9,16 @@ because it submitted a report.
 
 Die Nachweiskette macht physische Testergebnisse maschinell auswertbar, ohne
 einen App-Token, einen eigenen Backenddienst oder eine stabile Gerätekennung
-einzuführen. Schema Version 1 deckt ausschließlich den ausdrücklich gestarteten
+einzuführen. Schema Version 2 deckt ausschließlich den ausdrücklich gestarteten
 lokalen Pfad **Kamera → Hardware-H.264-Encoder** ab. Es bestätigt weder
 Netzwerktransport noch OBS, einen IRL-Host oder einen Streamingdienst.
+
+Der geführte Plan `media.hardware-h264.guided` Version 1 erzeugt für jedes vom
+Gerät gemeldete 720p-/1080p- und 30-/60-FPS-Profil zwei oder drei Testfälle:
+minimale, Standard- und maximale angebotene Bitrate, ohne doppelte Fälle. Nur
+vollständig abgeschlossene geführte Testfälle zählen zur Planabdeckung.
+Manuelle Einzelmessungen bleiben zur Fehlersuche möglich, ersetzen den
+geführten Plan aber nicht.
 
 Jeder Lauf besitzt:
 
@@ -19,7 +26,7 @@ Jeder Lauf besitzt:
 - eine geräteübergreifend vergleichbare Testfall-ID wie
   `media.hardware-h264.1920x1080.60fps.9000kbps.5000ms`,
 - den Modulnamen `media.hardwareH264`,
-- das Szenario `manualProfile`,
+- das Szenario `guidedPlan` oder `manualProfile`,
 - Anforderung, Ergebnis oder festen Fehlercode und Build-Herkunft.
 
 ### Lebenszyklus
@@ -30,6 +37,9 @@ Jeder Lauf besitzt:
 | Lokal gemessen | JSON nur im Arbeitsspeicher | Der Tester kann alle Felder kopieren und prüfen. |
 | Öffentlich eingereicht | vorausgefülltes GitHub-Issue nach ausdrücklicher Bestätigung | Erst das abschließende Absenden auf GitHub veröffentlicht den Bericht. |
 | `device-report-valid` | Schema-, Größen-, Prüfsummen- und Feldprüfung | Der Bericht ist formal auswertbar, aber noch kein bestätigter Gerätenachweis. |
+| `device-report-partial` | automatische Abdeckungsprüfung | Der Bericht ist gültig, aber der geführte Plan ist unvollständig oder stammt aus Schema 1. Er darf nicht veröffentlicht werden. |
+| `device-report-complete` | automatische Abdeckungsprüfung | Alle geräteabhängig erforderlichen Testfall-IDs besitzen einen abgeschlossenen geführten Lauf. |
+| `awaiting-device-verification` | nur für vollständige Berichte | Der Bericht wartet auf die getrennte Prüfung von Build-Herkunft und Messwerten. |
 | `device-verified` | nur nach Maintainer-Prüfung | Build-Herkunft und Messwerte wurden geprüft; die Website darf den Eintrag zeigen. |
 | Nachträglich bearbeitet | Freigabe wird entzogen | Die geänderte Prüfsumme benötigt eine neue Prüfung. |
 
@@ -49,8 +59,10 @@ oder andere stabile Gerätekennung.
 Die SHA-256-Prüfsumme erkennt Änderungen am eingebetteten JSON. Sie ist keine
 kryptografische Geräte- oder Testeridentität. Deshalb bleibt die getrennte
 Maintainer-Prüfung erforderlich. Die öffentliche Website verarbeitet nur
-Berichte mit gültigem Schema, `device-verified`-Label und einer
-Workflow-Bestätigung, die exakt zur aktuellen Prüfsumme passt.
+Berichte mit gültigem Schema, vollständigem geführtem Plan,
+`device-verified`-Label und einer Workflow-Bestätigung, die exakt zur aktuellen
+Prüfsumme passt. Schema-1-Berichte bleiben zur Fehlersuche lesbar, können aber
+keinen neuen Website-Eintrag erzeugen.
 
 Das lokale Ergebnis verschwindet beim Leeren oder beim Ende des App-Prozesses.
 Ein abgesendetes GitHub-Issue bleibt entsprechend der GitHub-Aufbewahrung
@@ -72,13 +84,19 @@ Abnahmekriterien und seine physischen Tests implementiert sind.
 
 The evidence pipeline makes physical test results machine-readable without
 embedding an app token, operating a custom backend or introducing a stable
-device identifier. Schema version 1 covers only the explicitly started local
+device identifier. Schema version 2 covers only the explicitly started local
 **camera → hardware H.264 encoder** path. It does not confirm network transport,
 OBS, an IRL host or any streaming service.
 
+Guided plan `media.hardware-h264.guided` version 1 creates two or three cases
+for every device-reported 720p/1080p and 30/60-FPS profile: the minimum,
+default and maximum offered bitrate, with duplicates removed. Only completed
+guided runs count towards plan coverage. Manual measurements remain available
+for troubleshooting but cannot replace the guided plan.
+
 Every run has an ordinal ID such as `run-001`, a cross-device test-case ID such
 as `media.hardware-h264.1920x1080.60fps.9000kbps.5000ms`, the
-`media.hardwareH264` module, the `manualProfile` scenario, its request,
+`media.hardwareH264` module, a `guidedPlan` or `manualProfile` scenario, its request,
 result or bounded failure code, and build provenance.
 
 ### Lifecycle
@@ -89,6 +107,9 @@ result or bounded failure code, and build provenance.
 | Measured locally | JSON exists only in memory | The tester can copy and inspect every field. |
 | Submitted publicly | prefilled GitHub issue after explicit confirmation | Only the final GitHub submission publishes the report. |
 | `device-report-valid` | schema, size, checksum and field validation | The report is machine-readable, but it is not yet verified evidence. |
+| `device-report-partial` | automatic coverage check | The report is valid, but its guided plan is incomplete or uses schema 1. It cannot be published. |
+| `device-report-complete` | automatic coverage check | Every capability-filtered required test-case ID has a completed guided run. |
+| `awaiting-device-verification` | complete reports only | The report is waiting for separate build-provenance and measurement review. |
 | `device-verified` | only after maintainer review | Build provenance and measurements were reviewed; the website may list it. |
 | Edited later | approval is revoked | The changed checksum requires another review. |
 
@@ -105,9 +126,10 @@ stream keys, serial number, IMEI and any other stable device identifier.
 
 The SHA-256 checksum detects changes to the embedded JSON. It is not a
 cryptographic device or tester identity, so separate maintainer review remains
-mandatory. The public website consumes only a valid report carrying the
-`device-verified` label and a workflow confirmation bound to the exact current
-checksum.
+mandatory. The public website consumes only a valid report with complete guided
+coverage, the `device-verified` label and a workflow confirmation bound to the
+exact current checksum. Schema-1 reports remain readable for troubleshooting
+but cannot create a new website entry.
 
 Local results disappear when cleared or when the app process ends. A submitted
 GitHub issue remains public under GitHub retention until its author or a
@@ -120,4 +142,3 @@ plans receive separate versioned module and test-case families, for example
 `app.shell`, `twitch.chat`, `obs.control`, `tts.route` and
 `background.session`. A module can influence a compatibility claim only after
 its own schema, acceptance criteria and physical tests exist.
-

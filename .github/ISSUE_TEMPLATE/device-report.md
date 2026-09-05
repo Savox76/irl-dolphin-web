@@ -6,9 +6,11 @@ labels: device-report
 assignees: ""
 ---
 
-Use **Submit public report** in IRL Dolphin whenever possible. The app fills this
-issue with a bounded machine-readable payload and explains every public field
-before opening GitHub.
+Use **Guided test plan** followed by **Submit public report** in IRL Dolphin
+whenever possible. The app fills this issue with a bounded machine-readable
+payload, including capability-filtered coverage, and explains every public
+field before opening GitHub. Manual or interrupted reports remain useful for
+troubleshooting but cannot enter the verified-device list.
 
 Do not post recordings, camera frames, chat content, credentials, stream keys,
 serial numbers, IMEI values or other stable device identifiers.
