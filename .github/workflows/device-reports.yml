@@ -51,6 +51,7 @@ jobs:
               ["device-report-invalid", "d1242f", "Report failed automated schema validation"],
               ["device-report-complete", "1f883d", "Guided plan has complete capability-filtered coverage"],
               ["device-report-partial", "fbca04", "Valid report with incomplete or legacy guided-plan coverage"],
+              ["device-report-retest-required", "d93f0b", "A current guided quality case must be repeated"],
               ["awaiting-device-verification", "bf8700", "Valid report awaiting maintainer review"],
               ["device-verified", "8250df", "Report provenance and result reviewed by a maintainer"],
             ];
@@ -79,6 +80,7 @@ jobs:
             labels.delete("device-report-invalid");
             labels.delete("device-report-complete");
             labels.delete("device-report-partial");
+            labels.delete("device-report-retest-required");
             labels.delete("awaiting-device-verification");
             if (context.payload.action === "edited") {
               labels.delete("device-verified");
@@ -91,6 +93,12 @@ jobs:
               labels.add(
                 complete ? "device-report-complete" : "device-report-partial",
               );
+              const retestRequired =
+                result.summary.qualificationPlan.status === "retest" ||
+                result.summary.qualificationPlan.qualityFailedTestCaseIds.length > 0;
+              if (retestRequired) {
+                labels.add("device-report-retest-required");
+              }
               if (!complete) {
                 labels.delete("device-verified");
               } else if (labels.has("device-verified")) {
@@ -172,16 +180,26 @@ jobs:
                   `- Device: ${safeText(result.summary.deviceModel)}`,
                   `- OS / app: ${safeText(result.summary.osVersion)} / ${safeText(result.summary.appVersion)}`,
                   `- Test runs: ${result.summary.runCount}`,
-                  `- Completed / stopped / failed: ${result.summary.completedRunCount} / ${result.summary.stoppedRunCount} / ${result.summary.failedRunCount}`,
+                  `- Completed / quality-passed / stopped / failed: ${result.summary.completedRunCount} / ${result.summary.qualifiedRunCount} / ${result.summary.stoppedRunCount} / ${result.summary.failedRunCount}`,
                   plan?.status === "complete"
                     ? `- Guided plan: complete (${plan.completedTestCaseCount}/${plan.requiredTestCaseCount} test cases)`
                     : plan?.status === "partial"
                       ? `- Guided plan: partial (${plan.completedTestCaseCount}/${plan.requiredTestCaseCount} test cases)`
-                      : "- Guided plan: unavailable in this legacy report",
+                      : plan?.status === "retest"
+                        ? "- Guided plan: superseded by the current quality-measurement contract; retest required"
+                        : "- Guided plan: unavailable in this legacy report",
                   ...(plan?.missingTestCaseIds?.length
                     ? [
                         "- Missing guided test cases:",
                         ...plan.missingTestCaseIds.map(
+                          (testCaseId) => `  - \`${testCaseId}\``,
+                        ),
+                      ]
+                    : []),
+                  ...(plan?.qualityFailedTestCaseIds?.length
+                    ? [
+                        "- Guided cases below the current quality thresholds:",
+                        ...plan.qualityFailedTestCaseIds.map(
                           (testCaseId) => `  - \`${testCaseId}\``,
                         ),
                       ]
@@ -192,8 +210,10 @@ jobs:
                   `- Build: \`${result.summary.build.commit}\` / quality run \`${result.summary.build.qualityRun}\``,
                   "",
                   plan?.status === "complete"
-                    ? "This confirms schema, bounds, checksum, data minimization and guided-plan coverage only. It is not device verification. A maintainer must review the private build provenance and measurements before applying `device-verified`."
-                    : "This report is structurally valid but cannot be verified or published until the capability-filtered guided plan is complete.",
+                    ? "This confirms schema, bounds, checksum, data minimization and guided-plan quality coverage only. It is not device verification. A maintainer must review the private build provenance and measurements before applying `device-verified`."
+                    : plan?.status === "retest"
+                      ? "This older report remains readable evidence but cannot be verified or published under the current measurement contract. Submit a fresh guided report from the current private test build."
+                      : "This report is structurally valid but cannot be verified or published until every capability-filtered guided case passes the current quality thresholds.",
                 ].join("\n")
               : [
                   validationMarker,

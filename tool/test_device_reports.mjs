@@ -26,20 +26,22 @@ assert.equal(
 );
 assert.equal(valid.summary.deviceModel, "Huawei test device");
 assert.equal(valid.summary.completedRunCount, 2);
+assert.equal(valid.summary.qualifiedRunCount, 2);
 assert.deepEqual(valid.summary.qualificationPlan, {
   id: "media.hardware-h264.guided",
-  version: 1,
+  version: 2,
   status: "complete",
   requiredTestCaseCount: 2,
   completedTestCaseCount: 2,
   missingTestCaseIds: [],
+  qualityFailedTestCaseIds: [],
 });
 assert.deepEqual(valid.summary.highestProfile, {
   width: 1920,
   height: 1080,
   framesPerSecond: 60,
   requestedBitrateKbps: 12000,
-  effectiveFramesPerSecond: 59.6,
+  effectiveFramesPerSecond: 59.8,
   effectiveBitrateKbps: 11520,
 });
 
@@ -95,6 +97,60 @@ assert.deepEqual(partial.summary.qualificationPlan.missingTestCaseIds, [
   testCaseId(12000),
 ]);
 
+const belowBitrateReport = reportWith({
+  runs: [
+    guidedRun(1, 4500),
+    guidedRun(2, 12000, "guidedPlan", undefined, {
+      bitrateRatio: 0.5,
+      qualityStatus: "fail",
+      failureReasons: ["bitrateBelowThreshold"],
+    }),
+  ],
+  completedTestCaseIds: [testCaseId(4500)],
+  status: "partial",
+});
+const belowBitrate = parseDeviceReportIssue(issueBody(belowBitrateReport));
+assert.equal(belowBitrate.ok, true);
+assert.equal(belowBitrate.summary.qualifiedRunCount, 1);
+assert.deepEqual(
+  belowBitrate.summary.qualificationPlan.qualityFailedTestCaseIds,
+  [testCaseId(12000)],
+);
+
+const recoveredReport = reportWith({
+  runs: [
+    guidedRun(1, 4500),
+    guidedRun(2, 12000, "guidedPlan", undefined, {
+      bitrateRatio: 0.5,
+      qualityStatus: "fail",
+      failureReasons: ["bitrateBelowThreshold"],
+    }),
+    guidedRun(3, 12000),
+  ],
+  completedTestCaseIds: requiredTestCaseIds,
+  status: "complete",
+});
+const recovered = parseDeviceReportIssue(issueBody(recoveredReport));
+assert.equal(recovered.ok, true);
+assert.equal(recovered.summary.qualificationPlan.status, "complete");
+assert.deepEqual(
+  recovered.summary.qualificationPlan.qualityFailedTestCaseIds,
+  [],
+);
+
+const falsifiedQuality = structuredClone(belowBitrateReport);
+falsifiedQuality.runs[1].result.quality = {
+  status: "pass",
+  failureReasons: [],
+};
+falsifiedQuality.testPlan.completedTestCaseIds = requiredTestCaseIds;
+falsifiedQuality.testPlan.status = "complete";
+const falsifiedQualityResult = parseDeviceReportIssue(
+  issueBody(falsifiedQuality),
+);
+assert.equal(falsifiedQualityResult.ok, false);
+assert.match(falsifiedQualityResult.errors.join("\n"), /measured values/u);
+
 const manualReport = reportWith({
   runs: [guidedRun(1, 4500, "manualProfile")],
   completedTestCaseIds: [],
@@ -127,7 +183,13 @@ const extraFieldResult = parseDeviceReportIssue(issueBody(extraField));
 assert.equal(extraFieldResult.ok, false);
 assert.match(extraFieldResult.errors.join("\n"), /unsupported fields/u);
 
-const legacyReport = structuredClone(manualReport);
+const previousPlanReport = downgradeToSchema2(completeReport);
+const previousPlan = parseDeviceReportIssue(issueBody(previousPlanReport));
+assert.equal(previousPlan.ok, true);
+assert.equal(previousPlan.summary.qualificationPlan.status, "retest");
+assert.equal(previousPlan.summary.qualificationPlan.completedTestCaseCount, 0);
+
+const legacyReport = downgradeToSchema2(manualReport);
 legacyReport.schemaVersion = 1;
 delete legacyReport.testPlan;
 const legacy = parseDeviceReportIssue(issueBody(legacyReport));
@@ -165,7 +227,7 @@ assert.deepEqual(
   verifiedDevices.devices[0].localMediaMeasurement.qualificationPlan,
   {
     id: "media.hardware-h264.guided",
-    version: 1,
+    version: 2,
     completedTestCases: 2,
     requiredTestCases: 2,
   },
@@ -209,7 +271,7 @@ function reportWith({
 }) {
   return {
     reportType: "irl-dolphin-device-qualification",
-    schemaVersion: 2,
+    schemaVersion: 3,
     generatedAtUtc: "2026-09-05T00:30:00.000Z",
     build: {
       commit: "40b17f1a7360317c41005e6835e56af3e33533db",
@@ -228,7 +290,7 @@ function reportWith({
       [captureProfile(1920, 1080, 60, [4500, 6000, 8000, 9000, 10000, 12000])],
     testPlan: {
       id: "media.hardware-h264.guided",
-      version: 1,
+      version: 2,
       requiredTestCaseIds: requiredIds,
       completedTestCaseIds,
       status,
@@ -242,7 +304,18 @@ function guidedRun(
   bitrateKbps,
   testScenario = "guidedPlan",
   profile = { width: 1920, height: 1080, framesPerSecond: 60 },
+  {
+    bitrateRatio = 0.96,
+    qualityStatus = "pass",
+    failureReasons = [],
+  } = {},
 ) {
+  const durationMs = 15_000;
+  const capturedFrames = profile.framesPerSecond * 15;
+  const encodedFrames = capturedFrames - 3;
+  const encodedBytes = Math.round(
+    (bitrateKbps * durationMs * bitrateRatio) / 8,
+  );
   return {
     runId: `run-${String(runNumber).padStart(3, "0")}`,
     testCaseId: testCaseId(bitrateKbps, profile),
@@ -250,7 +323,7 @@ function guidedRun(
     testScenario,
     recordedAtUtc: `2026-09-05T00:${String(runNumber).padStart(2, "0")}:00.000Z`,
     request: {
-      durationMs: 5000,
+      durationMs,
       width: profile.width,
       height: profile.height,
       framesPerSecond: profile.framesPerSecond,
@@ -258,14 +331,24 @@ function guidedRun(
     },
     result: {
       outcome: "completed",
-      durationMs: 5000,
+      durationMs,
       startupLatencyMs: 180,
-      capturedFrames: profile.framesPerSecond * 5,
-      encodedFrames: profile.framesPerSecond * 5 - 2,
-      frameDelta: 2,
-      encodedBytes: bitrateKbps * 625,
-      effectiveFramesPerSecond: profile.framesPerSecond - 0.4,
-      effectiveBitrateKbps: bitrateKbps * 0.96,
+      capturedFrames,
+      encodedFrames,
+      frameDelta: capturedFrames - encodedFrames,
+      encodedBytes,
+      effectiveFramesPerSecond: round2(
+        (encodedFrames * 1000) / durationMs,
+      ),
+      effectiveBitrateKbps: round2(
+        (encodedBytes * 8) / durationMs,
+      ),
+      bitrateMode: "constant",
+      measurementWindow: "postStartup",
+      quality: {
+        status: qualityStatus,
+        failureReasons,
+      },
       encoderFailures: 0,
       thermalStateBefore: "nominal",
       thermalStateAfter: "fair",
@@ -287,8 +370,49 @@ function testCaseId(
 ) {
   return (
     `media.hardware-h264.${profile.width}x${profile.height}` +
-    `.${profile.framesPerSecond}fps.${bitrateKbps}kbps.5000ms`
+    `.${profile.framesPerSecond}fps.${bitrateKbps}kbps.15000ms`
   );
+}
+
+function downgradeToSchema2(report) {
+  const previous = structuredClone(report);
+  previous.schemaVersion = 2;
+  if (previous.testPlan) {
+    previous.testPlan.version = 1;
+    previous.testPlan.requiredTestCaseIds = previous.testPlan.requiredTestCaseIds.map(
+      (testCaseId) => testCaseId.replace(".15000ms", ".5000ms"),
+    );
+    previous.testPlan.completedTestCaseIds =
+      previous.testPlan.completedTestCaseIds.map((testCaseId) =>
+        testCaseId.replace(".15000ms", ".5000ms"),
+      );
+  }
+  for (const run of previous.runs) {
+    run.request.durationMs = 5000;
+    run.testCaseId = run.testCaseId.replace(".15000ms", ".5000ms");
+    if (!run.result) continue;
+    run.result.durationMs = 5000;
+    run.result.capturedFrames = run.request.framesPerSecond * 5;
+    run.result.encodedFrames = run.result.capturedFrames - 2;
+    run.result.frameDelta = 2;
+    run.result.encodedBytes = Math.round(
+      (run.request.bitrateKbps * 5000 * 0.96) / 8,
+    );
+    run.result.effectiveFramesPerSecond = round2(
+      (run.result.encodedFrames * 1000) / 5000,
+    );
+    run.result.effectiveBitrateKbps = round2(
+      (run.result.encodedBytes * 8) / 5000,
+    );
+    delete run.result.bitrateMode;
+    delete run.result.measurementWindow;
+    delete run.result.quality;
+  }
+  return previous;
+}
+
+function round2(value) {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
 }
 
 function captureProfile(width, height, framesPerSecond, bitrateOptionsKbps) {
