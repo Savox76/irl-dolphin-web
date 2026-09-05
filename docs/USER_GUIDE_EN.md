@@ -1,8 +1,8 @@
 # IRL Dolphin user guide (English)
 
-Version 1.1 — for `v0.1.0-alpha.3` and the planned product expansion
+Version 1.2 — for `v0.1.0-alpha.3` and current unreleased changes
 
-Updated: September 3, 2026
+Updated: September 5, 2026
 
 > IRL Dolphin is a private Android alpha. The current build is debug-signed,
 > not publicly distributed and not yet approved for continuous production use.
@@ -236,18 +236,21 @@ Under **Settings → Camera and encoder measurement**, test the local
 camera-to-hardware-H.264 path. This test does not transmit a stream and does not
 check networking, OBS, an IRL host or a streaming service.
 
-1. Select a device-reported combination of **720p/1080p**, **30/60 FPS** and an
-   offered **bitrate**.
-2. Run the five-second test. Repeat relevant profiles and, when useful, the same
-   case for stability evidence; the report retains at most 24 runs in memory.
+1. Start the **Guided test plan**. It automatically derives cases for
+   **720p/1080p**, **30/60 FPS**, and the minimum, default and maximum offered
+   bitrate from the device capabilities. Every run lasts five seconds.
+2. Follow progress and remaining cases. After a stop or failure, continue the
+   plan during the same app session; completed cases are not repeated. Manual
+   single runs are for troubleshooting and cannot replace missing guided cases.
 3. Use **Copy report** to inspect the complete redacted JSON. Every measurement
    has a stable test-case ID derived from resolution, FPS, bitrate and duration.
 4. Use **Submit public report** only when the fields listed in the dialog may be
    public. The app opens a prefilled issue in the public website repository;
    only your final GitHub submission transfers the report.
-5. Automated validation confirms only schema, bounds and checksum. A profile
-   becomes a **verified device** only after a maintainer separately reviews
-   build provenance and measurements.
+5. Automated validation confirms schema, bounds, checksum and complete coverage
+   of the capability-filtered plan. A legacy or interrupted report is marked
+   partial and is not published. A profile becomes a **verified device** only
+   after a maintainer separately reviews build provenance and measurements.
 
 Local results remain until **Clear report** or app-process termination. A
 submitted issue remains public. Editing it revokes device approval until the

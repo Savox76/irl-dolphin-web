@@ -128,10 +128,10 @@ const translations = {
     devicesKicker: "Physische Qualifizierung",
     devicesTitle: "Geprüfte Geräte – mit öffentlichem Nachweis",
     devicesLead:
-      "Die Liste entsteht ausschließlich aus versionierten App-Berichten. Ein Eintrag erscheint erst nach automatischer Datenprüfung und einer separaten Maintainer-Freigabe.",
+      "Die Liste entsteht ausschließlich aus versionierten App-Berichten. Ein Eintrag erscheint erst nach vollständigem geführtem Testplan, automatischer Datenprüfung und separater Maintainer-Freigabe.",
     devicesStepCapture: "Lokal messen",
     devicesStepCaptureText:
-      "Auflösung, FPS, Bitrate, Encoder- und Laufzeitwerte werden ohne Medieninhalt erfasst.",
+      "Ein geführter Plan prüft automatisch die passenden Auflösungen, FPS sowie minimale, Standard- und maximale Bitraten ohne Medieninhalt.",
     devicesStepValidate: "Öffentlich validieren",
     devicesStepValidateText:
       "GitHub prüft Schema, Prüfsumme, Größenlimits und unbekannte Zusatzfelder.",
@@ -153,6 +153,7 @@ const translations = {
     deviceRequestedBitrate: "Angefordert",
     deviceMeasuredProfile: "Gemessen",
     deviceRuns: "Erfolgreiche Läufe",
+    devicePlanCoverage: "Geführter Testplan",
     deviceVerifiedOn: "Freigegeben",
     deviceEvidence: "Nachweis öffnen",
     suggestionsKicker: "Sinnvolle nächste Ergänzungen",
@@ -290,10 +291,10 @@ const translations = {
     devicesKicker: "Physical qualification",
     devicesTitle: "Verified devices, backed by public evidence",
     devicesLead:
-      "This list is built only from versioned app reports. An entry appears after automated data validation and a separate maintainer approval.",
+      "This list is built only from versioned app reports. An entry appears after a complete guided plan, automated data validation and separate maintainer approval.",
     devicesStepCapture: "Measure locally",
     devicesStepCaptureText:
-      "Resolution, FPS, bitrate, encoder and runtime metrics are captured without media content.",
+      "A guided plan automatically covers matching resolutions, FPS, and minimum, default and maximum bitrates without media content.",
     devicesStepValidate: "Validate publicly",
     devicesStepValidateText:
       "GitHub checks the schema, checksum, size limits and unknown extra fields.",
@@ -314,6 +315,7 @@ const translations = {
     deviceRequestedBitrate: "Requested",
     deviceMeasuredProfile: "Measured",
     deviceRuns: "Successful runs",
+    devicePlanCoverage: "Guided test plan",
     deviceVerifiedOn: "Approved",
     deviceEvidence: "Open evidence",
     suggestionsKicker: "Useful next additions",
@@ -1204,6 +1206,14 @@ function renderVerifiedDevices() {
       dictionary.deviceRuns,
       numberFormat.format(device.localMediaMeasurement.successfulRuns),
     );
+    const plan = device.localMediaMeasurement.qualificationPlan;
+    if (plan) {
+      appendDetail(
+        details,
+        dictionary.devicePlanCoverage,
+        `${numberFormat.format(plan.completedTestCases)}/${numberFormat.format(plan.requiredTestCases)} · v${numberFormat.format(plan.version)}`,
+      );
+    }
     appendDetail(
       details,
       dictionary.deviceVerifiedOn,

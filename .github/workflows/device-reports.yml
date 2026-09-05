@@ -49,6 +49,8 @@ jobs:
               ["device-report", "1d76db", "Machine-readable IRL Dolphin device report"],
               ["device-report-valid", "0e8a16", "Report passed automated schema validation"],
               ["device-report-invalid", "d1242f", "Report failed automated schema validation"],
+              ["device-report-complete", "1f883d", "Guided plan has complete capability-filtered coverage"],
+              ["device-report-partial", "fbca04", "Valid report with incomplete or legacy guided-plan coverage"],
               ["awaiting-device-verification", "bf8700", "Valid report awaiting maintainer review"],
               ["device-verified", "8250df", "Report provenance and result reviewed by a maintainer"],
             ];
@@ -75,6 +77,8 @@ jobs:
             labels.add("device-report");
             labels.delete("device-report-valid");
             labels.delete("device-report-invalid");
+            labels.delete("device-report-complete");
+            labels.delete("device-report-partial");
             labels.delete("awaiting-device-verification");
             if (context.payload.action === "edited") {
               labels.delete("device-verified");
@@ -82,7 +86,14 @@ jobs:
 
             if (result.ok) {
               labels.add("device-report-valid");
-              if (labels.has("device-verified")) {
+              const complete =
+                result.summary.qualificationPlan.status === "complete";
+              labels.add(
+                complete ? "device-report-complete" : "device-report-partial",
+              );
+              if (!complete) {
+                labels.delete("device-verified");
+              } else if (labels.has("device-verified")) {
                 const verificationMarker = verificationMarkerFor(
                   result.reportSha256,
                 );
@@ -145,6 +156,7 @@ jobs:
                 .replace(/[^\p{L}\p{N} ._()/+-]/gu, "?")
                 .slice(0, 128);
             const profile = result.summary?.highestProfile;
+            const plan = result.summary?.qualificationPlan;
             const previousValidation = comments.find(
               (comment) =>
                 comment.user?.login === "github-actions[bot]" &&
@@ -161,12 +173,27 @@ jobs:
                   `- OS / app: ${safeText(result.summary.osVersion)} / ${safeText(result.summary.appVersion)}`,
                   `- Test runs: ${result.summary.runCount}`,
                   `- Completed / stopped / failed: ${result.summary.completedRunCount} / ${result.summary.stoppedRunCount} / ${result.summary.failedRunCount}`,
+                  plan?.status === "complete"
+                    ? `- Guided plan: complete (${plan.completedTestCaseCount}/${plan.requiredTestCaseCount} test cases)`
+                    : plan?.status === "partial"
+                      ? `- Guided plan: partial (${plan.completedTestCaseCount}/${plan.requiredTestCaseCount} test cases)`
+                      : "- Guided plan: unavailable in this legacy report",
+                  ...(plan?.missingTestCaseIds?.length
+                    ? [
+                        "- Missing guided test cases:",
+                        ...plan.missingTestCaseIds.map(
+                          (testCaseId) => `  - \`${testCaseId}\``,
+                        ),
+                      ]
+                    : []),
                   profile
                     ? `- Highest completed local run: ${profile.width}×${profile.height} · ${profile.framesPerSecond} FPS · ${profile.requestedBitrateKbps} Kbit/s requested · ${profile.effectiveFramesPerSecond} FPS / ${profile.effectiveBitrateKbps} Kbit/s measured`
                     : "- Highest completed local run: not available",
                   `- Build: \`${result.summary.build.commit}\` / quality run \`${result.summary.build.qualityRun}\``,
                   "",
-                  "This confirms schema, bounds, checksum and data minimization only. It is not device verification. A maintainer must review the private build provenance and measurements before applying `device-verified`.",
+                  plan?.status === "complete"
+                    ? "This confirms schema, bounds, checksum, data minimization and guided-plan coverage only. It is not device verification. A maintainer must review the private build provenance and measurements before applying `device-verified`."
+                    : "This report is structurally valid but cannot be verified or published until the capability-filtered guided plan is complete.",
                 ].join("\n")
               : [
                   validationMarker,

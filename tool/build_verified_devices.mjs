@@ -34,7 +34,12 @@ export async function buildVerifiedDevices({
       continue;
     }
     const parsed = parseDeviceReportIssue(issue.body);
-    if (!parsed.ok || !parsed.summary.deviceModel || !parsed.summary.highestProfile) {
+    if (
+      !parsed.ok ||
+      parsed.summary.qualificationPlan.status !== "complete" ||
+      !parsed.summary.deviceModel ||
+      !parsed.summary.highestProfile
+    ) {
       continue;
     }
     const comments = issue.fixtureComments ?? (await loadComments(issue));
@@ -68,6 +73,12 @@ export async function buildVerifiedDevices({
       },
       build: summary.build,
       localMediaMeasurement: {
+        qualificationPlan: {
+          id: summary.qualificationPlan.id,
+          version: summary.qualificationPlan.version,
+          completedTestCases: summary.qualificationPlan.completedTestCaseCount,
+          requiredTestCases: summary.qualificationPlan.requiredTestCaseCount,
+        },
         successfulRuns: summary.completedRunCount,
         stoppedRuns: summary.stoppedRunCount,
         failedRuns: summary.failedRunCount,
