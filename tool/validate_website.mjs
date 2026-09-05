@@ -133,6 +133,16 @@ if (!html.includes("https://github.com/Savox76/irl-dolphin-web/releases")) {
   failures.push("Website lacks the public device-test release link");
 }
 
+for (const obsoleteCopy of [
+  "Private Android-Alpha",
+  "Aktuell nur als debug-signierter Testbuild für autorisierte Tester",
+  "Installiere sie nur aus dem zugehörigen privaten GitHub-Release",
+]) {
+  if (`${html}\n${script}`.includes(obsoleteCopy)) {
+    failures.push(`Website contains obsolete private-distribution copy: ${obsoleteCopy}`);
+  }
+}
+
 for (const token of [
   "## Deutsch",
   "## English",
