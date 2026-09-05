@@ -14,7 +14,6 @@ roadmap but not implemented yet.
 
 - [Pre-release master plan](docs/PRE_RELEASE_MASTERPLAN.md)
 - [Privacy and data inventory / Datenschutz und Dateninventar](docs/PRIVACY_AND_DATA_INVENTORY.md)
-- [Device-test builds / Geräte-Testbuilds](docs/DEVICE_TEST_BUILDS.md)
 - [Device qualification evidence pipeline / Gerätequalifikations-Nachweiskette](docs/DEVICE_QUALIFICATION_PIPELINE.md)
 - [Deutsche Anleitung](docs/USER_GUIDE_DE.md)
 - [English guide](docs/USER_GUIDE_EN.md)
@@ -23,9 +22,8 @@ roadmap but not implemented yet.
 
 This public repository contains the static project website, public
 documentation, redacted device-report issues, their guided-plan coverage and
-validation workflow, public debug-signed device-test prereleases, and the
-generated verified-device list. The IRL Dolphin application source remains
-private.
+validation workflow, and the generated verified-device list. The IRL Dolphin
+application source, test APKs and all releases remain private.
 
 ## Local preview
 
