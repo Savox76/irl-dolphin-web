@@ -21,11 +21,19 @@ geführte Testfälle zählen zur Planabdeckung.
 Manuelle Einzelmessungen bleiben zur Fehlersuche möglich, ersetzen den
 geführten Plan aber nicht.
 
+IRL Dolphin setzt Android 12 (API 31) beziehungsweise iOS 17 voraus; ältere
+Geräte können die App nicht installieren. Das ersetzt keine Hardwareprüfung,
+weil Kamera-Treiber, Encoder und thermisches Verhalten trotz gleicher
+Betriebssystemversion variieren. Die Liste dokumentiert deshalb repräsentativ
+getestete Geräte und verlangt nicht, jedes Modell am Markt zu qualifizieren.
+
 Vor Geräteerkennung oder Kamerazugriff lädt die App die vollständige statische
 Liste geprüfter Geräte, ohne das lokale Modell als Anfrageparameter zu senden.
-Ein exakter Treffer aus Plattform, Modell und Betriebssystemversion sperrt den
-Testplan. Ist die Liste nicht erreichbar oder ungültig, bleibt der Test
-ebenfalls gesperrt. Eine neue Betriebssystemversion gilt als neues Profil.
+Ein Treffer aus Plattform, Modell und Android-API beziehungsweise
+iOS-Hauptversion sperrt den Testplan. Kleinere Betriebssystemaktualisierungen
+verlangen keinen neuen Volltest; eine neue Hauptversion dagegen schon. Ist die
+Liste vorübergehend nicht erreichbar, warnt die App, lässt den Test aber zu.
+Doppelte Einträge werden vor der Maintainer-Freigabe erneut abgefangen.
 
 Ein Lauf zählt nur, wenn er abgeschlossen ist, die Dauer höchstens eine Sekunde
 abweicht, mindestens 90 % der Soll-FPS und 70–130 % der Soll-Bitrate erreicht,
@@ -115,10 +123,18 @@ measures for 15 seconds after the first encoded frame. Only quality-passing
 guided runs count towards plan coverage. Manual measurements remain available
 for troubleshooting but cannot replace the guided plan.
 
+IRL Dolphin requires Android 12 (API 31) or iOS 17; older devices cannot install
+the app. That does not replace hardware qualification because camera drivers,
+encoders and thermal behavior still vary on the same operating-system release.
+The list therefore records representative tested devices instead of requiring
+every model on the market to be qualified.
+
 Before source discovery or camera access, the app downloads the complete static
 verified-device catalog without sending the local model as a query parameter.
-An exact platform, model and OS-version match locks the plan. An unavailable or
-invalid catalog also keeps testing locked. A new OS version is a new profile.
+A platform, model and Android-API/iOS-major match locks the plan. Minor OS
+updates do not require another full test; a new major release does. If the
+catalog is temporarily unavailable, the app warns but permits testing.
+Duplicate entries are caught again before maintainer approval.
 
 A run counts only when it completes within one second of requested duration,
 reaches at least 90% of target FPS and 70–130% of target bitrate, keeps absolute
