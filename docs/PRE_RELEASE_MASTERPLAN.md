@@ -430,7 +430,8 @@ and does not take down independent sources, chat or control.
 - [ ] Kick app plus signature-verifying HTTPS/WSS relay, or visibly exclude
   Kick from the advertised scope
 - [ ] Official YouTube/Kick artwork only after provider stability
-- [ ] Final logo and minimum Android/iOS versions
+- [ ] Final logo
+- [x] Minimum versions fixed at Android 12 (API 31) and iOS 17
 - [x] Publish technical privacy information and the complete current-alpha
   data inventory
 - [ ] Add media, device and host data to the inventory before distributing the

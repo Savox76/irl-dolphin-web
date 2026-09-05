@@ -81,7 +81,7 @@ const translations = {
       "Öffne die Schritte in der Reihenfolge, die du tatsächlich brauchst. Nicht verfügbare Anbieter und Medienfunktionen sind deutlich markiert.",
     beforeInstallTitle: "Vor der Installation",
     beforeInstallText:
-      "Die aktuelle APK ist debug-signiert und ausschließlich für autorisierte Gerätetests gedacht. Beziehe sie nur aus dem privaten App-Repository und gib sie nicht weiter.",
+      "Die aktuelle APK ist debug-signiert, setzt Android 12 voraus und ist ausschließlich für autorisierte Gerätetests gedacht. Beziehe sie nur aus dem privaten App-Repository und gib sie nicht weiter.",
     roadmapKicker: "Masterplan bis zur Vorversion",
     roadmapTitle: "Von der Steuerungs-Alpha zur mobilen IRL-Plattform",
     roadmapLead:
@@ -128,7 +128,7 @@ const translations = {
     devicesKicker: "Physische Qualifizierung",
     devicesTitle: "Geprüfte Geräte – mit öffentlichem Nachweis",
     devicesLead:
-      "Die Liste entsteht ausschließlich aus versionierten App-Berichten. Ein Eintrag erscheint erst nach vollständigem geführtem Testplan, automatischer Datenprüfung und separater Maintainer-Freigabe.",
+      "Die Liste dokumentiert repräsentativ getestete Geräte ab Android 12 beziehungsweise iOS 17. Ein Eintrag erscheint erst nach vollständigem geführtem Testplan, automatischer Datenprüfung und separater Maintainer-Freigabe.",
     devicesStepCapture: "Lokal messen",
     devicesStepCaptureText:
       "Ein geführter Plan prüft automatisch die passenden Auflösungen, FPS sowie minimale, Standard- und maximale Bitraten ohne Medieninhalt.",
@@ -244,7 +244,7 @@ const translations = {
       "Open the steps in the order you actually need. Providers and media capabilities that are not available yet are clearly identified.",
     beforeInstallTitle: "Before installation",
     beforeInstallText:
-      "The current APK is debug-signed and intended only for authorized device tests. Obtain it only from the private app repository and do not redistribute it.",
+      "The current APK is debug-signed, requires Android 12 and is intended only for authorized device tests. Obtain it only from the private app repository and do not redistribute it.",
     roadmapKicker: "Pre-release master plan",
     roadmapTitle: "From control alpha to mobile IRL platform",
     roadmapLead:
@@ -291,7 +291,7 @@ const translations = {
     devicesKicker: "Physical qualification",
     devicesTitle: "Verified devices, backed by public evidence",
     devicesLead:
-      "This list is built only from versioned app reports. An entry appears after a complete guided plan, automated data validation and separate maintainer approval.",
+      "This list records representative tested devices running Android 12 or iOS 17 and newer. An entry appears after a complete guided plan, automated data validation and separate maintainer approval.",
     devicesStepCapture: "Measure locally",
     devicesStepCaptureText:
       "A guided plan automatically covers matching resolutions, FPS, and minimum, default and maximum bitrates without media content.",
