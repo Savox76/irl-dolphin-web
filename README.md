@@ -21,7 +21,8 @@ roadmap but not implemented yet.
 ## Repository scope
 
 This public repository contains the static project website, public
-documentation, redacted device-report issues, their guided-plan coverage and
+documentation, redacted device-report issues, their full or OS-upgrade plan
+coverage and
 validation workflow, and the generated verified-device list. The IRL Dolphin
 application source, test APKs and all releases remain private.
 

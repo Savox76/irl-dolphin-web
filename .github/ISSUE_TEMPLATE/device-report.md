@@ -6,13 +6,15 @@ labels: device-report
 assignees: ""
 ---
 
-Use the current private IRL Dolphin test build. Run **Guided test plan** followed
-by **Submit public report**. Each current case measures for 15 seconds after the
-encoder starts and must pass the displayed quality thresholds.
-whenever possible. The app fills this issue with a bounded machine-readable
-payload, including capability-filtered coverage, and explains every public
-field before opening GitHub. Manual or interrupted reports remain useful for
-troubleshooting but cannot enter the verified-device list.
+Use the current private IRL Dolphin test build and run the qualification plan
+offered by the app. A new device receives the full guided plan; an approved
+device on a later OS major may receive the two-case upgrade check. Each case
+measures for 15 seconds after encoder startup and must pass the displayed
+quality thresholds. Then choose **Submit public report**. The app fills this
+issue with a bounded machine-readable payload, including capability-filtered
+coverage, and explains every public field before opening GitHub. Manual or
+interrupted reports remain useful for troubleshooting but cannot enter the
+verified-device list.
 
 Do not post recordings, camera frames, chat content, credentials, stream keys,
 serial numbers, IMEI values or other stable device identifiers.

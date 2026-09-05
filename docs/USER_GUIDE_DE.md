@@ -254,22 +254,30 @@ Unter **Einstellungen → Kamera- und Encoder-Messung** prüfst du den lokalen
 Kamera-zu-Hardware-H.264-Pfad. Dieser Test sendet noch keinen Stream und prüft
 weder Netzwerk noch OBS, IRL-Host oder Streamingdienst.
 
-1. Starte den **Geführten Testplan**. Er erzeugt anhand der Gerätefähigkeiten
-   automatisch Testfälle für **720p/1080p**, **30/60 FPS** sowie die minimale,
-   Standard- und maximale angebotene Bitrate. Jeder Lauf dauert fünf Sekunden.
-2. Verfolge Fortschritt und verbleibende Testfälle. Nach einem Stopp oder Fehler
+1. Warte auf den Abgleich mit der öffentlichen Geräteliste. Für dasselbe Modell
+   und dieselbe Android-API beziehungsweise iOS-Hauptversion ist kein neuer
+   Test nötig. Nach einer höheren OS-Hauptversion erscheint nur der **Kurze
+   System-Upgrade-Check** mit Standard- und höchstem Profil.
+2. Neue Geräte erhalten den **Geführten Testplan**. Er erzeugt anhand der
+   Gerätefähigkeiten Testfälle für **720p/1080p**, **30/60 FPS** sowie die
+   minimale, Standard- und maximale angebotene Bitrate. Jeder Lauf misst 15
+   Sekunden nach dem Encoderstart.
+3. Verfolge Fortschritt und verbleibende Testfälle. Nach einem Stopp oder Fehler
    kannst du den Plan in derselben App-Sitzung fortsetzen; abgeschlossene Fälle
    werden nicht wiederholt. Manuelle Einzeltests dienen nur zur Fehlersuche und
    ersetzen keine fehlenden geführten Testfälle.
-3. Nutze **Bericht kopieren**, um das vollständige bereinigte JSON zu prüfen.
+4. Bei einem fehlenden früheren Profil, geändertem Encoder oder einer
+   Qualitätsabweichung verlangt die App statt des Kurztests den Volltest.
+5. Nutze **Bericht kopieren**, um das vollständige bereinigte Schema-3-JSON zu prüfen.
    Jede Messung besitzt eine feste Testfall-ID aus Auflösung, FPS, Bitrate und
    Dauer.
-4. Nutze **Öffentlich einreichen** nur, wenn die im Dialog genannten Felder
+6. Nutze **Öffentlich einreichen** nur, wenn die im Dialog genannten Felder
    veröffentlicht werden dürfen. Die App öffnet ein vorausgefülltes Issue im
    öffentlichen Webseiten-Repository; erst dein abschließendes Absenden auf
    GitHub überträgt den Bericht.
-5. Die automatische Prüfung bestätigt Schema, Grenzen, Prüfsumme und die
-   vollständige Abdeckung des geräteabhängigen Testplans. Ein älterer oder
+7. Die automatische Prüfung bestätigt Schema, Grenzen, Prüfsumme und die
+   vollständige Planabdeckung. Beim Kurztest muss zusätzlich die frühere
+   freigegebene Issue-Basis passen. Ein älterer oder
    abgebrochener Bericht wird als teilweise markiert und nicht veröffentlicht.
    **Geprüftes Gerät** wird das Profil erst nach separater Kontrolle der
    Build-Herkunft und Messwerte durch einen Maintainer.

@@ -9,8 +9,10 @@ const maximumCompressedBytes = 12_000;
 const maximumReportBytes = 64_000;
 const maximumRuns = 24;
 const guidedPlanId = "media.hardware-h264.guided";
+const operatingSystemUpgradePlanId = "media.hardware-h264.os-upgrade";
 const currentSchemaVersion = 3;
 const currentGuidedPlanVersion = 2;
+const operatingSystemUpgradePlanVersion = 1;
 const legacyGuidedPlanVersion = 1;
 const legacyMeasurementDurationMs = 5_000;
 const currentMeasurementDurationMs = 15_000;
@@ -138,6 +140,99 @@ export function hasMatchingVerification(comments, reportSha256) {
   );
 }
 
+export function compatibilityProfileIdFor({ platform, deviceModel, osVersion }) {
+  const key = [
+    platform,
+    deviceModel.toLocaleLowerCase("en"),
+    osVersion.toLocaleLowerCase("en"),
+  ].join("\u0000");
+  return createHash("sha256").update(key).digest("hex").slice(0, 16);
+}
+
+export function verifyOperatingSystemUpgradeBaseline({
+  reportResult,
+  baselineIssue,
+  baselineResult,
+  baselineComments,
+}) {
+  const errors = [];
+  const declared = reportResult?.summary?.qualificationPlan?.baseline;
+  if (!reportResult?.ok || reportResult.summary.qualificationPlan.id !== operatingSystemUpgradePlanId) {
+    return { ok: false, errors: ["The report is not a valid OS-upgrade check."] };
+  }
+  if (!declared) {
+    return { ok: false, errors: ["The OS-upgrade baseline declaration is missing."] };
+  }
+  if (!baselineIssue || baselineIssue.number !== declared.sourceIssue.number) {
+    errors.push("The referenced baseline issue was not found.");
+  }
+  if (baselineIssue?.html_url !== declared.sourceIssue.url) {
+    errors.push("The baseline issue URL does not match GitHub.");
+  }
+  if (
+    !hasLabel(baselineIssue, "device-report-valid") ||
+    !hasLabel(baselineIssue, "device-verified")
+  ) {
+    errors.push("The baseline issue is not an approved device report.");
+  }
+  if (
+    !baselineResult?.ok ||
+    baselineResult.summary.qualificationPlan.status !== "complete"
+  ) {
+    errors.push("The baseline issue does not contain a complete valid report.");
+  }
+  if (
+    baselineResult?.ok &&
+    !hasMatchingVerification(baselineComments ?? [], baselineResult.reportSha256)
+  ) {
+    errors.push("The baseline approval is not bound to its current checksum.");
+  }
+  if (baselineResult?.ok) {
+    const current = reportResult.summary;
+    const baseline = baselineResult.summary;
+    if (
+      current.platform !== baseline.platform ||
+      normalized(current.deviceModel) !== normalized(baseline.deviceModel)
+    ) {
+      errors.push("The baseline belongs to a different device model or platform.");
+    }
+    if (normalized(declared.osVersion) !== normalized(baseline.osVersion)) {
+      errors.push("The declared baseline OS does not match the referenced report.");
+    }
+    if (
+      declared.compatibilityProfileId !==
+      compatibilityProfileIdFor(baseline)
+    ) {
+      errors.push("The declared compatibility profile does not match the baseline report.");
+    }
+    if (
+      !isLaterOperatingSystemRelease({
+        platform: current.platform,
+        current: current.osVersion,
+        baseline: baseline.osVersion,
+      })
+    ) {
+      errors.push("The current OS is not a newer major release than the baseline.");
+    }
+    if (!isNormalizedSubset(current.encoders, baseline.encoders)) {
+      errors.push("The hardware encoder differs from the approved baseline.");
+    }
+    const highest = baseline.highestProfile;
+    if (
+      highest &&
+      !reportResult.report.supportedCaptureProfiles.some(
+        (profile) =>
+          profile.width === highest.width &&
+          profile.height === highest.height &&
+          profile.framesPerSecond === highest.framesPerSecond,
+      )
+    ) {
+      errors.push("The highest approved capture profile is no longer supported.");
+    }
+  }
+  return { ok: errors.length === 0, errors };
+}
+
 function validateReport(report, errors) {
   if (!isRecord(report)) {
     add(errors, "report must be an object.");
@@ -205,6 +300,9 @@ function validateReport(report, errors) {
 
   validateProfiles(report.supportedCaptureProfiles, errors);
   validateRuns(report.runs, schemaVersion, errors);
+  if (schemaVersion === currentSchemaVersion) {
+    validateRunEnvironmentConsistency(report.runs, errors);
+  }
   if (schemaVersion >= 2) {
     validateTestPlan(
       report.testPlan,
@@ -302,31 +400,143 @@ function validateRuns(runs, schemaVersion, errors) {
   });
 }
 
+function validateRunEnvironmentConsistency(runs, errors) {
+  if (!Array.isArray(runs)) return;
+  const environments = runs
+    .filter((run) => isRecord(run?.result?.environment))
+    .map((run) => run.result.environment);
+  const baseline = environments[0];
+  if (!baseline) return;
+  environments.slice(1).forEach((environment, index) => {
+    if (
+      environment.platform !== baseline.platform ||
+      normalized(environment.deviceModel) !== normalized(baseline.deviceModel) ||
+      normalized(environment.osVersion) !== normalized(baseline.osVersion) ||
+      environment.appVersion !== baseline.appVersion
+    ) {
+      add(
+        errors,
+        `report.runs[${index + 1}].result.environment does not match the other runs.`,
+      );
+    }
+  });
+}
+
+function validateUpgradeBaselineDeclaration(baseline, runs, errors) {
+  if (
+    !exactKeys(
+      baseline,
+      ["compatibilityProfileId", "osVersion", "sourceIssue"],
+      "report.testPlan.baseline",
+      errors,
+    )
+  ) {
+    return;
+  }
+  pattern(
+    baseline.compatibilityProfileId,
+    /^[0-9a-f]{16}$/,
+    "report.testPlan.baseline.compatibilityProfileId",
+    errors,
+  );
+  text(baseline.osVersion, 96, "report.testPlan.baseline.osVersion", errors);
+  if (
+    exactKeys(
+      baseline.sourceIssue,
+      ["number", "url"],
+      "report.testPlan.baseline.sourceIssue",
+      errors,
+    )
+  ) {
+    integer(
+      baseline.sourceIssue.number,
+      1,
+      1_000_000_000,
+      "report.testPlan.baseline.sourceIssue.number",
+      errors,
+    );
+    text(
+      baseline.sourceIssue.url,
+      256,
+      "report.testPlan.baseline.sourceIssue.url",
+      errors,
+    );
+    if (
+      Number.isInteger(baseline.sourceIssue.number) &&
+      baseline.sourceIssue.url !==
+        `https://github.com/Savox76/irl-dolphin-web/issues/${baseline.sourceIssue.number}`
+    ) {
+      add(errors, "report.testPlan.baseline.sourceIssue.url does not match its issue number.");
+    }
+  }
+
+  const currentEnvironment = Array.isArray(runs)
+    ? runs.filter((run) => isRecord(run?.result?.environment)).at(-1)?.result
+        .environment
+    : null;
+  if (
+    currentEnvironment &&
+    typeof baseline.osVersion === "string" &&
+    !isLaterOperatingSystemRelease({
+      platform: currentEnvironment.platform,
+      current: currentEnvironment.osVersion,
+      baseline: baseline.osVersion,
+    })
+  ) {
+    add(
+      errors,
+      "report.testPlan.baseline.osVersion is not an older major OS release.",
+    );
+  }
+}
+
 function validateTestPlan(plan, profiles, runs, schemaVersion, errors) {
+  const isUpgradePlan =
+    schemaVersion === currentSchemaVersion &&
+    isRecord(plan) &&
+    plan.id === operatingSystemUpgradePlanId;
   if (
     !exactKeys(
       plan,
-      ["id", "version", "requiredTestCaseIds", "completedTestCaseIds", "status"],
+      [
+        "id",
+        "version",
+        "requiredTestCaseIds",
+        "completedTestCaseIds",
+        "status",
+        ...(isUpgradePlan ? ["baseline"] : []),
+      ],
       "report.testPlan",
       errors,
     )
   ) {
     return;
   }
-  equal(plan.id, guidedPlanId, "report.testPlan.id", errors);
+  oneOf(
+    plan.id,
+    schemaVersion === currentSchemaVersion
+      ? [guidedPlanId, operatingSystemUpgradePlanId]
+      : [guidedPlanId],
+    "report.testPlan.id",
+    errors,
+  );
   equal(
     plan.version,
-    schemaVersion === currentSchemaVersion
-      ? currentGuidedPlanVersion
-      : legacyGuidedPlanVersion,
+    isUpgradePlan
+      ? operatingSystemUpgradePlanVersion
+      : schemaVersion === currentSchemaVersion
+        ? currentGuidedPlanVersion
+        : legacyGuidedPlanVersion,
     "report.testPlan.version",
     errors,
   );
 
-  const expectedRequired = requiredGuidedTestCaseIds(
-    profiles,
-    measurementDurationFor(schemaVersion),
-  );
+  if (isUpgradePlan) {
+    validateUpgradeBaselineDeclaration(plan.baseline, runs, errors);
+  }
+  const expectedRequired = isUpgradePlan
+    ? requiredUpgradeTestCaseIds(profiles, measurementDurationFor(schemaVersion))
+    : requiredGuidedTestCaseIds(profiles, measurementDurationFor(schemaVersion));
   stringArray(plan.requiredTestCaseIds, 1, 12, "report.testPlan.requiredTestCaseIds", errors);
   if (!sameArray(plan.requiredTestCaseIds, expectedRequired)) {
     add(errors, "report.testPlan.requiredTestCaseIds does not match the supported profiles.");
@@ -662,6 +872,9 @@ function summarizeReport(report) {
               (testCaseId) => !completedTestCaseIds.includes(testCaseId),
             ),
             qualityFailedTestCaseIds,
+            ...(report.testPlan.baseline
+              ? { baseline: report.testPlan.baseline }
+              : {}),
           }
         : report.schemaVersion === 2
           ? {
@@ -708,6 +921,67 @@ function requiredGuidedTestCaseIds(profiles, durationMs) {
       testCaseId({ ...profile, durationMs, bitrateKbps }),
     );
   });
+}
+
+function requiredUpgradeTestCaseIds(profiles, durationMs) {
+  if (!Array.isArray(profiles) || profiles.length === 0) return [];
+  const sorted = [...new Map(profiles.map((profile) => [profileKey(profile), profile])).values()]
+    .sort((left, right) => {
+      const pixels = left.width * left.height - right.width * right.height;
+      return pixels || left.framesPerSecond - right.framesPerSecond;
+    });
+  const standard =
+    sorted.find(
+      (profile) =>
+        profile.width === 1280 &&
+        profile.height === 720 &&
+        profile.framesPerSecond === 30,
+    ) ?? sorted[0];
+  const selected = new Map(
+    [standard, sorted.at(-1)].map((profile) => [profileKey(profile), profile]),
+  );
+  return [...selected.values()].map((profile) =>
+    testCaseId({
+      ...profile,
+      durationMs,
+      bitrateKbps: defaultBitrates.get(`${profile.width}x${profile.height}`),
+    }),
+  );
+}
+
+function isLaterOperatingSystemRelease({ platform, current, baseline }) {
+  const pattern =
+    platform === "android"
+      ? /\bAPI\s+(\d+)\b/iu
+      : platform === "ios"
+        ? /\biOS\s+(\d+)\b/iu
+        : null;
+  if (!pattern || typeof current !== "string" || typeof baseline !== "string") {
+    return false;
+  }
+  const currentRelease = Number.parseInt(current.match(pattern)?.[1] ?? "", 10);
+  const baselineRelease = Number.parseInt(baseline.match(pattern)?.[1] ?? "", 10);
+  return (
+    Number.isInteger(currentRelease) &&
+    Number.isInteger(baselineRelease) &&
+    currentRelease > baselineRelease
+  );
+}
+
+function normalized(value) {
+  return typeof value === "string" ? value.trim().toLocaleLowerCase("en") : "";
+}
+
+function isNormalizedSubset(values, allowedValues) {
+  if (!Array.isArray(values) || !Array.isArray(allowedValues)) return false;
+  const allowed = new Set(allowedValues.map(normalized));
+  return values.length > 0 && values.every((value) => allowed.has(normalized(value)));
+}
+
+function hasLabel(issue, name) {
+  return issue?.labels?.some(
+    (label) => (typeof label === "string" ? label : label.name) === name,
+  );
 }
 
 function measurementDurationFor(schemaVersion) {

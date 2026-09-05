@@ -239,19 +239,25 @@ Under **Settings → Camera and encoder measurement**, test the local
 camera-to-hardware-H.264 path. This test does not transmit a stream and does not
 check networking, OBS, an IRL host or a streaming service.
 
-1. Start the **Guided test plan**. It automatically derives cases for
+1. Wait for the public verified-device lookup. The same model on the same
+   Android API or iOS major needs no new test. A later OS major shows only the
+   **Short system-upgrade check** for the standard and highest profile.
+2. New devices receive the **Guided test plan**. It derives cases for
    **720p/1080p**, **30/60 FPS**, and the minimum, default and maximum offered
-   bitrate from the device capabilities. Every run lasts five seconds.
-2. Follow progress and remaining cases. After a stop or failure, continue the
+   bitrate from device capabilities. Every run measures 15 seconds after
+   encoder startup.
+3. Follow progress and remaining cases. After a stop or failure, continue the
    plan during the same app session; completed cases are not repeated. Manual
    single runs are for troubleshooting and cannot replace missing guided cases.
-3. Use **Copy report** to inspect the complete redacted JSON. Every measurement
+4. A missing previous profile, changed encoder or quality deviation makes the
+   app require the full plan instead of the short check.
+5. Use **Copy report** to inspect the complete redacted schema-3 JSON. Every measurement
    has a stable test-case ID derived from resolution, FPS, bitrate and duration.
-4. Use **Submit public report** only when the fields listed in the dialog may be
+6. Use **Submit public report** only when the fields listed in the dialog may be
    public. The app opens a prefilled issue in the public website repository;
    only your final GitHub submission transfers the report.
-5. Automated validation confirms schema, bounds, checksum and complete coverage
-   of the capability-filtered plan. A legacy or interrupted report is marked
+7. Automated validation confirms schema, bounds, checksum and complete plan
+   coverage. A short check must also match the earlier approved issue. A legacy or interrupted report is marked
    partial and is not published. A profile becomes a **verified device** only
    after a maintainer separately reviews build provenance and measurements.
 

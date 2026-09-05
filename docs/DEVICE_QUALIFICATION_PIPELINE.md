@@ -21,6 +21,14 @@ geführte Testfälle zählen zur Planabdeckung.
 Manuelle Einzelmessungen bleiben zur Fehlersuche möglich, ersetzen den
 geführten Plan aber nicht.
 
+Für ein bereits freigegebenes Modell auf einer **höheren** Android-API- oder
+iOS-Hauptversion verwendet die App `media.hardware-h264.os-upgrade` Version 1.
+Dieser Kurztest enthält nur das 720p30-Standardprofil (oder das kleinste
+verfügbare Profil) und das höchste weiterhin unterstützte Profil, jeweils mit
+Standardbitrate. Die genannte frühere öffentliche Issue-Freigabe wird
+serverseitig mitsamt Prüfsummenbindung, Modell, Plattform, OS, Encoder und
+höchstem Profil kontrolliert.
+
 IRL Dolphin setzt Android 12 (API 31) beziehungsweise iOS 17 voraus; ältere
 Geräte können die App nicht installieren. Das ersetzt keine Hardwareprüfung,
 weil Kamera-Treiber, Encoder und thermisches Verhalten trotz gleicher
@@ -31,9 +39,17 @@ Vor Geräteerkennung oder Kamerazugriff lädt die App die vollständige statisch
 Liste geprüfter Geräte, ohne das lokale Modell als Anfrageparameter zu senden.
 Ein Treffer aus Plattform, Modell und Android-API beziehungsweise
 iOS-Hauptversion sperrt den Testplan. Kleinere Betriebssystemaktualisierungen
-verlangen keinen neuen Volltest; eine neue Hauptversion dagegen schon. Ist die
-Liste vorübergehend nicht erreichbar, warnt die App, lässt den Test aber zu.
-Doppelte Einträge werden vor der Maintainer-Freigabe erneut abgefangen.
+verlangen keinen neuen Test; eine höhere Hauptversion startet nur den kurzen
+Upgrade-Check. Fehlt das früher bestätigte höchste Profil, ändert sich der
+Encoder oder scheitert eine Qualitätsgrenze, ist der vollständige Plan nötig.
+Eine ältere OS-Version gilt nicht als Upgrade. Ist die Liste vorübergehend
+nicht erreichbar, warnt die App und bietet sicherheitshalber den vollständigen
+Plan an.
+
+Eine neue App-Hauptversion allein macht eine Gerätefreigabe nicht ungültig.
+Erneut geprüft wird nur nach relevanten Änderungen am Medienpfad,
+Kamera-/Encoderadapter, Messvertrag oder den Abnahmekriterien. Künftige
+Betriebssystemversionen bleiben ohne feste Obergrenze zugelassen.
 
 Ein Lauf zählt nur, wenn er abgeschlossen ist, die Dauer höchstens eine Sekunde
 abweicht, mindestens 90 % der Soll-FPS und 70–130 % der Soll-Bitrate erreicht,
@@ -60,6 +76,7 @@ Jeder Lauf besitzt:
 | `device-report-valid` | Schema-, Größen-, Prüfsummen- und Feldprüfung | Der Bericht ist formal auswertbar, aber noch kein bestätigter Gerätenachweis. |
 | `device-report-partial` | automatische Abdeckungsprüfung | Der aktuelle Plan ist unvollständig und darf nicht veröffentlicht werden. |
 | `device-report-retest-required` | alter Messvertrag oder nicht bestandene Qualitätsgrenze | Die genannten Testfall-IDs müssen mit dem aktuellen privaten Testbuild wiederholt werden. |
+| `device-report-full-required` | Kurztest ohne passende freigegebene Basis oder mit Abweichung | Statt des Upgrade-Checks ist der vollständige Geräteplan erforderlich. |
 | `device-report-complete` | automatische Abdeckungsprüfung | Alle geräteabhängig erforderlichen Testfall-IDs besitzen einen qualitätsgeprüften geführten Lauf. |
 | `awaiting-device-verification` | nur für vollständige Berichte | Der Bericht wartet auf die getrennte Prüfung von Build-Herkunft und Messwerten. |
 | `device-verified` | nur nach Maintainer-Prüfung | Build-Herkunft und Messwerte wurden geprüft; die Website darf den Eintrag zeigen. |
@@ -86,7 +103,7 @@ Werte mit dem privaten Repository und dem erfolgreichen Quality-Workflow ab.
 Die SHA-256-Prüfsumme erkennt Änderungen am eingebetteten JSON. Sie ist keine
 kryptografische Geräte- oder Testeridentität. Deshalb bleibt die getrennte
 Maintainer-Prüfung erforderlich. Die öffentliche Website verarbeitet nur
-vollständige Schema-3-Berichte mit vollständigem geführtem Plan,
+vollständige Schema-3-Berichte mit vollständigem Geräte- oder Upgrade-Plan,
 `device-verified`-Label und einer Workflow-Bestätigung, die exakt zur aktuellen
 Prüfsumme passt. Schema-1/2-Berichte bleiben zur Fehlersuche lesbar, verlangen
 aber einen aktuellen Wiederholungstest und können keinen Website-Eintrag
@@ -123,6 +140,13 @@ measures for 15 seconds after the first encoded frame. Only quality-passing
 guided runs count towards plan coverage. Manual measurements remain available
 for troubleshooting but cannot replace the guided plan.
 
+For an already approved model running a **later** Android API or iOS major
+release, the app uses `media.hardware-h264.os-upgrade` version 1. This short
+check contains only the 720p30 standard profile (or the smallest available
+profile) and the highest profile that remains supported, both at default
+bitrate. The referenced earlier public issue is checked server-side together
+with its checksum binding, model, platform, OS, encoder and highest profile.
+
 IRL Dolphin requires Android 12 (API 31) or iOS 17; older devices cannot install
 the app. That does not replace hardware qualification because camera drivers,
 encoders and thermal behavior still vary on the same operating-system release.
@@ -132,9 +156,16 @@ every model on the market to be qualified.
 Before source discovery or camera access, the app downloads the complete static
 verified-device catalog without sending the local model as a query parameter.
 A platform, model and Android-API/iOS-major match locks the plan. Minor OS
-updates do not require another full test; a new major release does. If the
-catalog is temporarily unavailable, the app warns but permits testing.
-Duplicate entries are caught again before maintainer approval.
+updates need no new test; a later major release starts only the short upgrade
+check. A missing previously approved highest profile, changed encoder or failed
+quality threshold requires the full plan. An older OS is not treated as an
+upgrade. If the catalog is temporarily unavailable, the app warns and offers
+the full plan as the safe fallback.
+
+A new app major version alone does not invalidate a device approval. A new test
+is required only after relevant media-path, camera/encoder-adapter,
+measurement-contract or acceptance-criteria changes. Future OS releases remain
+eligible without a hard-coded maximum.
 
 A run counts only when it completes within one second of requested duration,
 reaches at least 90% of target FPS and 70–130% of target bitrate, keeps absolute
@@ -157,6 +188,7 @@ result or bounded failure code, and build provenance.
 | `device-report-valid` | schema, size, checksum and field validation | The report is machine-readable, but it is not yet verified evidence. |
 | `device-report-partial` | automatic coverage check | The current plan is incomplete and cannot be published. |
 | `device-report-retest-required` | legacy measurement contract or failed quality threshold | The listed test-case IDs must be repeated with the current private test build. |
+| `device-report-full-required` | short check without a matching approved baseline or with a deviation | The full device plan is required instead of the upgrade check. |
 | `device-report-complete` | automatic coverage check | Every capability-filtered required test-case ID has a quality-passing guided run. |
 | `awaiting-device-verification` | complete reports only | The report is waiting for separate build-provenance and measurement review. |
 | `device-verified` | only after maintainer review | Build provenance and measurements were reviewed; the website may list it. |
@@ -180,8 +212,9 @@ repository and its successful Quality workflow.
 
 The SHA-256 checksum detects changes to the embedded JSON. It is not a
 cryptographic device or tester identity, so separate maintainer review remains
-mandatory. The public website consumes only a complete schema-3 report with guided
-coverage, the `device-verified` label and a workflow confirmation bound to the
+mandatory. The public website consumes only a complete schema-3 report with
+full device-plan or verified-baseline upgrade coverage, the `device-verified`
+label and a workflow confirmation bound to the
 exact current checksum. Schema-1/2 reports remain readable for troubleshooting,
 require a current-contract retest and cannot create a new website entry.
 

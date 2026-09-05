@@ -4,8 +4,10 @@ import { gzipSync } from "node:zlib";
 
 import { buildVerifiedDevices } from "./build_verified_devices.mjs";
 import {
+  compatibilityProfileIdFor,
   hasMatchingVerification,
   parseDeviceReportIssue,
+  verifyOperatingSystemUpgradeBaseline,
   verificationMarkerFor,
 } from "./device_report.mjs";
 
@@ -84,6 +86,66 @@ const fullPlan = parseDeviceReportIssue(issueBody(fullPlanReport));
 assert.equal(fullPlan.ok, true);
 assert.equal(fullPlan.summary.qualificationPlan.requiredTestCaseCount, 10);
 assert.equal(fullPlan.summary.qualificationPlan.completedTestCaseCount, 10);
+
+const upgradeProfiles = [
+  captureProfile(1280, 720, 30, [1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000]),
+  captureProfile(1920, 1080, 60, [4500, 6000, 8000, 9000, 10000, 12000]),
+];
+const upgradeRequiredIds = [
+  testCaseId(2000, { width: 1280, height: 720, framesPerSecond: 30 }),
+  testCaseId(4500),
+];
+const upgradeBaseline = {
+  compatibilityProfileId: compatibilityProfileIdFor(valid.summary),
+  osVersion: "Android 16 (API 36)",
+  sourceIssue: {
+    number: 12,
+    url: "https://github.com/Savox76/irl-dolphin-web/issues/12",
+  },
+};
+const upgradeReport = reportWith({
+  profiles: upgradeProfiles,
+  requiredIds: upgradeRequiredIds,
+  completedTestCaseIds: upgradeRequiredIds,
+  status: "complete",
+  planId: "media.hardware-h264.os-upgrade",
+  planVersion: 1,
+  baseline: upgradeBaseline,
+  runs: [
+    guidedRun(
+      1,
+      2000,
+      "guidedPlan",
+      { width: 1280, height: 720, framesPerSecond: 30 },
+      { osVersion: "Android 17 (API 37)" },
+    ),
+    guidedRun(2, 4500, "guidedPlan", undefined, {
+      osVersion: "Android 17 (API 37)",
+    }),
+  ],
+});
+const upgrade = parseDeviceReportIssue(issueBody(upgradeReport));
+assert.equal(upgrade.ok, true);
+assert.equal(upgrade.summary.qualificationPlan.id, "media.hardware-h264.os-upgrade");
+assert.equal(upgrade.summary.qualificationPlan.requiredTestCaseCount, 2);
+assert.deepEqual(upgrade.summary.qualificationPlan.baseline, upgradeBaseline);
+
+const sameReleaseUpgrade = structuredClone(upgradeReport);
+sameReleaseUpgrade.testPlan.baseline.osVersion = "Android 17 (API 37)";
+const sameReleaseUpgradeResult = parseDeviceReportIssue(
+  issueBody(sameReleaseUpgrade),
+);
+assert.equal(sameReleaseUpgradeResult.ok, false);
+assert.match(sameReleaseUpgradeResult.errors.join("\n"), /older major OS/u);
+
+const wrongUpgradeCases = structuredClone(upgradeReport);
+wrongUpgradeCases.testPlan.requiredTestCaseIds = [upgradeRequiredIds[1]];
+wrongUpgradeCases.testPlan.completedTestCaseIds = [upgradeRequiredIds[1]];
+const wrongUpgradeCasesResult = parseDeviceReportIssue(
+  issueBody(wrongUpgradeCases),
+);
+assert.equal(wrongUpgradeCasesResult.ok, false);
+assert.match(wrongUpgradeCasesResult.errors.join("\n"), /supported profiles/u);
 
 const partialReport = reportWith({
   runs: [guidedRun(1, 4500)],
@@ -183,6 +245,12 @@ const extraFieldResult = parseDeviceReportIssue(issueBody(extraField));
 assert.equal(extraFieldResult.ok, false);
 assert.match(extraFieldResult.errors.join("\n"), /unsupported fields/u);
 
+const mixedDeviceReport = structuredClone(completeReport);
+mixedDeviceReport.runs[1].result.environment.deviceModel = "Different device";
+const mixedDeviceResult = parseDeviceReportIssue(issueBody(mixedDeviceReport));
+assert.equal(mixedDeviceResult.ok, false);
+assert.match(mixedDeviceResult.errors.join("\n"), /does not match the other runs/u);
+
 const previousPlanReport = downgradeToSchema2(completeReport);
 const previousPlan = parseDeviceReportIssue(issueBody(previousPlanReport));
 assert.equal(previousPlan.ok, true);
@@ -216,6 +284,32 @@ assert.equal(
 );
 
 const verifiedIssue = verifiedIssueFor(12, completeReport, marker);
+const baselineVerification = verifyOperatingSystemUpgradeBaseline({
+  reportResult: upgrade,
+  baselineIssue: verifiedIssue,
+  baselineResult: valid,
+  baselineComments: verifiedIssue.fixtureComments,
+});
+assert.deepEqual(baselineVerification, { ok: true, errors: [] });
+
+const changedEncoderUpgrade = structuredClone(upgradeReport);
+changedEncoderUpgrade.runs.forEach((run) => {
+  run.result.environment.encoderName = "c2.changed.avc.encoder";
+});
+const changedEncoderUpgradeResult = parseDeviceReportIssue(
+  issueBody(changedEncoderUpgrade),
+);
+assert.equal(changedEncoderUpgradeResult.ok, true);
+assert.equal(
+  verifyOperatingSystemUpgradeBaseline({
+    reportResult: changedEncoderUpgradeResult,
+    baselineIssue: verifiedIssue,
+    baselineResult: valid,
+    baselineComments: verifiedIssue.fixtureComments,
+  }).ok,
+  false,
+);
+
 const verifiedDevices = await buildVerifiedDevices({
   repository: "Savox76/irl-dolphin-web",
   issues: [verifiedIssue],
@@ -237,6 +331,24 @@ assert.equal(
     .framesPerSecond,
   60,
 );
+
+const upgradeMarker = verificationMarkerFor(upgrade.reportSha256);
+const upgradeIssue = verifiedIssueFor(22, upgradeReport, upgradeMarker);
+const upgradedDevices = await buildVerifiedDevices({
+  repository: "Savox76/irl-dolphin-web",
+  issues: [upgradeIssue, verifiedIssue],
+});
+assert.equal(upgradedDevices.devices.length, 2);
+assert.equal(
+  upgradedDevices.devices.find((device) => device.osVersion.includes("API 37"))
+    .localMediaMeasurement.qualificationPlan.id,
+  "media.hardware-h264.os-upgrade",
+);
+const unanchoredUpgradeDevices = await buildVerifiedDevices({
+  repository: "Savox76/irl-dolphin-web",
+  issues: [upgradeIssue],
+});
+assert.equal(unanchoredUpgradeDevices.devices.length, 0);
 
 const partialMarker = verificationMarkerFor(partial.reportSha256);
 const partialDevices = await buildVerifiedDevices({
@@ -268,6 +380,9 @@ function reportWith({
   status,
   profiles,
   requiredIds = requiredTestCaseIds,
+  planId = "media.hardware-h264.guided",
+  planVersion = 2,
+  baseline,
 }) {
   return {
     reportType: "irl-dolphin-device-qualification",
@@ -289,11 +404,12 @@ function reportWith({
       profiles ??
       [captureProfile(1920, 1080, 60, [4500, 6000, 8000, 9000, 10000, 12000])],
     testPlan: {
-      id: "media.hardware-h264.guided",
-      version: 2,
+      id: planId,
+      version: planVersion,
       requiredTestCaseIds: requiredIds,
       completedTestCaseIds,
       status,
+      ...(baseline ? { baseline } : {}),
     },
     runs,
   };
@@ -308,6 +424,8 @@ function guidedRun(
     bitrateRatio = 0.96,
     qualityStatus = "pass",
     failureReasons = [],
+    osVersion = "Android 16 (API 36)",
+    encoderName = "c2.vendor.avc.encoder",
   } = {},
 ) {
   const durationMs = 15_000;
@@ -355,9 +473,9 @@ function guidedRun(
       environment: {
         platform: "android",
         deviceModel: "Huawei test device",
-        osVersion: "Android 16 (API 36)",
+        osVersion,
         appVersion: "0.1.0-alpha.3",
-        encoderName: "c2.vendor.avc.encoder",
+        encoderName,
         cameraFacing: "rear",
       },
     },
