@@ -61,45 +61,6 @@ jobs:
       - name: Test device-report pipeline
         run: node tool/test_device_reports.mjs
 
-  remove-mistaken-public-release:
-    name: Remove mistaken public device-test release
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: validate
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: write
-    steps:
-      - name: Delete release and tag
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: v0.1.0-alpha.3-test.231
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
-            gh release delete "${RELEASE_TAG}" \
-              --repo "${GITHUB_REPOSITORY}" \
-              --cleanup-tag \
-              --yes
-          else
-            gh api --method DELETE \
-              "repos/${GITHUB_REPOSITORY}/git/refs/tags/${RELEASE_TAG}" \
-              >/dev/null 2>&1 || true
-          fi
-
-          if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
-            echo "::error::Public release still exists."
-            exit 1
-          fi
-          if gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}" >/dev/null 2>&1; then
-            echo "::error::Public release tag still exists."
-            exit 1
-          fi
-
-          echo "Removed the mistaken public device-test release and tag." >> "${GITHUB_STEP_SUMMARY}"
-
   deploy:
     if: github.event_name != 'pull_request'
     needs: validate
