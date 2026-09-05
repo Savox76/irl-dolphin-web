@@ -56,12 +56,10 @@ Messwerte sowie Commit und Quality-Run. Er enthält keine Kamera- oder
 Audiodaten, Chats, Konten, Zugangsdaten, Streamschlüssel, Seriennummer, IMEI
 oder andere stabile Gerätekennung.
 
-Der verwendete Build liegt als eindeutig benannte öffentliche Vorabversion
-`v<app-version>-test.<quality-run>` mit APK, SHA-256-Datei und strukturiertem
-Buildnachweis vor. Die Laufnummer im Release entspricht `build.qualityRun` im
-Bericht. Die [Download- und Prüfanleitung](DEVICE_TEST_BUILDS.md) beschreibt
-die Zuordnung; der private Quellstand wird weiterhin nur mit dem verbundenen
-Maintainer-Zugang geprüft.
+Der verwendete Build, seine APK, Prüfsumme und der strukturierte Buildnachweis
+bleiben ausschließlich im privaten App-Repository. Der öffentliche Bericht
+nennt nur `build.commit` und `build.qualityRun`; ein Maintainer gleicht beide
+Werte mit dem privaten Repository und dem erfolgreichen Quality-Workflow ab.
 
 Die SHA-256-Prüfsumme erkennt Änderungen am eingebetteten JSON. Sie ist keine
 kryptografische Geräte- oder Testeridentität. Deshalb bleibt die getrennte
@@ -131,11 +129,10 @@ test timestamps, selected resolution, FPS and bitrate, measurements, commit and
 quality run. It excludes camera/audio content, chat, accounts, credentials,
 stream keys, serial number, IMEI and any other stable device identifier.
 
-The tested build is available as an unambiguously named public pre-release
-`v<app-version>-test.<quality-run>` with APK, SHA-256 file and structured build
-evidence. Its release number equals `build.qualityRun` in the report. The
-[download and verification guide](DEVICE_TEST_BUILDS.md) documents the mapping;
-the private source revision still requires connected maintainer access.
+The tested build, APK, checksum and structured build evidence remain solely in
+the private app repository. The public report includes only `build.commit` and
+`build.qualityRun`; a maintainer checks both values against the private
+repository and its successful Quality workflow.
 
 The SHA-256 checksum detects changes to the embedded JSON. It is not a
 cryptographic device or tester identity, so separate maintainer review remains
