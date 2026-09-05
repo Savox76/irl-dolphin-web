@@ -11,6 +11,7 @@ const requiredFiles = [
   "website/assets/irl-dolphin-field-vision.webp",
   "docs/PRE_RELEASE_MASTERPLAN.md",
   "docs/PRIVACY_AND_DATA_INVENTORY.md",
+  "docs/DEVICE_TEST_BUILDS.md",
   "docs/DEVICE_QUALIFICATION_PIPELINE.md",
   "docs/USER_GUIDE_DE.md",
   "docs/USER_GUIDE_EN.md",
@@ -39,6 +40,7 @@ const script = readFileSync(resolve(root, "website/app.js"), "utf8");
 const css = readFileSync(resolve(root, "website/styles.css"), "utf8");
 const masterplan = readFileSync(resolve(root, "docs/PRE_RELEASE_MASTERPLAN.md"), "utf8");
 const privacyInventory = readFileSync(resolve(root, "docs/PRIVACY_AND_DATA_INVENTORY.md"), "utf8");
+const deviceTestBuilds = readFileSync(resolve(root, "docs/DEVICE_TEST_BUILDS.md"), "utf8");
 const devicePipeline = readFileSync(
   resolve(root, "docs/DEVICE_QUALIFICATION_PIPELINE.md"),
   "utf8",
@@ -119,10 +121,16 @@ for (const token of [
   "StreamElements",
   "Android background session",
   "Open data inventory",
+  "Geräte-Testbuilds öffnen",
+  "Open device-test builds",
   "Geprüfte Geräte",
   "Verified devices",
 ]) {
   if (!`${html}\n${script}`.includes(token)) failures.push(`Bilingual website lacks required content: ${token}`);
+}
+
+if (!html.includes("https://github.com/Savox76/irl-dolphin-web/releases")) {
+  failures.push("Website lacks the public device-test release link");
 }
 
 for (const token of [
@@ -136,6 +144,22 @@ for (const token of [
 ]) {
   if (!devicePipeline.includes(token)) {
     failures.push(`Device qualification pipeline lacks: ${token}`);
+  }
+}
+
+for (const token of [
+  "## Deutsch",
+  "## English",
+  "v<app-version>-test.<quality-run>",
+  "-sha256.txt",
+  "-build.json",
+  "debug-signiert",
+  "debug-signed",
+  "Actions-Artefakte",
+  "Actions artifacts",
+]) {
+  if (!deviceTestBuilds.includes(token)) {
+    failures.push(`Device-test build guide lacks: ${token}`);
   }
 }
 

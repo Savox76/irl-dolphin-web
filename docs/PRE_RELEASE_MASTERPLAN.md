@@ -1,10 +1,11 @@
 # IRL Dolphin pre-release master plan
 
-Document version 1.1 — 2026-09-03
+Document version 1.2 — 2026-09-05
 
 Baseline: `v0.1.0-alpha.3`
 
-Status: private Android alpha; physical-device qualification pending
+Status: private-source Android alpha with public device-test builds;
+physical-device qualification pending
 
 This plan supplements `MASTERPLAN.md`. The product master plan owns the full
 long-term scope; this document owns the concrete gates from private alpha to the
@@ -91,6 +92,8 @@ mit passendem Empfänger, Fehlerbehandlung und nachgewiesener Stabilität.
 - [x] Getestete iOS-Foreground-only-Grenze
 - [x] Automatisierte Analyse, Tests und Android-Debug-Build
 - [x] Interner Release `v0.1.0-alpha.3`
+- [x] Öffentlicher, eindeutig versionierter Geräte-Testkanal mit APK,
+  SHA-256-Prüfsumme und maschinenlesbarem Buildnachweis
 
 Abnahme: Der interne Testbuild wird ausschließlich aus einem vollständig grünen
 `main` erzeugt und enthält keine geheimen Werte.
@@ -332,6 +335,8 @@ receiver, failure handling and proven stability.
 - [x] Enforced iOS foreground-only boundary
 - [x] Automated analysis, tests and Android debug build
 - [x] Internal `v0.1.0-alpha.3` release
+- [x] Public, unambiguously versioned device-test channel with APK, SHA-256
+  checksum and machine-readable build evidence
 
 Acceptance: the internal test build comes only from fully green `main` and
 contains no secret values.

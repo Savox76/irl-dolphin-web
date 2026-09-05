@@ -4,9 +4,9 @@ Version 1.2 — passend zu `v0.1.0-alpha.3` und aktuellen Änderungen
 
 Stand: 5. September 2026
 
-> IRL Dolphin befindet sich in einer privaten Android-Alpha. Der aktuelle Build
-> ist debug-signiert, nicht öffentlich verteilt und noch nicht für den
-> dauerhaften Produktiveinsatz freigegeben.
+> IRL Dolphin befindet sich in einer Android-Gerätetest-Alpha mit privatem
+> Quellcode. Die Test-APK ist öffentlich abrufbar, debug-signiert und noch nicht
+> für den dauerhaften Produktiveinsatz freigegeben.
 
 ## 1. Funktionsstatus verstehen
 
@@ -20,16 +20,21 @@ Teil des Vorversions-Masterplans.
 
 ## 2. Alpha sicher installieren
 
-1. Öffne im privaten Repository den Release `v0.1.0-alpha.3`.
-2. Lade nur die dort angehängte Android-Debug-APK herunter.
-3. Vergleiche bei Bedarf den SHA-256-Wert mit dem Wert in den Release Notes.
+1. Öffne die [öffentlichen Geräte-Testbuilds](https://github.com/Savox76/irl-dolphin-web/releases)
+   und wähle die neueste als **Pre-release** markierte Version.
+2. Lade die APK mit App-Version und Quality-Laufnummer im Dateinamen sowie die
+   gleichnamige `-sha256.txt` herunter.
+3. Vergleiche die SHA-256-Prüfsumme vor der Installation. Die zugehörige
+   `-build.json` enthält Commit, Quality-Lauf und Release-Zuordnung.
 4. Erlaube Android die Installation aus dieser Quelle nur für den
    Installationsvorgang.
 5. Starte IRL Dolphin und prüfe Startbildschirm, Sprache und Darstellung, bevor
    du ein Konto verbindest.
 
 Installiere keine weitergereichte oder umbenannte APK. Die aktuelle Alpha ist
-weder Play-Store-signiert noch eine öffentliche Beta.
+weder Play-Store-signiert noch eine öffentliche Beta. Die vollständige
+Benennung und Prüfanleitung steht unter
+[Geräte-Testbuilds](DEVICE_TEST_BUILDS.md).
 
 ## 3. Navigation und Grundeinstellungen
 
