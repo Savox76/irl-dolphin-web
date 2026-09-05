@@ -9,22 +9,35 @@ merely because it submitted a report.
 
 Die Nachweiskette macht physische Testergebnisse maschinell auswertbar, ohne
 einen App-Token, einen eigenen Backenddienst oder eine stabile Gerätekennung
-einzuführen. Schema Version 2 deckt ausschließlich den ausdrücklich gestarteten
+einzuführen. Schema Version 3 deckt ausschließlich den ausdrücklich gestarteten
 lokalen Pfad **Kamera → Hardware-H.264-Encoder** ab. Es bestätigt weder
 Netzwerktransport noch OBS, einen IRL-Host oder einen Streamingdienst.
 
-Der geführte Plan `media.hardware-h264.guided` Version 1 erzeugt für jedes vom
+Der geführte Plan `media.hardware-h264.guided` Version 2 erzeugt für jedes vom
 Gerät gemeldete 720p-/1080p- und 30-/60-FPS-Profil zwei oder drei Testfälle:
-minimale, Standard- und maximale angebotene Bitrate, ohne doppelte Fälle. Nur
-vollständig abgeschlossene geführte Testfälle zählen zur Planabdeckung.
+minimale, Standard- und maximale angebotene Bitrate, ohne doppelte Fälle. Jeder
+Fall misst 15 Sekunden nach dem ersten codierten Bild. Nur qualitätsgeprüfte
+geführte Testfälle zählen zur Planabdeckung.
 Manuelle Einzelmessungen bleiben zur Fehlersuche möglich, ersetzen den
 geführten Plan aber nicht.
+
+Vor Geräteerkennung oder Kamerazugriff lädt die App die vollständige statische
+Liste geprüfter Geräte, ohne das lokale Modell als Anfrageparameter zu senden.
+Ein exakter Treffer aus Plattform, Modell und Betriebssystemversion sperrt den
+Testplan. Ist die Liste nicht erreichbar oder ungültig, bleibt der Test
+ebenfalls gesperrt. Eine neue Betriebssystemversion gilt als neues Profil.
+
+Ein Lauf zählt nur, wenn er abgeschlossen ist, die Dauer höchstens eine Sekunde
+abweicht, mindestens 90 % der Soll-FPS und 70–130 % der Soll-Bitrate erreicht,
+die Frame-Differenz höchstens zwei Bilder oder 2 % beträgt, keine Encoderfehler
+auftreten, der Start höchstens fünf Sekunden dauert und die Thermik nicht
+ernst/kritisch ist. Android verlangt Hardware-H.264 im CBR-Modus.
 
 Jeder Lauf besitzt:
 
 - eine Reihenfolge-ID wie `run-001`,
 - eine geräteübergreifend vergleichbare Testfall-ID wie
-  `media.hardware-h264.1920x1080.60fps.9000kbps.5000ms`,
+  `media.hardware-h264.1920x1080.60fps.9000kbps.15000ms`,
 - den Modulnamen `media.hardwareH264`,
 - das Szenario `guidedPlan` oder `manualProfile`,
 - Anforderung, Ergebnis oder festen Fehlercode und Build-Herkunft.
@@ -37,8 +50,9 @@ Jeder Lauf besitzt:
 | Lokal gemessen | JSON nur im Arbeitsspeicher | Der Tester kann alle Felder kopieren und prüfen. |
 | Öffentlich eingereicht | vorausgefülltes GitHub-Issue nach ausdrücklicher Bestätigung | Erst das abschließende Absenden auf GitHub veröffentlicht den Bericht. |
 | `device-report-valid` | Schema-, Größen-, Prüfsummen- und Feldprüfung | Der Bericht ist formal auswertbar, aber noch kein bestätigter Gerätenachweis. |
-| `device-report-partial` | automatische Abdeckungsprüfung | Der Bericht ist gültig, aber der geführte Plan ist unvollständig oder stammt aus Schema 1. Er darf nicht veröffentlicht werden. |
-| `device-report-complete` | automatische Abdeckungsprüfung | Alle geräteabhängig erforderlichen Testfall-IDs besitzen einen abgeschlossenen geführten Lauf. |
+| `device-report-partial` | automatische Abdeckungsprüfung | Der aktuelle Plan ist unvollständig und darf nicht veröffentlicht werden. |
+| `device-report-retest-required` | alter Messvertrag oder nicht bestandene Qualitätsgrenze | Die genannten Testfall-IDs müssen mit dem aktuellen privaten Testbuild wiederholt werden. |
+| `device-report-complete` | automatische Abdeckungsprüfung | Alle geräteabhängig erforderlichen Testfall-IDs besitzen einen qualitätsgeprüften geführten Lauf. |
 | `awaiting-device-verification` | nur für vollständige Berichte | Der Bericht wartet auf die getrennte Prüfung von Build-Herkunft und Messwerten. |
 | `device-verified` | nur nach Maintainer-Prüfung | Build-Herkunft und Messwerte wurden geprüft; die Website darf den Eintrag zeigen. |
 | Nachträglich bearbeitet | Freigabe wird entzogen | Die geänderte Prüfsumme benötigt eine neue Prüfung. |
@@ -64,10 +78,11 @@ Werte mit dem privaten Repository und dem erfolgreichen Quality-Workflow ab.
 Die SHA-256-Prüfsumme erkennt Änderungen am eingebetteten JSON. Sie ist keine
 kryptografische Geräte- oder Testeridentität. Deshalb bleibt die getrennte
 Maintainer-Prüfung erforderlich. Die öffentliche Website verarbeitet nur
-Berichte mit gültigem Schema, vollständigem geführtem Plan,
+vollständige Schema-3-Berichte mit vollständigem geführtem Plan,
 `device-verified`-Label und einer Workflow-Bestätigung, die exakt zur aktuellen
-Prüfsumme passt. Schema-1-Berichte bleiben zur Fehlersuche lesbar, können aber
-keinen neuen Website-Eintrag erzeugen.
+Prüfsumme passt. Schema-1/2-Berichte bleiben zur Fehlersuche lesbar, verlangen
+aber einen aktuellen Wiederholungstest und können keinen Website-Eintrag
+erzeugen.
 
 Das lokale Ergebnis verschwindet beim Leeren oder beim Ende des App-Prozesses.
 Ein abgesendetes GitHub-Issue bleibt entsprechend der GitHub-Aufbewahrung
@@ -89,18 +104,30 @@ Abnahmekriterien und seine physischen Tests implementiert sind.
 
 The evidence pipeline makes physical test results machine-readable without
 embedding an app token, operating a custom backend or introducing a stable
-device identifier. Schema version 2 covers only the explicitly started local
+device identifier. Schema version 3 covers only the explicitly started local
 **camera → hardware H.264 encoder** path. It does not confirm network transport,
 OBS, an IRL host or any streaming service.
 
-Guided plan `media.hardware-h264.guided` version 1 creates two or three cases
+Guided plan `media.hardware-h264.guided` version 2 creates two or three cases
 for every device-reported 720p/1080p and 30/60-FPS profile: the minimum,
-default and maximum offered bitrate, with duplicates removed. Only completed
+default and maximum offered bitrate, with duplicates removed. Every case
+measures for 15 seconds after the first encoded frame. Only quality-passing
 guided runs count towards plan coverage. Manual measurements remain available
 for troubleshooting but cannot replace the guided plan.
 
+Before source discovery or camera access, the app downloads the complete static
+verified-device catalog without sending the local model as a query parameter.
+An exact platform, model and OS-version match locks the plan. An unavailable or
+invalid catalog also keeps testing locked. A new OS version is a new profile.
+
+A run counts only when it completes within one second of requested duration,
+reaches at least 90% of target FPS and 70–130% of target bitrate, keeps absolute
+frame difference within two frames or 2%, reports no encoder errors, starts
+within five seconds and avoids serious/critical thermal pressure. Android
+requires hardware H.264 in CBR mode.
+
 Every run has an ordinal ID such as `run-001`, a cross-device test-case ID such
-as `media.hardware-h264.1920x1080.60fps.9000kbps.5000ms`, the
+as `media.hardware-h264.1920x1080.60fps.9000kbps.15000ms`, the
 `media.hardwareH264` module, a `guidedPlan` or `manualProfile` scenario, its request,
 result or bounded failure code, and build provenance.
 
@@ -112,8 +139,9 @@ result or bounded failure code, and build provenance.
 | Measured locally | JSON exists only in memory | The tester can copy and inspect every field. |
 | Submitted publicly | prefilled GitHub issue after explicit confirmation | Only the final GitHub submission publishes the report. |
 | `device-report-valid` | schema, size, checksum and field validation | The report is machine-readable, but it is not yet verified evidence. |
-| `device-report-partial` | automatic coverage check | The report is valid, but its guided plan is incomplete or uses schema 1. It cannot be published. |
-| `device-report-complete` | automatic coverage check | Every capability-filtered required test-case ID has a completed guided run. |
+| `device-report-partial` | automatic coverage check | The current plan is incomplete and cannot be published. |
+| `device-report-retest-required` | legacy measurement contract or failed quality threshold | The listed test-case IDs must be repeated with the current private test build. |
+| `device-report-complete` | automatic coverage check | Every capability-filtered required test-case ID has a quality-passing guided run. |
 | `awaiting-device-verification` | complete reports only | The report is waiting for separate build-provenance and measurement review. |
 | `device-verified` | only after maintainer review | Build provenance and measurements were reviewed; the website may list it. |
 | Edited later | approval is revoked | The changed checksum requires another review. |
@@ -136,10 +164,10 @@ repository and its successful Quality workflow.
 
 The SHA-256 checksum detects changes to the embedded JSON. It is not a
 cryptographic device or tester identity, so separate maintainer review remains
-mandatory. The public website consumes only a valid report with complete guided
+mandatory. The public website consumes only a complete schema-3 report with guided
 coverage, the `device-verified` label and a workflow confirmation bound to the
-exact current checksum. Schema-1 reports remain readable for troubleshooting
-but cannot create a new website entry.
+exact current checksum. Schema-1/2 reports remain readable for troubleshooting,
+require a current-contract retest and cannot create a new website entry.
 
 Local results disappear when cleared or when the app process ends. A submitted
 GitHub issue remains public under GitHub retention until its author or a

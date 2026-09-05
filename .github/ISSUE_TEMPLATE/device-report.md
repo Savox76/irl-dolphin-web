@@ -6,7 +6,9 @@ labels: device-report
 assignees: ""
 ---
 
-Use **Guided test plan** followed by **Submit public report** in IRL Dolphin
+Use the current private IRL Dolphin test build. Run **Guided test plan** followed
+by **Submit public report**. Each current case measures for 15 seconds after the
+encoder starts and must pass the displayed quality thresholds.
 whenever possible. The app fills this issue with a bounded machine-readable
 payload, including capability-filtered coverage, and explains every public
 field before opening GitHub. Manual or interrupted reports remain useful for

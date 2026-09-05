@@ -9,7 +9,30 @@ const maximumCompressedBytes = 12_000;
 const maximumReportBytes = 64_000;
 const maximumRuns = 24;
 const guidedPlanId = "media.hardware-h264.guided";
-const guidedPlanVersion = 1;
+const currentSchemaVersion = 3;
+const currentGuidedPlanVersion = 2;
+const legacyGuidedPlanVersion = 1;
+const legacyMeasurementDurationMs = 5_000;
+const currentMeasurementDurationMs = 15_000;
+const maximumResultDurationMs = 16_500;
+const maximumStartupLatencyMs = 10_000;
+const minimumFrameRateRatio = 0.9;
+const minimumBitrateRatio = 0.7;
+const maximumBitrateRatio = 1.3;
+const maximumFrameDeltaRatio = 0.02;
+const maximumStartupLatencyForQualificationMs = 5_000;
+
+const qualityFailureKinds = [
+  "outcomeNotCompleted",
+  "durationOutsideTolerance",
+  "frameRateBelowThreshold",
+  "bitrateBelowThreshold",
+  "bitrateAboveThreshold",
+  "frameDeltaAboveThreshold",
+  "encoderFailures",
+  "startupLatencyAboveThreshold",
+  "thermalPressure",
+];
 
 const bitrateOptions = new Map([
   ["1280x720@30", [1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000]],
@@ -121,8 +144,8 @@ function validateReport(report, errors) {
     return;
   }
   const schemaVersion = report.schemaVersion;
-  if (![1, 2].includes(schemaVersion)) {
-    add(errors, "report.schemaVersion must equal 1 or 2.");
+  if (![1, 2, currentSchemaVersion].includes(schemaVersion)) {
+    add(errors, "report.schemaVersion must equal 1, 2 or 3.");
     return;
   }
   if (
@@ -135,7 +158,7 @@ function validateReport(report, errors) {
         "build",
         "scope",
         "supportedCaptureProfiles",
-        ...(schemaVersion === 2 ? ["testPlan"] : []),
+        ...(schemaVersion >= 2 ? ["testPlan"] : []),
         "runs",
       ],
       "report",
@@ -182,8 +205,14 @@ function validateReport(report, errors) {
 
   validateProfiles(report.supportedCaptureProfiles, errors);
   validateRuns(report.runs, schemaVersion, errors);
-  if (schemaVersion === 2) {
-    validateTestPlan(report.testPlan, report.supportedCaptureProfiles, report.runs, errors);
+  if (schemaVersion >= 2) {
+    validateTestPlan(
+      report.testPlan,
+      report.supportedCaptureProfiles,
+      report.runs,
+      schemaVersion,
+      errors,
+    );
   }
 }
 
@@ -261,19 +290,19 @@ function validateRuns(runs, schemaVersion, errors) {
       errors,
     );
     isoDate(run.recordedAtUtc, `${path}.recordedAtUtc`, errors);
-    validateRequest(run.request, `${path}.request`, errors);
+    validateRequest(run.request, schemaVersion, `${path}.request`, errors);
     if (isRecord(run.request)) {
       equal(run.testCaseId, testCaseId(run.request), `${path}.testCaseId`, errors);
     }
     if (hasResult) {
-      validateResult(run.result, `${path}.result`, errors);
+      validateResult(run.result, run.request, schemaVersion, `${path}.result`, errors);
     } else {
       oneOf(run.failure, failureKinds, `${path}.failure`, errors);
     }
   });
 }
 
-function validateTestPlan(plan, profiles, runs, errors) {
+function validateTestPlan(plan, profiles, runs, schemaVersion, errors) {
   if (
     !exactKeys(
       plan,
@@ -285,9 +314,19 @@ function validateTestPlan(plan, profiles, runs, errors) {
     return;
   }
   equal(plan.id, guidedPlanId, "report.testPlan.id", errors);
-  equal(plan.version, guidedPlanVersion, "report.testPlan.version", errors);
+  equal(
+    plan.version,
+    schemaVersion === currentSchemaVersion
+      ? currentGuidedPlanVersion
+      : legacyGuidedPlanVersion,
+    "report.testPlan.version",
+    errors,
+  );
 
-  const expectedRequired = requiredGuidedTestCaseIds(profiles);
+  const expectedRequired = requiredGuidedTestCaseIds(
+    profiles,
+    measurementDurationFor(schemaVersion),
+  );
   stringArray(plan.requiredTestCaseIds, 1, 12, "report.testPlan.requiredTestCaseIds", errors);
   if (!sameArray(plan.requiredTestCaseIds, expectedRequired)) {
     add(errors, "report.testPlan.requiredTestCaseIds does not match the supported profiles.");
@@ -303,6 +342,8 @@ function validateTestPlan(plan, profiles, runs, errors) {
               run.testScenario === "guidedPlan" &&
               isRecord(run.result) &&
               run.result.outcome === "completed" &&
+              (schemaVersion !== currentSchemaVersion ||
+                run.result.quality?.status === "pass") &&
               requiredSet.has(run.testCaseId),
           )
           .map((run) => run.testCaseId)
@@ -341,7 +382,7 @@ function validateTestPlan(plan, profiles, runs, errors) {
   }
 }
 
-function validateRequest(request, path, errors) {
+function validateRequest(request, schemaVersion, path, errors) {
   if (
     !exactKeys(
       request,
@@ -352,14 +393,20 @@ function validateRequest(request, path, errors) {
   ) {
     return;
   }
-  equal(request.durationMs, 5000, `${path}.durationMs`, errors);
+  equal(
+    request.durationMs,
+    measurementDurationFor(schemaVersion),
+    `${path}.durationMs`,
+    errors,
+  );
   const options = bitrateOptions.get(profileKey(request));
   if (!options || !options.includes(request.bitrateKbps)) {
     add(errors, `${path} is not a supported resolution, frame-rate and bitrate combination.`);
   }
 }
 
-function validateResult(result, path, errors) {
+function validateResult(result, request, schemaVersion, path, errors) {
+  const current = schemaVersion === currentSchemaVersion;
   if (
     !exactKeys(
       result,
@@ -373,6 +420,7 @@ function validateResult(result, path, errors) {
         "encodedBytes",
         "effectiveFramesPerSecond",
         "effectiveBitrateKbps",
+        ...(current ? ["bitrateMode", "measurementWindow", "quality"] : []),
         "encoderFailures",
         "thermalStateBefore",
         "thermalStateAfter",
@@ -385,8 +433,20 @@ function validateResult(result, path, errors) {
     return;
   }
   oneOf(result.outcome, ["completed", "stopped"], `${path}.outcome`, errors);
-  integer(result.durationMs, 0, 11_000, `${path}.durationMs`, errors);
-  integer(result.startupLatencyMs, 0, 11_000, `${path}.startupLatencyMs`, errors);
+  integer(
+    result.durationMs,
+    0,
+    current ? maximumResultDurationMs : 11_000,
+    `${path}.durationMs`,
+    errors,
+  );
+  integer(
+    result.startupLatencyMs,
+    0,
+    current ? maximumStartupLatencyMs : 11_000,
+    `${path}.startupLatencyMs`,
+    errors,
+  );
   integer(result.capturedFrames, 0, 1000, `${path}.capturedFrames`, errors);
   integer(result.encodedFrames, 0, 1000, `${path}.encodedFrames`, errors);
   integer(result.frameDelta, -1000, 1000, `${path}.frameDelta`, errors);
@@ -400,10 +460,126 @@ function validateResult(result, path, errors) {
   integer(result.encodedBytes, 0, 100_000_000, `${path}.encodedBytes`, errors);
   finite(result.effectiveFramesPerSecond, 0, 240, `${path}.effectiveFramesPerSecond`, errors);
   finite(result.effectiveBitrateKbps, 0, 40_000, `${path}.effectiveBitrateKbps`, errors);
+  if (current) {
+    oneOf(result.bitrateMode, ["constant", "average"], `${path}.bitrateMode`, errors);
+    equal(result.measurementWindow, "postStartup", `${path}.measurementWindow`, errors);
+    validateReportedRates(result, path, errors);
+    validateQuality(result.quality, request, result, `${path}.quality`, errors);
+  }
   integer(result.encoderFailures, 0, 100, `${path}.encoderFailures`, errors);
   oneOf(result.thermalStateBefore, thermalStates, `${path}.thermalStateBefore`, errors);
   oneOf(result.thermalStateAfter, thermalStates, `${path}.thermalStateAfter`, errors);
   validateEnvironment(result.environment, `${path}.environment`, errors);
+  if (current && isRecord(result.environment)) {
+    if (result.environment.platform === "android") {
+      equal(result.bitrateMode, "constant", `${path}.bitrateMode`, errors);
+    } else if (result.environment.platform === "ios") {
+      equal(result.bitrateMode, "average", `${path}.bitrateMode`, errors);
+    }
+  }
+}
+
+function validateReportedRates(result, path, errors) {
+  if (
+    !Number.isInteger(result.durationMs) ||
+    result.durationMs <= 0 ||
+    !Number.isInteger(result.encodedFrames) ||
+    !Number.isInteger(result.encodedBytes) ||
+    !Number.isFinite(result.effectiveFramesPerSecond) ||
+    !Number.isFinite(result.effectiveBitrateKbps)
+  ) {
+    return;
+  }
+  const expectedFramesPerSecond = round2(
+    (result.encodedFrames * 1_000) / result.durationMs,
+  );
+  const expectedBitrateKbps = round2(
+    (result.encodedBytes * 8) / result.durationMs,
+  );
+  if (Math.abs(result.effectiveFramesPerSecond - expectedFramesPerSecond) > 0.02) {
+    add(errors, `${path}.effectiveFramesPerSecond does not match the counters.`);
+  }
+  if (Math.abs(result.effectiveBitrateKbps - expectedBitrateKbps) > 0.02) {
+    add(errors, `${path}.effectiveBitrateKbps does not match the counters.`);
+  }
+}
+
+function validateQuality(quality, request, result, path, errors) {
+  if (!exactKeys(quality, ["status", "failureReasons"], path, errors)) return;
+  oneOf(quality.status, ["pass", "fail"], `${path}.status`, errors);
+  stringArray(
+    quality.failureReasons,
+    0,
+    qualityFailureKinds.length,
+    `${path}.failureReasons`,
+    errors,
+  );
+  if (
+    Array.isArray(quality.failureReasons) &&
+    quality.failureReasons.some((reason) => !qualityFailureKinds.includes(reason))
+  ) {
+    add(errors, `${path}.failureReasons contains an unsupported value.`);
+  }
+  const expectedReasons = qualificationFailureReasons(request, result);
+  if (!sameArray(quality.failureReasons, expectedReasons)) {
+    add(errors, `${path}.failureReasons does not match the measured values.`);
+  }
+  equal(
+    quality.status,
+    expectedReasons.length === 0 ? "pass" : "fail",
+    `${path}.status`,
+    errors,
+  );
+}
+
+function qualificationFailureReasons(request, result) {
+  if (!isRecord(request) || !isRecord(result)) return [];
+  const reasons = [];
+  if (result.outcome !== "completed") reasons.push("outcomeNotCompleted");
+  if (
+    !Number.isInteger(result.durationMs) ||
+    Math.abs(result.durationMs - request.durationMs) > 1_000
+  ) {
+    reasons.push("durationOutsideTolerance");
+  }
+  if (
+    !Number.isFinite(result.effectiveFramesPerSecond) ||
+    result.effectiveFramesPerSecond < request.framesPerSecond * minimumFrameRateRatio
+  ) {
+    reasons.push("frameRateBelowThreshold");
+  }
+  if (
+    !Number.isFinite(result.effectiveBitrateKbps) ||
+    result.effectiveBitrateKbps < request.bitrateKbps * minimumBitrateRatio
+  ) {
+    reasons.push("bitrateBelowThreshold");
+  }
+  if (
+    Number.isFinite(result.effectiveBitrateKbps) &&
+    result.effectiveBitrateKbps > request.bitrateKbps * maximumBitrateRatio
+  ) {
+    reasons.push("bitrateAboveThreshold");
+  }
+  const maximumFrameDelta = Number.isInteger(result.capturedFrames)
+    ? Math.max(2, Math.ceil(result.capturedFrames * maximumFrameDeltaRatio))
+    : 2;
+  if (
+    !Number.isInteger(result.frameDelta) ||
+    Math.abs(result.frameDelta) > maximumFrameDelta
+  ) {
+    reasons.push("frameDeltaAboveThreshold");
+  }
+  if (result.encoderFailures !== 0) reasons.push("encoderFailures");
+  if (
+    !Number.isInteger(result.startupLatencyMs) ||
+    result.startupLatencyMs > maximumStartupLatencyForQualificationMs
+  ) {
+    reasons.push("startupLatencyAboveThreshold");
+  }
+  if (["serious", "critical"].includes(result.thermalStateAfter)) {
+    reasons.push("thermalPressure");
+  }
+  return reasons;
 }
 
 function validateEnvironment(environment, path, errors) {
@@ -428,7 +604,13 @@ function validateEnvironment(environment, path, errors) {
 function summarizeReport(report) {
   const resultRuns = report.runs.filter((run) => run.result);
   const completedRuns = resultRuns.filter((run) => run.result.outcome === "completed");
-  const highest = [...completedRuns].sort((left, right) => {
+  const qualifiedRuns =
+    report.schemaVersion === currentSchemaVersion
+      ? completedRuns.filter((run) => run.result.quality?.status === "pass")
+      : [];
+  const profileCandidates =
+    report.schemaVersion === currentSchemaVersion ? qualifiedRuns : completedRuns;
+  const highest = [...profileCandidates].sort((left, right) => {
     const leftScore =
       left.request.width * left.request.height * left.request.framesPerSecond * left.request.bitrateKbps;
     const rightScore =
@@ -438,6 +620,22 @@ function summarizeReport(report) {
   const environment = resultRuns.at(-1)?.result.environment ?? null;
   const requiredTestCaseIds = report.testPlan?.requiredTestCaseIds ?? [];
   const completedTestCaseIds = report.testPlan?.completedTestCaseIds ?? [];
+  const qualityFailedTestCaseIds =
+    report.schemaVersion === currentSchemaVersion
+      ? [
+          ...new Set(
+            report.runs
+              .filter(
+                (run) =>
+                  run.testScenario === "guidedPlan" &&
+                  run.result?.outcome === "completed" &&
+                  run.result.quality?.status === "fail" &&
+                  !completedTestCaseIds.includes(run.testCaseId),
+              )
+              .map((run) => run.testCaseId),
+          ),
+        ]
+      : [];
   return {
     schemaVersion: report.schemaVersion,
     generatedAtUtc: report.generatedAtUtc,
@@ -449,10 +647,11 @@ function summarizeReport(report) {
     encoders: [...new Set(resultRuns.map((run) => run.result.environment.encoderName))].sort(),
     runCount: report.runs.length,
     completedRunCount: completedRuns.length,
+    qualifiedRunCount: qualifiedRuns.length,
     stoppedRunCount: resultRuns.length - completedRuns.length,
     failedRunCount: report.runs.length - resultRuns.length,
     qualificationPlan:
-      report.schemaVersion === 2
+      report.schemaVersion === currentSchemaVersion
         ? {
             id: report.testPlan.id,
             version: report.testPlan.version,
@@ -462,7 +661,18 @@ function summarizeReport(report) {
             missingTestCaseIds: requiredTestCaseIds.filter(
               (testCaseId) => !completedTestCaseIds.includes(testCaseId),
             ),
+            qualityFailedTestCaseIds,
           }
+        : report.schemaVersion === 2
+          ? {
+              id: report.testPlan.id,
+              version: report.testPlan.version,
+              status: "retest",
+              requiredTestCaseCount: requiredTestCaseIds.length,
+              completedTestCaseCount: 0,
+              missingTestCaseIds: requiredTestCaseIds,
+              qualityFailedTestCaseIds: [],
+            }
         : {
             id: null,
             version: null,
@@ -470,6 +680,7 @@ function summarizeReport(report) {
             requiredTestCaseCount: 0,
             completedTestCaseCount: 0,
             missingTestCaseIds: [],
+            qualityFailedTestCaseIds: [],
           },
     highestProfile: highest
       ? {
@@ -484,7 +695,7 @@ function summarizeReport(report) {
   };
 }
 
-function requiredGuidedTestCaseIds(profiles) {
+function requiredGuidedTestCaseIds(profiles, durationMs) {
   if (!Array.isArray(profiles)) return [];
   return profiles.flatMap((profile) => {
     const options = bitrateOptions.get(profileKey(profile));
@@ -494,9 +705,19 @@ function requiredGuidedTestCaseIds(profiles) {
       (value) => options.includes(value),
     );
     return selected.map((bitrateKbps) =>
-      testCaseId({ ...profile, durationMs: 5000, bitrateKbps }),
+      testCaseId({ ...profile, durationMs, bitrateKbps }),
     );
   });
+}
+
+function measurementDurationFor(schemaVersion) {
+  return schemaVersion === currentSchemaVersion
+    ? currentMeasurementDurationMs
+    : legacyMeasurementDurationMs;
+}
+
+function round2(value) {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
 }
 
 function testCaseId(request) {

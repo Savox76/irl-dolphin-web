@@ -164,6 +164,7 @@ for (const token of [
   "device-report-invalid",
   "device-report-complete",
   "device-report-partial",
+  "device-report-retest-required",
   "awaiting-device-verification",
   "device-verified",
   'context.payload.action === "edited"',

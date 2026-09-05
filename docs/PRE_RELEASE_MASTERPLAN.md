@@ -135,6 +135,8 @@ Abnahme: Der interne Testbuild wird ausschließlich aus einem vollständig grün
 - [x] Strikte Schema-/Prüfsummenprüfung und getrennte Maintainer-Freigabe
 - [x] Fähigkeitsgefilterter geführter Medien-Testplan mit Mindest-, Standard-
   und Höchstbitrate sowie automatischer Vollständigkeits-Sperre
+- [x] 15-Sekunden-Messfenster nach Encoderstart, feste Qualitätsgrenzen und
+  Sperre neuer Tests für exakt bereits freigegebene Geräte-/OS-Profile
 - [ ] Ersten Bericht auf dem Huawei T15 Pro durchführen und freigeben
 
 Abnahme: Kein kritischer oder hoher Fehler bleibt offen. Jeder reproduzierbare
@@ -378,6 +380,8 @@ contains no secret values.
 - [x] Strict schema/checksum validation and separate maintainer approval
 - [x] Capability-filtered guided media plan covering minimum, default and
   maximum bitrates with an automatic completeness publication gate
+- [x] Post-startup 15-second window, fixed quality thresholds and suppression
+  of new tests for exact device/OS profiles already approved
 - [ ] Run and approve the first report on the Huawei T15 Pro
 
 Acceptance: no critical or high defect remains. Every reproducible defect has an
