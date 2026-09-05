@@ -1,10 +1,11 @@
-import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import {
+  compatibilityProfileIdFor,
   parseDeviceReportIssue,
+  verifyOperatingSystemUpgradeBaseline,
   verificationMarkerFor,
 } from "./device_report.mjs";
 
@@ -27,6 +28,7 @@ export async function buildVerifiedDevices({
   const loadComments =
     suppliedCommentLoader ??
     ((issue) => fetchPages(issue.comments_url + "?per_page=100", token));
+  const candidates = new Map();
   const byCompatibilityProfile = new Map();
 
   for (const issue of issues) {
@@ -54,6 +56,46 @@ export async function buildVerifiedDevices({
       .sort((left, right) => Date.parse(right.created_at) - Date.parse(left.created_at))[0];
     if (!verification) continue;
 
+    candidates.set(issue.number, { issue, parsed, comments });
+  }
+
+  const publishableIssueNumbers = new Set();
+  for (const [issueNumber, candidate] of candidates) {
+    if (candidate.parsed.summary.qualificationPlan.id === "media.hardware-h264.guided") {
+      publishableIssueNumbers.add(issueNumber);
+    }
+  }
+  for (let pass = 0; pass < candidates.size; pass += 1) {
+    let changed = false;
+    for (const [issueNumber, candidate] of candidates) {
+      if (publishableIssueNumbers.has(issueNumber)) continue;
+      const baselineNumber =
+        candidate.parsed.summary.qualificationPlan.baseline?.sourceIssue.number;
+      const baseline = candidates.get(baselineNumber);
+      if (!baseline || !publishableIssueNumbers.has(baselineNumber)) continue;
+      const verification = verifyOperatingSystemUpgradeBaseline({
+        reportResult: candidate.parsed,
+        baselineIssue: baseline.issue,
+        baselineResult: baseline.parsed,
+        baselineComments: baseline.comments,
+      });
+      if (!verification.ok) continue;
+      publishableIssueNumbers.add(issueNumber);
+      changed = true;
+    }
+    if (!changed) break;
+  }
+
+  for (const issueNumber of publishableIssueNumbers) {
+    const { issue, parsed, comments } = candidates.get(issueNumber);
+    const verification = comments
+      .filter(
+        (comment) =>
+          comment?.user?.login === "github-actions[bot]" &&
+          typeof comment.body === "string" &&
+          comment.body.includes(verificationMarkerFor(parsed.reportSha256)),
+      )
+      .sort((left, right) => Date.parse(right.created_at) - Date.parse(left.created_at))[0];
     const summary = parsed.summary;
     const profileKey = [
       summary.platform,
@@ -61,7 +103,7 @@ export async function buildVerifiedDevices({
       summary.osVersion.toLocaleLowerCase("en"),
     ].join("\u0000");
     const entry = {
-      compatibilityProfileId: createHash("sha256").update(profileKey).digest("hex").slice(0, 16),
+      compatibilityProfileId: compatibilityProfileIdFor(summary),
       deviceModel: summary.deviceModel,
       platform: summary.platform,
       osVersion: summary.osVersion,

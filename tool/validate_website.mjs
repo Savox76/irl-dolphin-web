@@ -143,6 +143,8 @@ for (const token of [
   "device-report-valid",
   "device-verified",
   "media.hardwareH264",
+  "media.hardware-h264.os-upgrade",
+  "device-report-full-required",
   "app.shell",
   "never submits in the background",
 ]) {
@@ -165,6 +167,7 @@ for (const token of [
   "device-report-complete",
   "device-report-partial",
   "device-report-retest-required",
+  "device-report-full-required",
   "awaiting-device-verification",
   "device-verified",
   'context.payload.action === "edited"',

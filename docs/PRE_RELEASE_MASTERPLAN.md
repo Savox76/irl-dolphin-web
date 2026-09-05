@@ -189,7 +189,16 @@ nicht mit.
 - [ ] Kick-App plus signaturprüfendes HTTPS/WSS-Relay oder Kick sichtbar aus dem
   beworbenen Umfang herausnehmen
 - [ ] Offizielle YouTube-/Kick-Artworks erst nach stabiler Provider-Grundlage
-- [ ] Endgültiges Logo und minimale Android-/iOS-Versionen festlegen
+- [ ] Endgültiges Logo
+- [x] Mindestversionen auf Android 12 (API 31) und iOS 17 festgelegt
+- [x] Feste Geräte-/OS-Regeln: kein Wiederholungstest innerhalb derselben
+  Android-API oder iOS-Hauptversion; zwei Vergleichsfälle nach einer höheren
+  Hauptversion; Volltest bei Profilverlust, Encoderwechsel oder
+  Qualitätsabweichung
+- [x] Eine neue App-Hauptversion allein entzieht keine Gerätefreigabe; relevant
+  sind Änderungen an Medien-Engine, Adapter, Messvertrag oder Abnahmekriterien
+- [ ] Mindestversionen vor jedem öffentlichen Android-/iOS-Hauptversionszyklus
+  prüfen, nie automatisch erhöhen und betroffene Geräte vorher dokumentieren
 - [x] Technische Datenschutzinformation und vollständiges Dateninventar für
   den aktuellen Alpha-Stand veröffentlichen
 - [ ] Medien-, Geräte- und Hostdaten ins Dateninventar aufnehmen, bevor der
@@ -432,6 +441,15 @@ and does not take down independent sources, chat or control.
 - [ ] Official YouTube/Kick artwork only after provider stability
 - [ ] Final logo
 - [x] Minimum versions fixed at Android 12 (API 31) and iOS 17
+- [x] Fixed device/OS qualification rules: no retest within one Android API or
+  iOS major release; a later major release gets a two-case upgrade check;
+  missing prior capabilities, a changed encoder or failed quality thresholds
+  escalate to the full plan
+- [x] App SemVer major changes alone do not invalidate device approvals;
+  requalification follows relevant media-engine, adapter, measurement-contract
+  or acceptance-criteria changes
+- [ ] Review minimum OS versions before every public Android/iOS major-release
+  cycle; never raise them automatically and document affected devices first
 - [x] Publish technical privacy information and the complete current-alpha
   data inventory
 - [ ] Add media, device and host data to the inventory before distributing the

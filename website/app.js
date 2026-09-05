@@ -128,13 +128,13 @@ const translations = {
     devicesKicker: "Physische Qualifizierung",
     devicesTitle: "Geprüfte Geräte – mit öffentlichem Nachweis",
     devicesLead:
-      "Die Liste dokumentiert repräsentativ getestete Geräte ab Android 12 beziehungsweise iOS 17. Ein Eintrag erscheint erst nach vollständigem geführtem Testplan, automatischer Datenprüfung und separater Maintainer-Freigabe.",
+      "Die Liste dokumentiert repräsentativ getestete Geräte ab Android 12 beziehungsweise iOS 17. Innerhalb derselben OS-Hauptversion ist kein neuer Test nötig; eine höhere Hauptversion beginnt mit einem kurzen, an die frühere Freigabe gebundenen Vergleich.",
     devicesStepCapture: "Lokal messen",
     devicesStepCaptureText:
-      "Ein geführter Plan prüft automatisch die passenden Auflösungen, FPS sowie minimale, Standard- und maximale Bitraten ohne Medieninhalt.",
+      "Neue Geräte durchlaufen den fähigkeitsgefilterten Volltest. Ein bekanntes Gerät prüft nach einem System-Upgrade zunächst nur Standard- und Höchstprofil.",
     devicesStepValidate: "Öffentlich validieren",
     devicesStepValidateText:
-      "GitHub prüft Schema, Prüfsumme, Größenlimits und unbekannte Zusatzfelder.",
+      "GitHub prüft Schema, Prüfsumme, Größenlimits und bei Kurztests die frühere freigegebene Issue-Basis.",
     devicesStepVerify: "Getrennt freigeben",
     devicesStepVerifyText:
       "Erst die Prüfung von Build-Herkunft und Messwerten erzeugt einen veröffentlichten Eintrag.",
@@ -153,7 +153,7 @@ const translations = {
     deviceRequestedBitrate: "Angefordert",
     deviceMeasuredProfile: "Gemessen",
     deviceRuns: "Erfolgreiche Läufe",
-    devicePlanCoverage: "Geführter Testplan",
+    devicePlanCoverage: "Qualifikationsplan",
     deviceVerifiedOn: "Freigegeben",
     deviceEvidence: "Nachweis öffnen",
     suggestionsKicker: "Sinnvolle nächste Ergänzungen",
@@ -291,13 +291,13 @@ const translations = {
     devicesKicker: "Physical qualification",
     devicesTitle: "Verified devices, backed by public evidence",
     devicesLead:
-      "This list records representative tested devices running Android 12 or iOS 17 and newer. An entry appears after a complete guided plan, automated data validation and separate maintainer approval.",
+      "This list records representative tested devices running Android 12 or iOS 17 and newer. The same OS major needs no new test; a later major starts with a short comparison bound to the earlier approval.",
     devicesStepCapture: "Measure locally",
     devicesStepCaptureText:
-      "A guided plan automatically covers matching resolutions, FPS, and minimum, default and maximum bitrates without media content.",
+      "New devices run the capability-filtered full plan. After a system upgrade, a known device first checks only its standard and highest profiles.",
     devicesStepValidate: "Validate publicly",
     devicesStepValidateText:
-      "GitHub checks the schema, checksum, size limits and unknown extra fields.",
+      "GitHub checks the schema, checksum, size limits and the earlier approved issue baseline for short checks.",
     devicesStepVerify: "Approve separately",
     devicesStepVerifyText:
       "Only a review of build provenance and measurements creates a published entry.",
@@ -315,7 +315,7 @@ const translations = {
     deviceRequestedBitrate: "Requested",
     deviceMeasuredProfile: "Measured",
     deviceRuns: "Successful runs",
-    devicePlanCoverage: "Guided test plan",
+    devicePlanCoverage: "Qualification plan",
     deviceVerifiedOn: "Approved",
     deviceEvidence: "Open evidence",
     suggestionsKicker: "Useful next additions",

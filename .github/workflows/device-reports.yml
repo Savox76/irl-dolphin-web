@@ -38,6 +38,7 @@ jobs:
             ).href;
             const {
               parseDeviceReportIssue,
+              verifyOperatingSystemUpgradeBaseline,
               verificationMarkerFor,
             } = await import(moduleUrl);
             const owner = context.repo.owner;
@@ -45,13 +46,53 @@ jobs:
             const issue_number = context.issue.number;
             const issue = context.payload.issue;
             const result = parseDeviceReportIssue(issue.body ?? "");
+            let upgradeBaselineVerification = { ok: true, errors: [] };
+            if (
+              result.ok &&
+              result.summary.qualificationPlan.id ===
+                "media.hardware-h264.os-upgrade"
+            ) {
+              const baselineNumber =
+                result.summary.qualificationPlan.baseline?.sourceIssue.number;
+              try {
+                const { data: baselineIssue } = await github.rest.issues.get({
+                  owner,
+                  repo,
+                  issue_number: baselineNumber,
+                });
+                const baselineResult = parseDeviceReportIssue(
+                  baselineIssue.body ?? "",
+                );
+                const baselineComments = await github.paginate(
+                  github.rest.issues.listComments,
+                  { owner, repo, issue_number: baselineNumber, per_page: 100 },
+                );
+                upgradeBaselineVerification =
+                  verifyOperatingSystemUpgradeBaseline({
+                    reportResult: result,
+                    baselineIssue,
+                    baselineResult,
+                    baselineComments,
+                  });
+              } catch (error) {
+                upgradeBaselineVerification = {
+                  ok: false,
+                  errors: [
+                    error.status === 404
+                      ? "The referenced approved baseline issue does not exist."
+                      : "The approved baseline issue could not be checked.",
+                  ],
+                };
+              }
+            }
             const definitions = [
               ["device-report", "1d76db", "Machine-readable IRL Dolphin device report"],
               ["device-report-valid", "0e8a16", "Report passed automated schema validation"],
               ["device-report-invalid", "d1242f", "Report failed automated schema validation"],
-              ["device-report-complete", "1f883d", "Guided plan has complete capability-filtered coverage"],
-              ["device-report-partial", "fbca04", "Valid report with incomplete or legacy guided-plan coverage"],
-              ["device-report-retest-required", "d93f0b", "A current guided quality case must be repeated"],
+              ["device-report-complete", "1f883d", "Qualification plan has complete verified coverage"],
+              ["device-report-partial", "fbca04", "Valid report with incomplete or legacy plan coverage"],
+              ["device-report-retest-required", "d93f0b", "A current qualification case must be repeated"],
+              ["device-report-full-required", "b60205", "A full device qualification is required instead of an OS-upgrade check"],
               ["awaiting-device-verification", "bf8700", "Valid report awaiting maintainer review"],
               ["device-verified", "8250df", "Report provenance and result reviewed by a maintainer"],
             ];
@@ -81,6 +122,7 @@ jobs:
             labels.delete("device-report-complete");
             labels.delete("device-report-partial");
             labels.delete("device-report-retest-required");
+            labels.delete("device-report-full-required");
             labels.delete("awaiting-device-verification");
             if (context.payload.action === "edited") {
               labels.delete("device-verified");
@@ -89,15 +131,20 @@ jobs:
             if (result.ok) {
               labels.add("device-report-valid");
               const complete =
-                result.summary.qualificationPlan.status === "complete";
+                result.summary.qualificationPlan.status === "complete" &&
+                upgradeBaselineVerification.ok;
               labels.add(
                 complete ? "device-report-complete" : "device-report-partial",
               );
               const retestRequired =
                 result.summary.qualificationPlan.status === "retest" ||
-                result.summary.qualificationPlan.qualityFailedTestCaseIds.length > 0;
+                result.summary.qualificationPlan.qualityFailedTestCaseIds.length > 0 ||
+                !upgradeBaselineVerification.ok;
               if (retestRequired) {
                 labels.add("device-report-retest-required");
+              }
+              if (!upgradeBaselineVerification.ok) {
+                labels.add("device-report-full-required");
               }
               if (!complete) {
                 labels.delete("device-verified");
@@ -181,13 +228,28 @@ jobs:
                   `- OS / app: ${safeText(result.summary.osVersion)} / ${safeText(result.summary.appVersion)}`,
                   `- Test runs: ${result.summary.runCount}`,
                   `- Completed / quality-passed / stopped / failed: ${result.summary.completedRunCount} / ${result.summary.qualifiedRunCount} / ${result.summary.stoppedRunCount} / ${result.summary.failedRunCount}`,
+                  plan?.id === "media.hardware-h264.os-upgrade"
+                    ? "- Qualification type: short major-OS upgrade check"
+                    : "- Qualification type: full device plan",
                   plan?.status === "complete"
-                    ? `- Guided plan: complete (${plan.completedTestCaseCount}/${plan.requiredTestCaseCount} test cases)`
+                    ? `- Plan coverage: complete (${plan.completedTestCaseCount}/${plan.requiredTestCaseCount} test cases)`
                     : plan?.status === "partial"
-                      ? `- Guided plan: partial (${plan.completedTestCaseCount}/${plan.requiredTestCaseCount} test cases)`
+                      ? `- Plan coverage: partial (${plan.completedTestCaseCount}/${plan.requiredTestCaseCount} test cases)`
                       : plan?.status === "retest"
-                        ? "- Guided plan: superseded by the current quality-measurement contract; retest required"
-                        : "- Guided plan: unavailable in this legacy report",
+                        ? "- Plan coverage: superseded by the current quality-measurement contract; retest required"
+                        : "- Plan coverage: unavailable in this legacy report",
+                  ...(plan?.id === "media.hardware-h264.os-upgrade"
+                    ? [
+                        upgradeBaselineVerification.ok
+                          ? `- Approved baseline: verified issue #${plan.baseline.sourceIssue.number} (${safeText(plan.baseline.osVersion)})`
+                          : "- Approved baseline: not verified; a full device plan is required",
+                      ]
+                    : []),
+                  ...(!upgradeBaselineVerification.ok
+                    ? upgradeBaselineVerification.errors.map(
+                        (error) => `  - ${safeText(error)}`,
+                      )
+                    : []),
                   ...(plan?.missingTestCaseIds?.length
                     ? [
                         "- Missing guided test cases:",
@@ -209,8 +271,10 @@ jobs:
                     : "- Highest completed local run: not available",
                   `- Build: \`${result.summary.build.commit}\` / quality run \`${result.summary.build.qualityRun}\``,
                   "",
-                  plan?.status === "complete"
+                  plan?.status === "complete" && upgradeBaselineVerification.ok
                     ? "This confirms schema, bounds, checksum, data minimization and guided-plan quality coverage only. It is not device verification. A maintainer must review the private build provenance and measurements before applying `device-verified`."
+                    : !upgradeBaselineVerification.ok
+                      ? "The short OS-upgrade report has no matching approved baseline. Run and submit the full device qualification plan instead."
                     : plan?.status === "retest"
                       ? "This older report remains readable evidence but cannot be verified or published under the current measurement contract. Submit a fresh guided report from the current private test build."
                       : "This report is structurally valid but cannot be verified or published until every capability-filtered guided case passes the current quality thresholds.",
