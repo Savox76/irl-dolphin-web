@@ -137,6 +137,8 @@ Abnahme: Der interne Testbuild wird ausschließlich aus einem vollständig grün
   und Höchstbitrate sowie automatischer Vollständigkeits-Sperre
 - [x] 15-Sekunden-Messfenster nach Encoderstart, feste Qualitätsgrenzen und
   Sperre neuer Tests für exakt bereits freigegebene Geräte-/OS-Profile
+- [x] Bestehende Geräte-Issues nach Änderungen am vertrauenswürdigen
+  Prüfvertrag automatisch erneut bewerten und veraltete Freigabelabels entziehen
 - [ ] Ersten Bericht auf dem Huawei T15 Pro durchführen und freigeben
 
 Abnahme: Kein kritischer oder hoher Fehler bleibt offen. Jeder reproduzierbare
@@ -391,6 +393,8 @@ contains no secret values.
   maximum bitrates with an automatic completeness publication gate
 - [x] Post-startup 15-second window, fixed quality thresholds and suppression
   of new tests for exact device/OS profiles already approved
+- [x] Automatically re-evaluate existing device issues after trusted contract
+  changes and revoke stale verification labels
 - [ ] Run and approve the first report on the Huawei T15 Pro
 
 Acceptance: no critical or high defect remains. Every reproducible defect has an
