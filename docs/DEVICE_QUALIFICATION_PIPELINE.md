@@ -82,6 +82,13 @@ Jeder Lauf besitzt:
 | `device-verified` | nur nach Maintainer-Prüfung | Build-Herkunft und Messwerte wurden geprüft; die Website darf den Eintrag zeigen. |
 | Nachträglich bearbeitet | Freigabe wird entzogen | Die geänderte Prüfsumme benötigt eine neue Prüfung. |
 
+Ändert sich der vertrauenswürdige Parser oder der Workflow auf `main`, werden
+alle bereits als Gerätebericht markierten Issues automatisch erneut mit dem
+aktuellen Vertrag bewertet. Dadurch bleiben alte Labels nicht fälschlich auf
+`awaiting-device-verification` oder `device-verified`. Ein Maintainer kann
+denselben begrenzten Abgleich außerdem für ein einzelnes Issue oder für alle
+Berichte manuell starten.
+
 Die App überträgt nichts im Hintergrund. Sie öffnet ein vollständig
 vorausgefülltes öffentliches Issue. Dieser letzte bewusste GitHub-Schritt ist
 notwendig, weil der Bericht öffentlich wird und Tester ihn vor dem Absenden
@@ -193,6 +200,12 @@ result or bounded failure code, and build provenance.
 | `awaiting-device-verification` | complete reports only | The report is waiting for separate build-provenance and measurement review. |
 | `device-verified` | only after maintainer review | Build provenance and measurements were reviewed; the website may list it. |
 | Edited later | approval is revoked | The changed checksum requires another review. |
+
+Whenever the trusted parser or workflow changes on `main`, every issue already
+marked as a device report is automatically re-evaluated against the current
+contract. This prevents stale `awaiting-device-verification` or
+`device-verified` labels from surviving stricter validation. A maintainer can
+also manually run the same bounded reconciliation for one issue or all reports.
 
 The app never submits in the background. It opens a completely prefilled public
 issue. This final deliberate GitHub step is required because the report becomes

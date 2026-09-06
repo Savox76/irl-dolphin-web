@@ -162,6 +162,13 @@ if (
 
 for (const token of [
   "issues: write",
+  "workflow_dispatch:",
+  'github.event_name != \'issues\'',
+  'context.eventName === "issues"',
+  "github.paginate(github.rest.issues.listForRepo",
+  'labels: "device-report"',
+  "Revalidating ${issues.length} device report(s).",
+  "labels already match the current contract",
   "device-report-valid",
   "device-report-invalid",
   "device-report-complete",

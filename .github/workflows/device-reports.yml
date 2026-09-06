@@ -3,6 +3,17 @@ name: Device qualification intake
 on:
   issues:
     types: [opened, edited, reopened, labeled, unlabeled]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/device-reports.yml"
+      - "tool/device_report.mjs"
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Optional device-report issue number; empty revalidates all reports"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -17,6 +28,7 @@ concurrency:
 jobs:
   process-and-publish:
     if: >-
+      github.event_name != 'issues' ||
       startsWith(github.event.issue.title, '[Device report]') ||
       contains(github.event.issue.body, 'IRL_DOLPHIN_QUALIFICATION_REPORT_V1')
     runs-on: ubuntu-latest
@@ -43,8 +55,48 @@ jobs:
             } = await import(moduleUrl);
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const issue_number = context.issue.number;
-            const issue = context.payload.issue;
+            const requestedIssue =
+              context.eventName === "workflow_dispatch"
+                ? String(context.payload.inputs?.issue_number ?? "").trim()
+                : "";
+            if (requestedIssue && !/^\d+$/u.test(requestedIssue)) {
+              core.setFailed("issue_number must contain only decimal digits.");
+              return;
+            }
+            const issues =
+              context.eventName === "issues"
+                ? [context.payload.issue]
+                : requestedIssue
+                  ? [
+                      (
+                        await github.rest.issues.get({
+                          owner,
+                          repo,
+                          issue_number: Number.parseInt(requestedIssue, 10),
+                        })
+                      ).data,
+                    ]
+                  : (
+                      await github.paginate(github.rest.issues.listForRepo, {
+                        owner,
+                        repo,
+                        state: "all",
+                        labels: "device-report",
+                        per_page: 100,
+                      })
+                    ).filter((candidate) => !candidate.pull_request);
+
+            core.info(`Revalidating ${issues.length} device report(s).`);
+            for (const issue of issues) {
+            const issue_number = issue.number;
+            if (
+              issue.pull_request ||
+              !issue.title?.startsWith("[Device report]") &&
+              !issue.body?.includes("IRL_DOLPHIN_QUALIFICATION_REPORT_V1")
+            ) {
+              core.warning(`Skipping issue #${issue_number}: not a device report.`);
+              continue;
+            }
             const result = parseDeviceReportIssue(issue.body ?? "");
             let upgradeBaselineVerification = { ok: true, errors: [] };
             if (
@@ -111,11 +163,12 @@ jobs:
               }
             }
 
-            const labels = new Set(
+            const originalLabels = new Set(
               issue.labels.map((label) =>
                 typeof label === "string" ? label : label.name,
               ),
             );
+            const labels = new Set(originalLabels);
             labels.add("device-report");
             labels.delete("device-report-valid");
             labels.delete("device-report-invalid");
@@ -193,12 +246,21 @@ jobs:
               labels.delete("device-verified");
             }
 
-            await github.rest.issues.setLabels({
-              owner,
-              repo,
-              issue_number,
-              labels: [...labels],
-            });
+            const nextLabels = [...labels].sort();
+            const previousLabels = [...originalLabels].sort();
+            if (
+              nextLabels.length !== previousLabels.length ||
+              nextLabels.some((label, index) => label !== previousLabels[index])
+            ) {
+              await github.rest.issues.setLabels({
+                owner,
+                repo,
+                issue_number,
+                labels: nextLabels,
+              });
+            } else {
+              core.info(`Issue #${issue_number} labels already match the current contract.`);
+            }
 
             const comments = await github.paginate(
               github.rest.issues.listComments,
@@ -302,6 +364,7 @@ jobs:
                 issue_number,
                 body: validationBody,
               });
+            }
             }
 
       - name: Test device-report parser
